@@ -7,6 +7,9 @@ git remote add origin https://github.com/linvic/idss.git
 git push -u origin master
 ```
 
+https://lanhuapp.com/url/pjESh-58zC7
+
+
 # y
 
 > A Vue.js project
