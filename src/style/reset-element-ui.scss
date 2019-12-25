@@ -1,0 +1,566 @@
+.task-manage .el-table th{
+  background-color: inherit !important;
+}
+.task-manage .el-table thead th{
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  font-size: 14px !important;
+  color: #505363 !important;
+  height:56px !important;
+  font-weight: 500 !important;
+}
+.task-manage .el-table tbody td{
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  font-size: 14px !important;
+  color: #505363 !important;
+  height:66px !important;
+  font-weight: 500 !important;
+}
+.task-manage .el-table__footer-wrapper thead div, .task-manage .el-table__header-wrapper thead div{
+  background-color: inherit !important;
+}
+.task-manage .el-table td, .task-manage .el-table th.is-leaf {
+  border-bottom: 1px solid #DADFEA !important;
+}
+
+.el-table__expanded-cell{
+  background: #EFEFEF !important;
+
+}
+.el-table__expand-icon {
+  -ms-transform: rotate(90deg) !important;
+  transform: rotate(90deg) !important;
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 50% !important;
+  background: #DBDBDB !important;
+  margin-left: 24px;
+}
+.el-table tr{
+  will-change:auto !important;
+}
+.el-table__expand-icon>.el-icon{
+  color:#fff !important;
+}
+.el-table__expand-icon--expanded {
+  -ms-transform: rotate(-90deg) !important;
+  transform: rotate(-90deg) !important;
+}
+.staff .el-form-item__label{
+display: none;
+}
+.el-button--small{
+  font-size: 14px !important;
+  color: #505363 !important;
+  border: 1px solid #C3C3C3 !important;
+  border-radius: 5px !important;
+}
+.task-manage .complete{
+  color: #D93437 !important;
+}
+.task-xx .complete{
+  color: #D93437 !important;
+}
+.form-role .el-form-item__label{
+  color: #333333 !important;
+}
+.el-table__header .cell{
+font-family: MicrosoftYaHei-Bold;
+font-weight: 500 !important;
+}
+//.performanceDept .el-input__inner{
+//  border: 1px solid #bfcbd9 !important;
+//}
+.role-title .el-input__inner{
+  border: none !important;
+  border-radius: 0px !important;
+}
+.roles-temp .el-form-item__label{
+  width: 95px !important;
+}
+.roles-temp .el-form-item__content{
+  margin-left:95px !important;
+}
+.dialog-footer button{
+  margin-right: 0px !important;
+}
+.dialog-footer button:last-child{
+  margin-left: 10px !important;
+}
+.special-width .el-form-item__label{
+  width: 95px !important;
+  color: #333333 !important;
+}
+.special-width .el-form-item__content{
+  //margin-left: 150px !important
+}
+.department .el-form-item__content{
+  margin-right: 23px !important;
+  font-size: 14px !important;
+  color: #333333 !important;
+}
+.department .el-textarea__inner{
+  height: 80px !important;
+}
+.special-width{
+  margin-bottom: 0px !important
+}
+.permissions-table .el-checkbox__input.is-checked .el-checkbox__inner {
+  background: #D93437 !important;
+  border: 1px solid #D93437 !important;
+}
+.el-radio__input.is-checked .el-radio__inner {
+  border-color: #D93437 !important;
+  background: #fff !important;
+}
+
+.el-radio__input.is-checked .el-radio__inner::after{
+  background-color: #D93437 !important;
+}
+
+.el-dialog__header{
+  padding: 13px 25px 13px 15px !important;
+  background: #F1F1F1 !important;
+  border-bottom: 1px solid rgba(0,0,0,0.12) !important;
+}
+.el-dialog__title{
+  font-weight: normal !important;
+  font-size: 14px !important;
+}
+.el-dialog__headerbtn .el-icon-close{
+  font-size: 12px !important;
+}
+.department .el-dialog__body{
+  padding: 30px 20px !important;
+  padding-bottom: 0 !important
+}
+.department .el-dialog__body{
+  text-align: center !important;
+}
+.role .el-dialog__body{
+  text-align: center !important;
+}
+.el-dialog__footer{
+  text-align: center !important;
+}
+.department .el-select{
+  width: 100% !important;
+}
+.departmentDetail .el-table td,.departmentDetail .el-table th{
+  height:42px !important;
+}
+.departmentDetail .el-table_1_column_1{
+  color: #DA3438 !important;
+  cursor: pointer !important;
+}
+.departmentDetail .el-button--small{
+  font-size:14px !important;
+  border: 1px solid #D83436 !important;
+  border-radius: 4px !important;
+  color: #D93437 !important;
+}
+.departmentDetail .el-button--small:hover{
+  background: #D93437 !important;
+  color: #FFFFFF !important;
+}
+.el-button--small{
+  font-size:14px !important;
+  border: 1px solid #D83436 !important;
+  border-radius: 4px !important;
+  color: #D93437 !important;
+}
+.el-button--small:hover{
+  background: #D93437 !important;
+  color: #FFFFFF !important;
+}
+.departmentDetail .el-table__header tr{
+  background: #F1F1F1 !important;
+}
+
+.el-dropdown-menu{
+  top:45px !important;
+}
+#dowm .el-dropdown-menu__item{
+  text-align: center !important;
+}
+.el-checkbox__inner{
+  width: 12px !important;
+  height:12px !important;
+  border-radius: 2px !important;
+}
+.el-checkbox__inner::after{
+  height: 6px !important;
+  left: 3px !important;
+  top: 0px !important;
+  width: 3px !important;
+}
+.clearfix:before,.clearfix:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.clearfix {
+  zoom: 1;
+}
+.role-button .el-input__inner{width: 115px;
+  height: 24px !important;
+  line-height:24px !important;
+  background: #FFFFFF !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+  color: #333333 !important;
+  border: 1px solid #bfcbd9 !important;
+}
+
+// .role-special .el-input__inner{width: 75px !important;}
+.el-select .el-input .el-input__icon {
+  color: #434245 !important;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+  color: #434245 !important;
+}
+
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+  color: #434245 !important;
+}
+
+input:-ms-input-placeholder{
+  color: #434245 !important;
+}
+
+input::-webkit-input-placeholder{
+  color: #434245 !important;
+}
+.pagination-depart .el-pagination{
+  text-align: center !important;
+  padding: 30px 5px !important;
+  background: #ffffff !important;
+}
+.departmentDetail{
+  font-size: 14px !important;
+  color: #333333 !important;
+}
+.departmentDetail .el-form-item{
+  margin-bottom: 10px !important;
+  margin-right: 20px !important;
+}
+.departmentDetail .el-select{
+  width: 100% !important;
+}
+.el-dialog--tiny{
+  width: 555px !important;
+}
+.el-icon-caret-top:before {
+  content: "\E603" !important;
+}
+.dialog-footer button{
+  border: 1px solid #838383;
+  border-radius: 4px;
+  width: 90px;
+  height: 30px;
+  text-align: center;
+  background: #fff;
+  color: #838383;
+  cursor: pointer;
+  margin-right: 20px;
+}
+.dialog-footer button:last-child{
+  color: #D93437;
+  border: 1px solid #D83436;
+}
+.dialog-footer .saveDrafts{
+  margin-left: 10px !important;
+}
+.performanceManage .el-input__inner{
+  border: 1px solid rgba(0,0,0,0.12) !important;
+}
+.noticeManage .el-table .cell{
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 14px !important;
+  color: #434343 !important;
+}
+.noticeManage .el-table .is-leaf{
+  color: #434343 !important;
+  font-weight: bold !important;
+}
+.role-type .el-input__inner{
+border: none !important;
+}
+.ql-toolbar.ql-snow{
+  padding: 0 !important;
+  border:none !important;
+}
+.ql-snow{
+  border-top: 1px solid #E0E0E0 !important;
+}
+.ql-container.ql-snow {
+  border: 1px solid  #E0E0E0 !important;
+}
+.ql-editor{
+  height: 121px !important;
+}
+.ql-toolbar.ql-snow .ql-formats{
+  margin-right: 0 !important;
+}
+.ql-snow .ql-picker.ql-header{
+  width: 78px !important;
+}
+.ql-snow .ql-picker{
+  height: 37px !important;
+}
+.ql-toolbar.ql-snow .ql-formats{
+  margin-right: 0 !important;
+}
+.ql-snow.ql-toolbar button, .ql-snow .ql-toolbar button{
+  width: 26px !important;
+}
+.el-pager li.active{
+  background: #D93437 !important;
+  border-color: #D93437 !important;
+}
+.el-select-dropdown__item.selected {
+  background: #D93437 !important;
+}
+.pagination-depart .el-icon-caret-top:before {
+  content: "\E607" !important;
+}
+.complete{
+  border: 1px solid #D83436 !important;
+  font-size: 14px !important;
+}
+.complete:hover{
+  background: #D93437 !important;
+  color: #FFFFFF !important;
+}
+.get-reward .el-table th,.get-reward .el-table td, .get-reward .el-table__header-wrapper thead div{
+  background-color: #fff !important;
+  height: 42px !important;
+}
+.get-reward .el-table th>.cell{
+  line-height: 42px !important;
+}
+.special-dddddd .el-table td{
+color: red !important
+}
+.el-badge__content{
+  background: #FFD400 !important;
+}
+
+.class-a .el-table td{
+  color: #999999 !important;
+}
+
+.weekDay .el-radio-button__inner{
+  padding: 0 !important;
+  width: 65px !important;
+  height: 30px !important;
+  line-height: 30px !important;
+  text-align: center !important;
+  border: 1px solid rgba(0,0,0,0.12) !important;
+  margin-top: 15px !important;
+}
+.weekDay .el-radio-button__orig-radio:checked+.el-radio-button__inner {
+  color: #fff !important;
+  background-color: #D93437 !important;
+  border-color: #D93437 !important;
+  box-shadow: -1px 0 0 0 #D93437 !important;
+}
+.time_template .el-date-editor{
+ margin-left: 20px !important;
+}
+.el-dialog__body{
+  padding-bottom: 0px !important;
+}
+.el-dialog__footer{
+  padding-top: 20px !important;
+}
+.deleteDepartment .el-dialog__footer{
+  padding-top: 40px !important;
+}
+.el-form-item.is-error .el-input__inner{
+  border-color: #ff4949 !important;
+}
+.teamDetail .el-dialog__body{
+padding-top: 15px !important;
+}
+.el-checkbox__label{
+  font-size: 14px !important;
+  color: #5C5F66 !important;
+}
+.teamDetail .el-checkbox__input.is-checked .el-checkbox__inner{
+  background: #D93437 !important;
+  border: 1px solid #D93437 !important;
+}
+.teamDetail .el-checkbox__input.is-indeterminate .el-checkbox__inner{
+  background: #D93437 !important;
+  border: 1px solid #D93437 !important;
+}
+.projectManage .el-dialog__footer{
+margin-top: 30px !important;
+}
+.el-form-item{
+  margin-bottom: 18px !important;
+}
+.tabs .el-form-item{
+margin-right: 30px !important;
+}
+.el-form-item__error{
+  //padding-top: 0px !important;
+}
+.teamDetail .el-form-item__content{
+  margin-right: 40px !important;
+}
+.teamDetail .el-select{
+  width: 100% !important;
+}
+.teamDetail .el-textarea__inner{
+  height: 80px !important;
+}
+.wagesDetail .el-textarea__inner{
+  height: 80px !important;
+}
+.wagesDetail .el-form-item__content{
+  margin-right: 40px !important;
+}
+.task-detail .el-button--small{
+  padding: 7px 14px !important;
+}
+.assignTaskModel .el-dialog--tiny{
+  width: 619px !important;
+}
+.dailyManage .el-date-editor.el-input{
+  width: 115px !important;
+}
+.dailyManage .el-input__inner{
+  height: 24px !important;
+  font-size: 12px !important;
+  color: #434245 !important;
+}
+.tabs .el-input__inner{
+  height: 35px !important;
+  font-size: 14px !important;
+}
+.el-collapse-item__header{
+  height: 66px !important;
+  line-height: 66px !important;
+}
+.initiateNew .el-input__inner{
+  height: 35px !important;
+}
+.initiateNew .el-textarea__inner{
+  font-size: 12px !important;
+}
+.replaySum .el-select{
+margin-left: 10px !important;
+}
+.initiateNew .el-textarea{
+  width: 365px !important;
+  height: 90px !important;
+}
+.evaluate .el-textarea{
+  min-height: 140px !important;
+}
+.evaluate .el-textarea__inner{
+  min-height: 140px !important;
+}
+.initiateNew .el-textarea__inner{
+  height: 90px !important;
+}
+.content-task .el-input__inner{
+  float: left !important;
+  width: 190px !important;
+  background: #FFFFFF!important;
+  height: 24px!important;
+  border: 1px solid rgba(0,0,0,0.12) !important;
+  border-radius: 4px !important;
+}
+.disable-button{
+  background-color: #fff !important;
+  border-color: #d1dbe5 !important;
+  color: #bfcbd9 !important;
+}
+.disable-button:hover{
+  background-color: #fff !important;
+  border-color: #d1dbe5 !important;
+  color: #bfcbd9 !important;
+}
+//.el-table .cell{
+//  padding-left: 18px !important;
+//}
+.performanceManage .el-date-editor.el-input{
+  width: 104px !important;
+}
+.performanceManage .el-input__inner{
+  height: 24px !important;
+}
+.performance .cell{
+  font-size: 12px !important;
+  color: #434343 !important;
+}
+.performanceDept .el-select{
+  width: 100px !important;
+}
+.monthList .el-select{
+  width: 104px !important;
+}
+.el-table tr{
+  background-color: #fff !important;
+}
+.staffName .el-table .cell{
+  //padding-left: 8px !important;
+  //padding-right: 8px !important;
+}
+.rewards .userName{
+  width: 365px !important;
+}
+.clearType{
+  width: 463px !important;
+  height: 40px !important;
+}
+.rewards .cause .el-textarea__inner{
+  width: 365px !important;
+  height: 90px !important;
+}
+.check-wrapper-special .el-checkbox-group{
+  text-align: center !important;
+}
+.check-wrapper-special .el-checkbox+.el-checkbox{
+  margin-left: 0px !important;
+}
+.check-wrapper-special .el-checkbox{
+  margin-bottom: 8px !important;
+  display: block !important;
+}
+
+.quill-wrapper .ql-formats{
+  line-height: 37px !important;
+}
+.searchLevelSpecial .el-input__icon{
+  right:-16px !important;
+}
+.time_template1 .el-input__inner{
+  text-align: center !important;
+}
+.captcha .user_captcha .el-input__inner{
+  border:0 !important;
+  height:42px !important;
+  width: 202px !important;
+  padding-left: 50px !important;
+}
+.el-select-dropdown.is-multiple .el-select-dropdown__item.selected{
+  color: #D93437 !important;
+}
+.el-select-dropdown.is-multiple .el-select-dropdown__item.selected{
+  background: #fff !important;
+}
+// .check-wrapper-special .el-checkbox:first-child .el-checkbox__input{
+//   margin-left: 13px !important;
+// }
+// .check-wrapper-special .el-checkbox:last-child .el-checkbox__input{
+//   margin-left: -4px !important;
+// }
+//.fixedP{
+//  left: 1000px !important;
+//}
