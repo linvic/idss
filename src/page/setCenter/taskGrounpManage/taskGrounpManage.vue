@@ -1,22 +1,22 @@
 <template>
   <div>
     <!--<tab></tab>-->
-    <div class="setCenter-wrapper">
+    <div class="wrapper">
       <div class="router-wrapper">
         <router-link to="/setCenter">
           <span class="child1">系统设置</span>
         </router-link> /
-         <span class="child2">任务组管理</span>
+         <span class="child2">任务类别管理</span>
       </div>
       <div class="role-title">
         <div class="role-num">
           <div class="project-name">
-            任务组管理
+            任务类别管理
           </div>
 
         </div>
         <div class="role-button" @click='addTeam'>
-          添加任务组
+          添加任务类别
         </div>
       </div>
       <div class="setCenter-list-wrapper">
@@ -35,7 +35,7 @@
               <div class="role-content">
                 <div class="populations-status clear dragChildren" ref="myLi">
                   <div class="populations-left" v-for="(temp,i) in item.typeEntitys">
-                    {{temp.taskTypeName}}：{{temp.taskTypeScore}}
+                    {{temp.taskTypeName}}
                   </div>
                 </div>
               </div>
@@ -70,16 +70,17 @@
         </span>
     </el-dialog>
     <el-dialog
-      title="添加任务组"
+      title="添加任务类别"
       :visible.sync="dialogVisible2"
       size="tiny"
       :before-close="handleClose2" top='25%' class="department department1">
-      <el-form :label-position="labelPosition" ref="ruleForm" :rules="rules" label-width="120px" :model="ruleForm">
-        <el-form-item label="任务组名称：" required  prop="name">
+      <el-form :label-position="labelPosition" ref="ruleForm" :rules="rules" label-width="130px" :model="ruleForm">
+        <el-form-item label="任务类别名称：" required  prop="name">
           <el-input v-model.trim="ruleForm.name"></el-input>
         </el-form-item>
+        
         <div class="money-wrapper">
-          <div class="reward-left"><span style="color: red"> * </span>任务组类型：
+          <div class="reward-left"><span style="color: red"> * </span>子任务类型：
           </div>
           <div class="reward-right">
             <div class="reward-item" v-for='(m,index) in addMoneyData'  @click="checkType(m,index)">
@@ -98,16 +99,16 @@
       </span>
     </el-dialog>
     <el-dialog
-      title="编辑任务组"
+      title="编辑任务类别"
       :visible.sync="dialogVisible"
       size="tiny"
       :before-close="handleClose" top='25%' class="department department1">
       <el-form :label-position="labelPosition" ref="ruleForm" :rules="rules" label-width="120px" :model="ruleForm">
-        <el-form-item label="任务组名称：" required  prop="name">
+        <el-form-item label="任务类别名称：" required  prop="name">
           <el-input v-model.trim="ruleForm.name"></el-input>
         </el-form-item>
         <div class="money-wrapper">
-          <div class="reward-left"><span style="color: red"> * </span>任务组类型：
+          <div class="reward-left"><span style="color: red"> * </span>子任务类型：
           </div>
           <div class="reward-right">
             <div class="reward-item" v-for='(item,index) in editorData' @click="checkType(item,index)">
@@ -126,17 +127,17 @@
         <button @click="sureEditor('ruleForm')">确 定</button>
       </span>
     </el-dialog>
-    <!--编辑添加任务组-->
+    <!--编辑添加任务类别-->
     <el-dialog
-      title="添加任务类型"
+      title="添加子任务类型"
       :visible.sync="dialogVisible4"
       size="tiny"
       :before-close="handleClose4" top='25%' class="department department1">
       <el-form :label-position="labelPosition" ref="formLabelAlign4" :rules="rules" label-width="120px" :model="formLabelAlign4">
-        <el-form-item label="类型名称：" required prop="name4">
+        <el-form-item label="子类型名称：" required prop="name4">
           <el-input v-model.trim="formLabelAlign4.name4"></el-input>
         </el-form-item>
-        <el-form-item label="类型分值：" required prop="region4" class="typeNumber">
+        <el-form-item label="子类型分值：" required prop="region4" class="typeNumber">
           <el-select v-model="formLabelAlign4.region4" placeholder="选择分值">
             <el-option
               v-for="item in options"
@@ -153,11 +154,11 @@
         </span>
     </el-dialog>
     <el-dialog
-      title="删除任务组"
+      title="删除任务类别"
       :visible.sync="dialogVisible1"
       size="tiny"
       :before-close="handleClose1" top='25%' class="department">
-      <span class="delete_team">确定删除该任务组吗？删除后不可恢复</span>
+      <span class="delete_team">确定删除该任务类别吗？删除后不可恢复</span>
       <span slot="footer" class="dialog-footer">
         <button @click="dialogVisible1 = false">取 消</button>
         <button @click="sureDelete">确 定</button>
@@ -208,18 +209,18 @@
         },
         rules: {
           name: [
-            {required: true, message: '请填写任务组名称'},
+            {required: true, message: '请填写任务类别名称'},
             { max: 20, message: '长度不能超过20字符'}
           ],
           name3:[
-            {required: true, message: '请填写任务组名称'},
+            {required: true, message: '请填写任务类别名称'},
             { max: 20, message: '长度不能超过20字符'}
           ],
           region3:[
             {required: true,type: 'number', message: '请选择'},
           ],
           name4:[
-            {required: true, message: '请填写任务组名称'},
+            {required: true, message: '请填写任务类别名称'},
             { max: 20, message: '长度不能超过20字符'}
           ],
           region4:[
@@ -284,7 +285,7 @@
               this.$notify({
                 title: '提示',
                 duration:3000,
-                message: "请添加任务组类型"
+                message: "请添加子任务类型"
               });
             }else{
               this.dialogVisible = false;
@@ -313,9 +314,9 @@
           if(res.code==ERR_OK){
             this. _getTaskGroupList()
             this.$notify({
-              title: '编辑任务组',
+              title: '编辑任务类别',
               duration:3000,
-              message: '编辑任务组成功',
+              message: '编辑任务类别成功',
               type: 'success'
             });
           }else{
@@ -327,7 +328,7 @@
           }
         })
       },
-//      取消添加任务组
+//      取消添加任务类别
       cancelAdd(formName){
         this.dialogVisible2 = false
         this.$refs[formName].resetFields();
@@ -348,7 +349,7 @@
         this.editor=true;
         this.index=index;
       },
-//      任务组编辑
+//      任务类别编辑
       editorGroup(id){
         this.dialogVisible = true;
         this._taskGroupgetById(id)
@@ -365,7 +366,7 @@
           }
         })
       },
-//      确定添加任务组
+//      确定添加任务类别
       sureAdd(formName){
         var str = "";
         var self=this;
@@ -375,7 +376,7 @@
               this.$notify({
                 title: '提示',
                 duration:3000,
-                message: "请添加任务组类型"
+                message: "请添加子任务类型"
               });
               return
             }
@@ -413,8 +414,8 @@
             addTaskType(param).then(function (res) {
               if(res.code==ERR_OK){
                 self.$notify({
-                  title: '添加任务组类型',
-                  message: '添加任务组类型成功',
+                  title: '添加子任务类型',
+                  message: '添加子任务类型成功',
                   duration:3000,
                   type: 'success'
                 });
@@ -480,9 +481,9 @@
         addTaskType(param).then((res)=> {
           if(res.code==ERR_OK){
             this.$notify({
-              title: '添加任务组类型',
+              title: '添加子任务类型',
               duration:3000,
-              message: '添加任务组类型成功',
+              message: '添加子任务类型成功',
               type: 'success'
             });
             this.editorData.push(res.data)
@@ -497,7 +498,7 @@
         })
       },
 //
-//      添加任务组
+//      添加任务类别
       _addTaskGroup(taskGroupName,taskTypeIds){
           var self=this;
         addTaskGroup({taskGroupName:taskGroupName,taskTypeIds:taskTypeIds}).then(function(res) {
@@ -506,7 +507,7 @@
             self.$notify({
               title: '添加任务',
               duration:3000,
-              message: '添加任务组成功',
+              message: '添加任务类别成功',
               type: 'success'
             });
           }else{
@@ -520,17 +521,17 @@
         })
       },
 
-//      删除任务组
+//      删除任务类别
       deleteGroup(item,index){
         this.dialogVisible1 = true
         this.taskGroupId=item.taskGroupId
       },
-//      确定删除任务组
+//      确定删除任务类别
       sureDelete(){
         this.dialogVisible1 = false
         this._deleteTaskGroup()
       },
-//      获取任务组列表接口
+//      获取任务类别列表接口
       _getTaskGroupList(){
         var self=this;
         this.taskData=[]
@@ -647,7 +648,7 @@
           }
         })
       },
-//      删除任务组接口
+//      删除任务类别接口
       _deleteTaskGroup(){
         var self=this;
         deleteTaskGroup({id:this.taskGroupId}).then(function(res){
@@ -667,10 +668,6 @@
   };
 </script>
 <style lang="scss"  scoped>
-  .setCenter-wrapper{
-    
-    margin: 0 auto;
-  }
   .setCenter-list-wrapper{
     
     margin: 0 auto;
@@ -695,15 +692,10 @@
     background: #FFFFFF;
     box-sizing: border-box;
     border: 1px solid #E6EAF2;
+    margin-left: 40px;
   }
   .setCenter-list ul li:hover{
     border: 1px solid rgba(217,52,55,0.50);
-  }
-  .setCenter-list ul li:nth-child(3n+2){
-    margin-left:40px;
-  }
-  .setCenter-list ul li:nth-child(3n+3){
-    margin-left:40px;
   }
   .role-title{
     margin: 0 auto;

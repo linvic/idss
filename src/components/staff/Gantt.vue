@@ -30,7 +30,7 @@
         <tbody>
             <tr class="el-table__row" v-for="item in tableData">
                 <td class="table__body_taskName">
-                  <span class="content ellipsis">{{item.title}}</span>
+                  <span class="span-content ellipsis">{{item.title}}</span>
                   <!--部门重点-->
                    <p class="grant grade1" v-if="item.grade=='DEPARTMENT'" v-bind:style="{width: (item.planEndDatePoint-item.planStartDatePoint+1)*117+'px',left:371+item.planStartDatePoint*117+'px'}">
                      <span class="gradeStr">{{item.gradeStr}}</span>
@@ -130,6 +130,7 @@
 </script>
 <style lang="scss"  scoped>
   .weekTask{
+    width: 1190px;
     min-height: 90px;
     border: 1px solid rgba(0,0,0,0.12);
     margin:10px auto;
@@ -356,7 +357,7 @@
     margin: 0;
     border-right: 1px solid #DADFEA;
     border-bottom: 1px solid #DADFEA;
-  .content{
+  .span-content{
     display: block;
     width: 340px;
     margin: 0 auto;

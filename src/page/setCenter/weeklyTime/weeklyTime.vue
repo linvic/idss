@@ -2,7 +2,7 @@
   <div>
 
     <!--<tab></tab>-->
-    <div class="setCenter-wrapper">
+    <div class="wrapper">
       <div class="router-wrapper">
         <router-link to="/setCenter">
           <span class="child1">系统设置</span>
@@ -643,10 +643,6 @@
   };
 </script>
 <style lang="scss"  scoped>
-  .setCenter-wrapper{
-    
-    margin: 0 auto;
-  }
   .setTime{
     
     .setTime_name{

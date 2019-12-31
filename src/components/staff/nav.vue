@@ -65,7 +65,7 @@
             <tr class="el-table__row" v-for="item in tableData">
               <td class="table__body_taskName">
                 <router-link :to="{ path: 'taskDetail',query: {id:item.taskId}}" style="color:#505363;">
-                 <span class="content">{{item.title}}</span>
+                 <span class="span-content">{{item.title}}</span>
                </router-link>
                 <!--部门重点-->
                 <p class="grant grade1" v-if="item.grade=='DEPARTMENT'" v-bind:style="{width: (item.planEndDatePoint-item.planStartDatePoint+1)*117+'px',left:371+item.planStartDatePoint*117+'px'}">
@@ -1228,9 +1228,26 @@
   .nav_bottom{
     width: 100%;
     height: 45px;
+    line-height: 45px;
     background: #D93437;
     cursor: pointer;
     border-radius: 0 0 6px 6px;
+    text-align: center;
+    .icon_newtack{
+      /*icon_newtack.png*/
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      vertical-align: middle;
+      background: url('../../images/icon_newtack.png') no-repeat center center;
+    }
+    .start{
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 16px;
+      color: #FFFFFF;
+      margin-left: 5px;
+    }
   }
   .nav_content_left,.nav_content_right{
     float: left;
@@ -1265,24 +1282,6 @@
   height: 18px;
   margin: 10px auto;
   background: url('../../images/icon_edit.png') no-repeat center center;
-}
-.icon_newtack{
-  /*icon_newtack.png*/
-  display: inline-block;
-  width: 16px;
-  float: left;
-  height: 16px;
-  margin-left: 550px;
-  margin-top: 17px;
-  background: url('../../images/icon_newtack.png') no-repeat center center;
-}
-.start{
-  display: inline-block;
-  float: left;
-  font-size: 16px;
-  color: #FFFFFF;
-  margin-left: 10px;
-  margin-top: 15px;
 }
 .user-wrapper::after {
   content: "";
@@ -1587,7 +1586,7 @@ tr{
   margin: 0;
   border-right: 1px solid #DADFEA;
   border-bottom: 1px solid #DADFEA;
-.content{
+.span-content{
   display: block;
   width: 340px;
   margin: 0 auto;

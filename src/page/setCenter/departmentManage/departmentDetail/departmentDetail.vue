@@ -146,7 +146,7 @@
       size="tiny"
       :before-close="handleCloseS" top='25%' class="teamDetail">
       <div>
-        <div class="content">
+        <div class="dialog-content">
           <div class="check_content" v-for="(item,j) in data">
             <h3 class="title">
                <label class="ant-checkbox-wrapper">
@@ -991,7 +991,7 @@
 }
 
 
-.content{
+.dialog-content{
  width: 505px;
   height: 267px;
   margin: 10px auto;

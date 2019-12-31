@@ -55,6 +55,25 @@ export function fetchPost(url, params) {
       })
   })
 }
+export function fetchPut(url, params) {
+  params= Qs.stringify(params);
+  return new Promise((resolve, reject) => {
+    //axios.defaults.headers['Content-Type'] = 'multipart/form-data'
+    axios.put(url, params)
+      .then(response => {
+        if(response.data.code==ERR_LOGIN || response.data.code=="noPermission"){
+        router.push('/login')
+      }else{
+        resolve(response.data);
+      }
+      }, err => {
+        reject(err);
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
 export function param(data) { // 拼接字符串
   let url = ''
   for (var k in data) {

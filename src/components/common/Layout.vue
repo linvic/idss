@@ -23,41 +23,7 @@
 </script>
 
 <style lang="scss">
+    @import '../../style/public';
 
-    [v-cloak] {display: none !important; }
-    
-    .content {
-        position: absolute;
-        left: 208px;
-        top: 50px;
-        right: 0;
-        bottom: 0;
-        background: #f0f2f5;
-        box-sizing: border-box;
-        overflow: auto;
-        -webkit-transition: left 0.38s;
-        transition: left 0.38s;
-    }
-    .content > div {
-        min-width: 800px;
-    }
-    .wrapper{
-        padding: 0 20px;
-    }
-    .router-wrapper{
-        font-size: 12px;
-        color: rgba(80,83,99,0.50);
-        margin: 0 auto;
-        height:37px;
-        line-height: 37px;
-    }
-    .router-wrapper .child2{
-        cursor: pointer;
-        color:  #D93437;
-    }
-    .router-wrapper .child1{
-        cursor: pointer;
-        color: rgba(80,83,99,0.50);
-    }
     
 </style>

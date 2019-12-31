@@ -48,12 +48,6 @@
 .staff .el-form-item__label{
 display: none;
 }
-.el-button--small{
-  font-size: 14px !important;
-  color: #505363 !important;
-  border: 1px solid #C3C3C3 !important;
-  border-radius: 5px !important;
-}
 .task-manage .complete{
   color: #D93437 !important;
 }
@@ -152,26 +146,7 @@ font-weight: 500 !important;
   color: #DA3438 !important;
   cursor: pointer !important;
 }
-.departmentDetail .el-button--small{
-  font-size:14px !important;
-  border: 1px solid #D83436 !important;
-  border-radius: 4px !important;
-  color: #D93437 !important;
-}
-.departmentDetail .el-button--small:hover{
-  background: #D93437 !important;
-  color: #FFFFFF !important;
-}
-.el-button--small{
-  font-size:14px !important;
-  border: 1px solid #D83436 !important;
-  border-radius: 4px !important;
-  color: #D93437 !important;
-}
-.el-button--small:hover{
-  background: #D93437 !important;
-  color: #FFFFFF !important;
-}
+
 .departmentDetail .el-table__header tr{
   background: #F1F1F1 !important;
 }
@@ -214,21 +189,6 @@ font-weight: 500 !important;
 
 // .role-special .el-input__inner{width: 75px !important;}
 .el-select .el-input .el-input__icon {
-  color: #434245 !important;
-}
-:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-  color: #434245 !important;
-}
-
-::-moz-placeholder { /* Mozilla Firefox 19+ */
-  color: #434245 !important;
-}
-
-input:-ms-input-placeholder{
-  color: #434245 !important;
-}
-
-input::-webkit-input-placeholder{
   color: #434245 !important;
 }
 .pagination-depart .el-pagination{
@@ -424,9 +384,6 @@ margin-right: 30px !important;
 .wagesDetail .el-form-item__content{
   margin-right: 40px !important;
 }
-.task-detail .el-button--small{
-  padding: 7px 14px !important;
-}
 .assignTaskModel .el-dialog--tiny{
   width: 619px !important;
 }
@@ -555,12 +512,46 @@ margin-left: 10px !important;
 .el-select-dropdown.is-multiple .el-select-dropdown__item.selected{
   background: #fff !important;
 }
-// .check-wrapper-special .el-checkbox:first-child .el-checkbox__input{
-//   margin-left: 13px !important;
-// }
-// .check-wrapper-special .el-checkbox:last-child .el-checkbox__input{
-//   margin-left: -4px !important;
-// }
-//.fixedP{
-//  left: 1000px !important;
-//}
+// 2019 12 26
+.el-button--primary {
+  background: #D93437;
+  border-color: #D93437;
+  color: #ffffff;
+  &:hover {
+    background: #ec3d41;
+    border-color: #ec3d41;
+  }
+  &:active,&.active,&:focus {
+    background: #D93437;
+    border-color: #D93437;
+    color: #ffffff;
+  }
+}
+.el-button--default.el-button--small{
+  font-size:14px;
+  border: 1px solid #D83436;
+  border-radius: 4px;
+  color: #D93437;
+  &:hover{
+    background: #D93437;
+    border-color: #D93437;
+    color: #FFFFFF;
+  }
+  &:active,&.active,&:focus {
+    border-color: #D93437;
+    color: #D93437;
+    background: none;
+  }
+}
+.el-input >>> input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+  color:rgba(0,0,0,0.45);
+}
+.el-input >>> input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+  color:rgba(0,0,0,0.45);
+}
+.el-input >>> input::-moz-placeholder { /* Mozilla Firefox 19+ */
+  color:rgba(0,0,0,0.45);
+}
+.el-input >>> input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color:rgba(0,0,0,0.45);
+}

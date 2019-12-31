@@ -1,7 +1,7 @@
 <template>
   <div class="role">
     <!--<tab></tab>-->
-    <div class="setCenter-wrapper">
+    <div class="wrapper">
       <div class="router-wrapper">
         <router-link to="/setCenter">
           <span class="child1">系统设置</span>
@@ -152,10 +152,6 @@
   };
 </script>
 <style lang="scss"  scoped>
-  .setCenter-wrapper{
-    
-    margin: 0 auto;
-  }
   .setCenter-list-wrapper{
     
     margin: 0 auto;
@@ -178,15 +174,10 @@
     background: #FFFFFF;
     box-sizing: border-box;
     border: 1px solid #E6EAF2;
+    margin-left: 40px;
   }
   .setCenter-list ul li:hover{
     border: 1px solid rgba(217,52,55,0.50);
-  }
-  .setCenter-list ul li:nth-child(3n+2){
-    margin-left:40px;
-  }
-  .setCenter-list ul li:nth-child(3n+3){
-    margin-left:40px;
   }
   .role-title{
     margin: 0 auto;

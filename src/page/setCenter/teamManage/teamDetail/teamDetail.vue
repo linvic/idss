@@ -122,7 +122,7 @@
       :before-close="handleClose1" top='25%' class="teamDetail">
       <div>
         <h2>选择人员：</h2>
-        <div class="content">
+        <div class="dialog-content">
           <div class="check_content" v-for="(item,j) in data">
             <h3 class="title">
                <label class="ant-checkbox-wrapper">
@@ -543,7 +543,7 @@
   color: #D93437;
   border: 1px solid #D83436;
 }
-.content{
+.dialog-content{
  width: 505px;
   height: 267px;
   margin: 10px auto;

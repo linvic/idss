@@ -1,7 +1,7 @@
 <template>
 <div>
   <!--<tab></tab>-->
-  <div class="setCenter-wrapper">
+  <div class="wrapper">
     <div class="router-wrapper">
       <router-link to="/personalCenter">
         <span class="child2">个人中心</span>
@@ -226,10 +226,6 @@ export default {
 };
 </script>
 <style lang="scss"  scoped>
-.setCenter-wrapper {
-    
-    margin: 0 auto;
-}
 .setTime {
     
     .setTime_name {

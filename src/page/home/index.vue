@@ -15,14 +15,14 @@
       </div>
     </div>
     <div v-cloak v-if="userView=='DEPT'">
-      <div class="shortcuts">
-        <div class="left">
+      <el-row class="shortcuts" :gutter="20">
+        <el-col :span="12" class="left">
           <manage></manage>
-        </div>
-        <div class="right">
+        </el-col>
+        <el-col :span="12" class="right">
           <departmentenav></departmentenav>
-        </div>
-      </div>
+        </el-col>
+      </el-row>
       <div>
         <dept></dept>
       </div>

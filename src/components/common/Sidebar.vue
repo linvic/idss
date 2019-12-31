@@ -241,6 +241,31 @@
 								}
 							}
 						]
+					},
+					{
+						redirect: "/planSummaryManage",
+						name: "planSummaryManage",
+						meta: {
+							title: "计划总结管理"
+						},
+						children: [
+							{
+								path: "/planSummaryManage/planManage",
+								name: "planManage",
+								meta: {
+									title: "计划管理",
+									noCache: true
+								}
+							},
+							{
+								path: "/planSummaryManage/summaryManage",
+								name: "summaryManage",
+								meta: {
+									title: "总结管理",
+									noCache: true
+								}
+							}
+						]
 					}
 				]
 			}

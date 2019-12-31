@@ -9,7 +9,7 @@
                     </div>
                 </router-link>
             </div>
-            <div class="tab_center left">
+            <div class="tab_center left" v-if="!1">
                 <router-link
                     tag="div"
                     class="tab-item left"
@@ -706,11 +706,13 @@ export default {
 .header {
     background: #d93538;
     @include wh(100%, 50px);
+    box-shadow:4px 4px 6px 0px rgba(34,0,1,0.04);
     .tab {
         @include wh(100%, 50px);
         @include cl();
         overflow: hidden;
         background: #d93538;
+        
         .tab_left {
             @include wh(360px, 50px);
             .company_logo {

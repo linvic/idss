@@ -1,7 +1,7 @@
 <template>
   <div>
     <!--<tab></tab>-->
-    <div class="setCenter-wrapper">
+    <div class="wrapper">
       <div class="router-wrapper">
         <router-link to="/personalCenter">
           <span class="child2">修改密码</span>
@@ -156,9 +156,6 @@
   };
 </script>
 <style lang="scss"  scoped>
-  .setCenter-wrapper{
-    margin: 0 auto;
-  }
   .setTime{
     .setTime_name{
       height: 46px;

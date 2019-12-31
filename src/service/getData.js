@@ -898,3 +898,48 @@ export function dragTaskType(params){
 export function resetTaskRemindFlag(params){
   return fetchGet('/taskChange/resetTaskRemindFlag',param(params))
 }
+
+
+// 计划总结管理设置表管理
+// PUT /sysPlanSummarys 更新计划总结管理设置表
+export function updateSysPlanSummarys(params){
+  return fetchPut('/sysPlanSummarys',param(params))
+}
+// POST /sysPlanSummarys/list 条件查询计划总结管理设置表集合
+export function getSysPlanSummarys(params){
+  return fetchPost('/sysPlanSummarys/list',param(params))
+}
+
+// 考核组管理
+// PUT /sysExamineGroups 更新考核组设置表
+export function updateSysExamineGroups(params){
+  return fetchPut('/sysExamineGroups',param(params))
+}
+// POST /sysExamineGroups/list 条件查询考核组设置表集合
+export function getSysExamineGroups(params){
+  return fetchPost('/sysExamineGroups/list',param(params))
+}
+// POST /sysUser/listAllUsers 获取考核成员
+export function getSysAllUsers(params){
+  return fetchPost('/sysUser/listAllUsers',param(params))
+}
+
+
+// 核对时间
+// PUT /sysCheckTimes 更新核对时间表
+export function updateSysCheckTimes(params){
+  return fetchPut('/sysCheckTimes',param(params))
+}
+// POST /sysCheckTimes/list 条件查询核对时间表集合
+export function getSysCheckTimes(params){
+  return fetchPost('/sysCheckTimes/list',param(params))
+}
+// 考勤管理
+// PUT /sysAttendances 更新
+export function updateSysAttendances(params){
+  return fetchPut('/sysAttendances',param(params))
+}
+// POST /sysAttendances/list 条件查询
+export function getSysAttendances(params){
+  return fetchPost('/sysAttendances/list',param(params))
+}
