@@ -62,66 +62,45 @@
         </div>
       </div>
       <div class="notice-wrapper" style="border-left:none;border-right:none;">
-        <div class="notice-left">
-          任务重要等级：<span style='color:#D93437;'>{{gradeStr}}</span>
-
-        </div>
-        <div class="notice-mid">
-          发布人：{{publisher}}
-
-        </div>
-        <div class="notice-mid1">
-          到期时间：{{planEndDate}}
-
-        </div>
-        <div class="notice-right">
-          任务状态：{{taskStatusStr}}
-
-        </div>
-        <div class="notice-left">
-          任务类型：{{taskTypeStr}}
-        </div>
-        <div class="notice-mid">
-          执行人：{{executor}}
-        </div>
-        <div class="notice-mid1">
-          任务用时：{{taskUseTime}}
-        </div>
-        <div class="notice-right">
-          完成状态：<span v-if='completed==true'>已完成</span><span v-else>未完成</span>
-
-        </div>
-        <div class="notice-left">
-          关联项目：{{projectName}}
-
-        </div>
-        <div class="notice-mid">
-          协助人：{{taskAssistNames}}
-
-        </div>
-        <div class="notice-mid1">
-          更新时间：{{updateTimeStr}}
-
-        </div>
-        <div class="notice-right">
-
-        </div>
-        <div class="notice-left">
-          任务标题：{{title}}
-
-        </div>
-        <div class="notice-mid">
-          任务汇报对象：{{reporter}}
-        </div>
-        <div class="notice-mid1">
-
-        </div>
-        <div class="notice-right">
-
-        </div>
-        <div class="notice-left" style="width:100%;">
-          任务内容：{{content}}
-        </div>
+        <el-row>
+            <el-col :span="6">
+              任务类别：{{detailInfo.taskTypeName || '-'}}
+            </el-col>
+            <el-col :span="6">
+              发布人：{{detailInfo.createByName || '-'}}
+            </el-col>
+            <el-col :span="6">
+              更新时间：{{detailInfo.updateTime || '-'}}
+            </el-col>
+            <el-col :span="6">
+              任务状态：{{detailInfo.completionDesc || '-'}}
+            </el-col>
+            <el-col :span="6">
+              关联项目：{{detailInfo.projectName || '-'}}
+            </el-col>
+            <el-col :span="6">
+              执行人：{{detailInfo.executorName || '-'}}
+            </el-col>
+            <el-col :span="6">
+              任务用时：{{detailInfo.taskConsumeTimeDesc || '-'}}
+            </el-col>
+            <el-col :span="6">
+              任务工作量：{{detailInfo.taskWorkload || '-'}}
+            </el-col>
+            <el-col :span="6">
+              关联任务组：{{detailInfo.taskGroupName || '-'}}
+            </el-col>
+            <el-col :span="6">
+              汇报人：{{detailInfo.reportName || '-'}}
+            </el-col>
+            <el-col :span="6">
+              到期时间：{{detailInfo.planEndDate || '-'}}
+            </el-col>
+            <el-col :span="24">
+              任务内容：{{detailInfo.content || '-'}}
+            </el-col>
+        </el-row>
+        
       </div>
     </div>
 
@@ -273,8 +252,7 @@
           style="width: 100%" empty-text='暂无数据'>
           <el-table-column
             prop="userName"
-            label="姓名"
-          >
+            label="姓名">
             <template slot-scope="props">
               <!-- <router-link :to="{path:'/userDetail',  query:{id: props.row.userId}}"  > -->
                 <span class="department-name" style="color:#D93538;">{{props.row.userName}}</span>
@@ -288,13 +266,11 @@
           </el-table-column>
           <el-table-column
             prop="changeName"
-            label="操作名称"
-          >
+            label="操作名称">
           </el-table-column>
           <el-table-column
             prop="changeContent"
-            label="操作描述"
-          >
+            label="操作描述" >
           </el-table-column>
         </el-table>
       </div>
@@ -536,7 +512,11 @@
         size="tiny"
         :before-close="handleClose4" top='25%' class=" noticeManageModel">
         <el-form :model="ruleForm4" :rules="rules" ref="ruleForm4" label-width="112px" class="demo-ruleForm">
-          <el-form-item label="自我评价：" prop="cause4" required style="margin-right: 40px !important;">
+          
+          <el-form-item label="自评打分：" prop="score4" required style="margin-right: 40px !important;">
+            <el-input v-model="ruleForm4.score4"></el-input>
+          </el-form-item>
+          <el-form-item label="任务总结：" prop="cause4" required style="margin-right: 40px !important;">
             <el-input type="textarea" v-model="ruleForm4.cause4"></el-input>
           </el-form-item>
         </el-form>
@@ -553,7 +533,10 @@
   // 注意标签和引入驼峰，可以有区别
   import bus from '../../../assets/eventBus'
   import { quillEditor } from 'vue-quill-editor';
-  import {  getTaskGroupDetail,resetTaskRemindFlag,listByExecutor,getTaskType,listReportingUsers,listAllUsers,userTaskReply,sureEditorTask,departmentList,getProjectList,editorTaskMain,getUsersObj,replyTaskReply,impChangeOrdTask,cancelTaskCause,delayTaskCause,changeTaskLevel,completeTask } from 'service/getData'
+  import {  getTaskGroupDetail,resetTaskRemindFlag,listByExecutor,getTaskType,listReportingUsers,listAllUsers,userTaskReply,
+  sureEditorTask,departmentList,getProjectList,editorTaskMain,getUsersObj,replyTaskReply,impChangeOrdTask,cancelTaskCause,
+  delayTaskCause,changeTaskLevel,completeTask,
+  taskChangeLog,getTaskEvaluate } from 'service/getData'
 //  import Tab from 'components/common/tab'
   import {ERR_OK} from 'service/config'
   export default {
@@ -576,6 +559,7 @@
         }
       };
       return {
+        detailInfo: {},
         pickerOptions0: {
           disabledDate(time) {
             return time.getTime() < Date.now() - 8.64e7;
@@ -615,8 +599,7 @@
         seeData1:true,
         planEndDate:'',
         taskTypeStr:'',
-        gradeStr:'',
-        publisher:'',
+        
         executor:'',
         id:'',
         replyDesc:'',
@@ -703,7 +686,9 @@
           cause3: '',
         },
         ruleForm4: {
+          score4: '',
           cause4: '',
+          
         },
         ruleForm5: {
           username: '',
@@ -741,9 +726,12 @@
             { required: true, message: '请输入变更原因' },
             {max: 200, message: '变更原因不能超过200个字符'}
           ],
+          score4: [
+            { required: true, message: '请输入自评分值' },
+          ],
           cause4: [
-            { required: true, message: '请输入自我评价' },
-            {max: 200, message: '自我评价不能超过200个字符'}
+            { required: true, message: '请输入任务总结' },
+            {max: 200, message: '不能超过200个字符'}
           ],
           region1: [
             { required: true, message: '请选择关联项目' },
@@ -857,12 +845,14 @@
 //      Tab
     },
     mounted(){
-      this.getData()
+      this.getData();
+      this.getTaskChangeLog(); //操作记录
+      this.getTaskEvaluates(); // 评价
       //this.getTaskType1()
       //this.getUsersObj1()
       this.getProjectList1()
       this.departmentList1()
-      this.listAllUsersT()
+      this.listAllUsersT();
       window.scrollTo(0, 0);
     },
     created () {
@@ -1333,7 +1323,8 @@
         this.$refs[formName1].validate((valid) => {
           if (valid) {
             const params = {
-              taskId:self.id,
+              id:self.id,
+              score:self.ruleForm4.score4,
               comment:self.ruleForm4.cause4
             }
             completeTask(params).then((res) => {
@@ -1475,7 +1466,7 @@
         this.$refs[formName1].validate((valid) => {
           if (valid) {
             const params = {
-              taskId:self.id,
+              id:self.id,
               reason:self.ruleForm1.cause
             }
             cancelTaskCause(params).then((res) => {
@@ -1506,10 +1497,13 @@
       },
       getData(){
         let params = {
-          taskId:this.id
+          id:this.id
         }
         getTaskGroupDetail(params).then((res) => {
           if(res.code == ERR_OK) {
+            this.detailInfo = res.data;
+
+
             this.content = res.data.content
             this.taskAssistNames = res.data.taskAssistNames
             this.planEndDate = res.data.planEndDate
@@ -1518,7 +1512,6 @@
             this.gradeStr = res.data.gradeStr
             this.updateTimeStr = res.data.updateTimeStr
             this.taskTypeStr = res.data.taskTypeStr
-            this.publisher= res.data.publisher.userName
             this.canUpdate = res.data.canUpdate
             this.hadremind = res.data.hadremind
             this.canCancel = res.data.canCancel
@@ -1527,7 +1520,6 @@
             this.taskStatus = res.data.taskStatus
             this.projectName = res.data.projectName
             this.justAssistTask = res.data.justAssistTask
-            this.tableReward = res.data.taskChangeLogVos
             //console.log(this.justAssistTask)
             this.taskStatusStr = res.data.taskStatusStr
             if(!(!res.data.reporter && typeof(res.data.reporter)!="undefined" && res.data.reporter!=0)){
@@ -1560,18 +1552,45 @@
               this.takePlans = []
               this.lengthNull = false
             }
-            if(!(!res.data.taskWeeklyComments && typeof(res.data.taskWeeklyComments)!="undefined" && res.data.taskWeeklyComments!=0)){
-              this.takeComment1 = []
-              this.takeComment = []
-              this.takeComment1 = res.data.taskWeeklyComments
-              this.takeComment.push(this.takeComment1[0])
-              this.lengthNull1 = true
-            }else{
-              this.takeComment = []
-              this.lengthNull1 = false
-            }
           }
        })
+      },
+      getTaskChangeLog() {
+        taskChangeLog({
+          taskId: this.id
+        }).then((res) => {
+          if(res.code == ERR_OK) {
+            this.tableReward = res.data;
+            this.$notify.error({
+              title: '错误',
+              message:res.msg
+            });
+          }
+        })
+      },
+      getTaskEvaluates(){
+        getTaskEvaluate({
+          taskId: this.id
+        }).then((res) => {
+          if(res.code == ERR_OK) {
+            this.takeComment = res.data;
+          }else{
+            this.$notify.error({
+              title: '错误',
+              message:res.msg
+            });
+          }
+        })
+            // if(!(!res.data.taskWeeklyComments && typeof(res.data.taskWeeklyComments)!="undefined" && res.data.taskWeeklyComments!=0)){
+            //   this.takeComment1 = []
+            //   this.takeComment = []
+            //   this.takeComment1 = res.data.taskWeeklyComments
+            //   this.takeComment.push(this.takeComment1[0])
+            //   this.lengthNull1 = true
+            // }else{
+            //   this.takeComment = []
+            //   this.lengthNull1 = false
+            // }
       }
     },
     watch: {
@@ -1618,6 +1637,10 @@
     color: #434343;
     padding: 17.5px 20px;
     /*overflow: hidden;*/
+  }
+  .notice-wrapper  .el-col {
+      
+    line-height: 27px;
   }
   .notice-left,.notice-mid,.notice-mid1,.notice-right{
     float: left;

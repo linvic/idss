@@ -90,7 +90,7 @@
                   <div v-cloak v-show='props.row.grade=="DEPARTMENT"'><span style="background: #FFBF00;"></span><span>部门重点</span></div>
                 </div>
                 <div class="title-right" style="border:none;">
-                  {{props.row.taskTypeStr}}
+                  {{props.row.taskTypeName}}
                 </div>
               </div>
             </template>

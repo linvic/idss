@@ -922,34 +922,17 @@
           :visible.sync="dialogVisible8"
           size="tiny"
           :before-close="handleClose8" top='23%' >
-          <el-form :model="ruleForm4" :rules="rules" ref="ruleForm4" label-width="112px" class="demo-ruleForm">
-            <el-form-item label="完成质量:" prop="mass" required style="margin-right: 40px !important;">
-              <el-select v-model="ruleForm4.mass" placeholder="请选择完成质量" style="width:100%;" @change='completeMass'>
-                <el-option
-                  v-for="item in options3"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
+          <el-form :model="ruleForm8" :rules="rules" ref="ruleForm8" label-width="112px" class="demo-ruleForm">
+            <el-form-item label="任务打分：" prop="score8" required style="margin-right: 40px !important;">
+              <el-input v-model="ruleForm8.score8"></el-input>
             </el-form-item>
-            <el-form-item label="快速点评:" prop="rate" required style="margin-right: 40px !important;">
-              <el-select v-model="ruleForm4.rate" placeholder="请选择快速点评" style="width:100%;" @change='completeRate'>
-                <el-option
-                  v-for="item in options4"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="任务评价：" prop="rateContent" required style="margin-right: 40px !important;">
-              <el-input type="textarea" v-model="ruleForm4.rateContent"></el-input>
+            <el-form-item label="任务总结：" prop="comment8" required style="margin-right: 40px !important;">
+              <el-input type="textarea" v-model="ruleForm8.comment8"></el-input>
             </el-form-item>
           </el-form>
           <span slot="footer" class="dialog-footer">
-            <button  @click="resetForm8('ruleForm4')">取 消</button>
-            <button  @click="submitForm8('ruleForm4')">确 认</button>
+            <button  @click="resetForm8('ruleForm8')">取 消</button>
+            <button  @click="submitForm8('ruleForm8')">确 认</button>
           </span>
         </el-dialog>
       </div>
@@ -957,7 +940,10 @@
         <!--完成任务-->
         <el-dialog title="完成任务" :visible.sync="dialogVisible44" size="tiny" :before-close="handleClose44" top='25%' class=" noticeManageModel">
           <el-form :model="ruleForm44" :rules="rules" ref="ruleForm44" label-width="112px" class="demo-ruleForm">
-            <el-form-item label="自我评价：" prop="cause4" required style="margin-right: 40px !important;">
+            <el-form-item label="自评打分：" prop="score4" required style="margin-right: 40px !important;">
+              <el-input v-model="ruleForm44.score4"></el-input>
+            </el-form-item>
+            <el-form-item label="任务总结：" prop="cause4" required style="margin-right: 40px !important;">
               <el-input type="textarea" v-model="ruleForm44.cause4"></el-input>
             </el-form-item>
           </el-form>
@@ -1137,10 +1123,9 @@
           value3: '',
           cause3: '',
         },
-        ruleForm4: {
-          mass: '',
-          rate: '',
-          rateContent:''
+        ruleForm8: {
+          score8: '',
+          comment8:''
         },
         options3: [{
          value: 'EXCELLENT',
@@ -1218,6 +1203,7 @@
           date1: '',
         },
         ruleForm44: {
+          score4: '',
           cause4: '',
         },
         ruleForm:{
@@ -1337,8 +1323,11 @@
            cause3: [
              { required: true, message: '请输入变更原因'},
            ],
+           score4: [
+             { required: true, message: '请输入自评分值'},
+           ],
            cause4: [
-             { required: true, message: '请输入自我评价'},
+             { required: true, message: '请输入任务总结'},
            ],
            region1: [
              { required: true, message: '请选择关联项目'},
@@ -1403,6 +1392,8 @@
            value17: [
              { required: true, message: '请输入公告内容'},
            ],
+            score8: [{ required: true, message: '请输入' }],
+            comment8: [{ required: true, message: '请输入' }],
          },
         tabs: ["未完成任务", "已完成任务","我协助的任务","奖惩信息","周报信息"],
       };
@@ -1498,7 +1489,8 @@
         this.$refs[formName1].validate((valid) => {
           if (valid) {
             const params = {
-              taskId: self.taskId,
+              id: self.taskId,
+              score: self.ruleForm44.score4,
               comment: self.ruleForm44.cause4
             }
             completeTask(params).then((res) => {
@@ -1877,28 +1869,23 @@
           this.dialogVisible44 = true
         }else{
           this.dialogVisible8 = true
+          this.ruleForm8.score8="";
+          this.ruleForm8.comment8="";
         }
 
       },
-      completeMass(val){
-        this.ruleForm4.mass = val
-      },
-      completeRate(val){
-        this.ruleForm4.rate = val
-        this.ruleForm4.rateContent = val
-      },
       handleClose8 (){
-        this.dialogVisible8 = false
-        this.$refs['ruleForm4'].resetFields();
+        this.dialogVisible8 = false;
+        this.$refs['ruleForm8'].resetFields();
       },
       submitForm8(formName) {
         let self =this
         this.$refs[formName].validate((valid) => {
           if (valid) {
           const params =　{
-            taskId:self.taskId,
-            finishQuality:self.ruleForm4.mass,
-            changeContent:self.ruleForm4.rateContent
+            id:self.taskId,
+            score:self.ruleForm8.score8,
+            comment:self.ruleForm8.comment8
           }
           assessTask(params).then((res) => {
             if(res.code == ERR_OK) {
@@ -2063,7 +2050,7 @@
         this.$refs[formName1].validate((valid) => {
           if (valid) {
             const params = {
-              taskId:self.taskId,
+              id:self.taskId,
               reason:self.ruleForm1.cause
             }
             cancelTaskCause(params).then((res) => {

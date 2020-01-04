@@ -10,6 +10,30 @@
 .text-right {
     text-align: right;
 }
+.m-t {
+    margin-top: 20px;
+}
+.m-b {
+    margin-bottom: 20px;
+}
+.m-l {
+    margin-left: 20px;
+}
+.m-r {
+    margin-right: 20px;
+}
+.m-t-10 {
+    margin-top: 10px;
+}
+.m-b-10 {
+    margin-bottom: 10px;
+}
+.m-l-10 {
+    margin-left: 10px;
+}
+.m-r-10 {
+    margin-right: 10px;
+}
 // 布局样式
 [v-cloak] {display: none !important; }
 

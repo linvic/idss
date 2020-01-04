@@ -1,5 +1,6 @@
 <template>
   <div class='task-manage'>
+    
     <!--<tab></tab>-->
     <div class="wrapper">
       <div class="router-wrapper">
@@ -7,9 +8,7 @@
       </div>
       <div class="take-top-wrapper">
         <div class="take-left">
-          <div class="take-top" style="font-size: 14px;font-weight:normal">
-            {{departName}}
-          </div>
+          <div class="take-top" style="font-size: 14px;font-weight:normal">任务列表</div>
         </div>
         <div class="take-right" @click='mindTask'>
           发起任务
@@ -17,27 +16,23 @@
       </div>
       <div class="untreatTask-wrapper">
         <div class="untreatTask">
-          <ul>
-            <li>待处理任务：{{pendingTaskSize}}</li>
-            <li>总任务数：{{totalTaskSize}}</li>
-            <li>公司重点任务：{{cimpTaskSize}}</li>
-            <li>部门重点任务：{{dimpTaskSize}}</li>
-            <li>个人重点任务：{{pimpTaskSize}}</li>
-            <li>个人普通任务：{{pcommonTaskSize}}</li>
+          <ul v-for="(item,index) in taskCountLists">
+            
+            <li>{{item.deptName}}：</li>
+            <li>待处理任务数 {{item.pendingTaskCount}}</li>
+            <li>未完成任务数 {{item.incompleteTaskCount}}</li>
+            <li>总任务数 {{item.totalTaskCount}}</li>
           </ul>
         </div>
       </div>
-      <div class="user-title" style="margin-top:10px;border-bottom:none;">
-        <div class="title-name title-name1 title-name6"
-          v-for="(item,index) in tabs"
-            :class="{active:index == num}"
-             @click="tab(index)" v-html="item">{{item}}
-        </div>
+
+      <div class="take-top-wrapper m-t-10">
+        <div class="take-top" style="font-size: 14px;font-weight:normal">员工任务待处理</div>
       </div>
-      <div class="untreatTask-table taskNum0" v-show=" 0 == num">
+      <div class="untreatTask-table taskNum0">
         <el-table
           :data="result1"
-          style="width: 100%" @expand="startExpend" row-key="taskId"
+          style="width: 100%" @expand="startExpend" row-key="id"
               :expand-row-keys="expands" @row-click="openDetails"  empty-text='暂无数据'>
           <el-table-column type="expand" v-show='hello'>
             <template slot-scope="props">
@@ -48,7 +43,7 @@
                 <el-form-item>
                   <div class="input-back">
                     <input type="text" name="" value="" class='inputValue'>
-                    <span @click='replyTask(props.row.index,props.row.taskId,$event)' class='replyValue'>回复</span>
+                    <span @click='replyTask(props.row.index,props.row.id,$event)' class='replyValue'>回复</span>
                   </div>
                   <div class="" v-for='item in props.row.taskReplys'>
                     <div class="reback-time">
@@ -91,553 +86,9 @@
             label="任务标题"
             prop="id">
             <template slot-scope="props">
-              <router-link :to="{ path: 'taskDetailHeader',query: {id:props.row.taskId}}" style="color:#505363;">
+              <router-link :to="{ path: 'taskDetailHeader',query: {id:props.row.id}}" style="color:#505363;">
               <div>{{ props.row.title }}</div>
             </router-link>
-              <div>
-                <div class="title-left">
-                  <div v-show='props.row.grade=="PERSONALORD"'><span style="background: #108EE9;"></span><span>个人普通</span></div>
-                  <div v-show='props.row.grade=="COMPANY"'><span style="background: #F04134;"></span><span>公司重点</span></div>
-                  <div v-show='props.row.grade=="PERSONALIMP"'><span style="background: #00A854;"></span><span>个人重点</span></div>
-                  <div v-show='props.row.grade=="DEPARTMENT"'><span style="background: #FFBF00;"></span><span>部门重点</span></div>
-                </div>
-                <div class="title-right" style="border:none;">
-                  {{props.row.taskTypeStr}}
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="最新回复"
-            prop="name">
-            <template slot-scope="props">
-              <div class="" v-if='props.row.lastTaskReplyer!=null'>
-                <div v-if='props.row.lastReplyStatus=="UNREAD"' style="color:rgb(217, 52, 55)">
-                  <span>{{ props.row.lastTaskReplyer}}：</span><span>{{ props.row.lastTaskReplyContent}}</span>
-                </div>
-                <div v-if='props.row.lastReplyStatus=="READED"'>
-                  <span>{{ props.row.lastTaskReplyer}}：</span><span>{{ props.row.lastTaskReplyContent}}</span>
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="操作">
-            <template slot-scope="props">
-                <!-- <el-button
-                  size="small"
-                  class='complete' v-if='props.row.taskStatusType=="ASSIGNED"' @click='assignTask(props.row.taskId)'>分配任务</el-button> -->
-                  <el-button
-                    size="small"
-                    class='complete' v-if='props.row.taskStatusType=="APPROVING"' @click='lateCheck(props.row.changeType,props.row.taskId,props.row.planEndDate,1,$event)'>任务审核</el-button>
-                    <!-- <el-button
-                      size="small"
-                      class='complete' v-if='props.row.taskStatusType=="WAITEVALUATE"' @click='completeModal(props.row.taskId)'>任务评价</el-button> -->
-              </template>
-          </el-table-column>
-        </el-table>
-        <div class="pagination-depart" v-if='total>0'>
-          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 15, 50]" :page-size=pageSize layout="total, sizes, prev, pager, next, jumper" :total=total>
-          </el-pagination>
-        </div>
-      </div>
-      <div class="untreatTask-table taskNum1" v-show=" 1 == num">
-        <el-table
-          :data="resultTask1"
-          style="width: 100%" @expand="startExpend" row-key="taskId"
-              :expand-row-keys="expands" @row-click="openDetails" empty-text='暂无数据'>
-          <el-table-column type="expand" v-show='hello'>
-            <template slot-scope="props">
-              <el-form label-position="left" inline class="demo-table-expand">
-                <el-form-item label="内容：">
-                  <span class='content-tab'>{{ props.row.content }}</span>
-                </el-form-item>
-                <el-form-item>
-                  <div class="input-back">
-                    <input type="text" name="" value="" class='inputValue'>
-                    <span @click='replyTask(props.row.index,props.row.taskId,$event)' class='replyValue'>回复</span>
-                  </div>
-                  <div class="" v-for='item in props.row.taskReplys'>
-                    <div class="reback-time">
-                      {{item.replyTimeDistanceDesc}}
-                    </div>
-                    <div class="reback" style="max-width: 294px;min-width: 296px;overflow:hidden;">
-                      <div style="float:left;">{{item.replyUser.userName}}：</div><div style="float:left;max-width: 247px;word-break: break-all; word-wrap:break-word;">{{item.replyContent}}</div>
-                    </div>
-                  </div>
-
-                </el-form-item>
-                <el-form-item label="">
-                  <div class="">
-                    概要：
-                  </div>
-                  <div class="reback reback1">
-                    发布人：{{ props.row.publisher.userName}}
-                  </div>
-                  <div class="reback reback1">
-                    执行人：{{ props.row.executor.userName }}
-                  </div>
-                  <div class="reback reback1">
-                    协助人：{{ props.row.taskAssistUsers }}
-                  </div>
-                  <div class="reback reback1">
-                    开始日期：{{ props.row.planStartDate }}
-                  </div>
-                  <div class="reback reback1">
-                    截止日期：{{ props.row.planEndDate  }}
-                  </div>
-                </el-form-item>
-                <el-form-item>
-                  <div class="special">
-                       特别
-                  </div>
-                </el-form-item>
-              </el-form>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="任务标题"
-            prop="id">
-            <template slot-scope="props">
-              <router-link :to="{ path: 'taskDetailHeader',query: {id:props.row.taskId}}" style="color:#505363;">
-              <div>{{ props.row.title }}</div>
-            </router-link>
-              <div>
-                <div class="title-left">
-                  <div v-show='props.row.grade=="PERSONALORD"'><span style="background: #108EE9;"></span><span>个人普通</span></div>
-                  <div v-show='props.row.grade=="COMPANY"'><span style="background: #F04134;"></span><span>公司重点</span></div>
-                  <div v-show='props.row.grade=="PERSONALIMP"'><span style="background: #00A854;"></span><span>个人重点</span></div>
-                  <div v-show='props.row.grade=="DEPARTMENT"'><span style="background: #FFBF00;"></span><span>部门重点</span></div>
-                </div>
-                <div class="title-right" style="border:none;">
-                  {{props.row.taskTypeStr}}
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="最新回复"
-            prop="name">
-            <template slot-scope="props">
-              <div class="" v-if='props.row.lastTaskReplyer!=null'>
-                <div v-if='props.row.lastReplyStatus=="UNREAD"' style="color:rgb(217, 52, 55)">
-                  <span>{{ props.row.lastTaskReplyer}}：</span><span>{{ props.row.lastTaskReplyContent}}</span>
-                </div>
-                <div v-if='props.row.lastReplyStatus=="READED"'>
-                  <span>{{ props.row.lastTaskReplyer}}：</span><span>{{ props.row.lastTaskReplyContent}}</span>
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="操作">
-            <template slot-scope="props">
-                <el-button
-                  size="small"
-                  class='complete' v-if='props.row.taskStatusType=="ASSIGNED"' @click='assignTask(props.row.taskId,$event)'>分配任务</el-button>
-                  <el-button
-                    size="small"
-                    class='complete' v-if='props.row.taskStatusType=="APPROVING"' @click='lateCheck(props.row.changeType,props.row.taskId,props.row.planEndDate,2,$event)'>任务审核</el-button>
-                    <el-button
-                      size="small"
-                      class='complete' v-if='props.row.taskStatusType=="WAITEVALUATE"' @click='completeModal(props.row.taskId,$event)'>任务评价</el-button>
-              </template>
-          </el-table-column>
-        </el-table>
-        <div class="pagination-depart" v-if='total1>0'>
-          <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :current-page="currentPage1" :page-sizes="[10, 15, 50]" :page-size=pageSize1 layout="total, sizes, prev, pager, next, jumper" :total=total1>
-          </el-pagination>
-        </div>
-      </div>
-
-      <div class="untreatTask-table taskNum2" v-show=" 2 == num">
-        <el-table
-          :data="resultTask2"
-          style="width: 100%" @expand="startExpend" row-key="taskId"
-              :expand-row-keys="expands" @row-click="openDetails" empty-text='暂无数据'>
-          <el-table-column type="expand" v-show='hello'>
-            <template slot-scope="props">
-              <el-form label-position="left" inline class="demo-table-expand">
-                <el-form-item label="内容：">
-                  <span class='content-tab'>{{ props.row.content }}</span>
-                </el-form-item>
-                <el-form-item>
-                  <div class="input-back">
-                    <input type="text" name="" value="" class='inputValue'>
-                    <span @click='replyTask(props.row.index,props.row.taskId,$event)' class='replyValue'>回复</span>
-                  </div>
-                  <div class="" v-for='item in props.row.taskReplys'>
-                    <div class="reback-time">
-                      {{item.replyTimeDistanceDesc}}
-                    </div>
-                    <div class="reback" style="max-width: 294px;min-width: 296px;overflow:hidden;">
-                      <div style="float:left;">{{item.replyUser.userName}}：</div><div style="float:left;max-width: 247px;word-break: break-all; word-wrap:break-word;">{{item.replyContent}}</div>
-                    </div>
-                  </div>
-
-                </el-form-item>
-                <el-form-item label="">
-                  <div class="">
-                    概要：
-                  </div>
-                  <div class="reback reback1">
-                    发布人：{{ props.row.publisher.userName}}
-                  </div>
-                  <div class="reback reback1">
-                    执行人：{{ props.row.executor.userName }}
-                  </div>
-                  <div class="reback reback1">
-                    协助人：{{ props.row.taskAssistUsers }}
-                  </div>
-                  <div class="reback reback1">
-                    开始日期：{{ props.row.planStartDate }}
-                  </div>
-                  <div class="reback reback1">
-                    截止日期：{{ props.row.planEndDate  }}
-                  </div>
-                </el-form-item>
-                <el-form-item>
-                  <div class="special">
-                       特别
-                  </div>
-                </el-form-item>
-              </el-form>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="任务标题"
-            prop="id">
-            <template slot-scope="props">
-              <router-link :to="{ path: 'taskDetailHeader',query: {id:props.row.taskId}}" style="color:#505363;">
-              <div>{{ props.row.title }}</div>
-            </router-link>
-              <div>
-                <div class="title-left">
-                  <div v-show='props.row.grade=="PERSONALORD"'><span style="background: #108EE9;"></span><span>个人普通</span></div>
-                  <div v-show='props.row.grade=="COMPANY"'><span style="background: #F04134;"></span><span>公司重点</span></div>
-                  <div v-show='props.row.grade=="PERSONALIMP"'><span style="background: #00A854;"></span><span>个人重点</span></div>
-                  <div v-show='props.row.grade=="DEPARTMENT"'><span style="background: #FFBF00;"></span><span>部门重点</span></div>
-                </div>
-                <div class="title-right" style="border:none;">
-                  {{props.row.taskTypeStr}}
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="最新回复"
-            prop="name">
-            <template slot-scope="props">
-              <div class="" v-if='props.row.lastTaskReplyer!=null'>
-                <div v-if='props.row.lastReplyStatus=="UNREAD"' style="color:rgb(217, 52, 55)">
-                  <span>{{ props.row.lastTaskReplyer}}：</span><span>{{ props.row.lastTaskReplyContent}}</span>
-                </div>
-                <div v-if='props.row.lastReplyStatus=="READED"'>
-                  <span>{{ props.row.lastTaskReplyer}}：</span><span>{{ props.row.lastTaskReplyContent}}</span>
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="操作">
-            <template slot-scope="props">
-                <el-button
-                  size="small"
-                  class='complete' v-if='props.row.taskStatusType=="ASSIGNED"' @click='assignTask(props.row.taskId,$event)'>分配任务</el-button>
-                  <el-button
-                    size="small"
-                    class='complete' v-if='props.row.taskStatusType=="APPROVING"' @click='lateCheck(props.row.changeType,props.row.taskId,props.row.planEndDate,$event)'>任务审核</el-button>
-                    <el-button
-                      size="small"
-                      class='complete' v-if='props.row.taskStatusType=="WAITEVALUATE"' @click='completeModal(props.row.taskId,$event)'>任务评价</el-button>
-              </template>
-          </el-table-column>
-        </el-table>
-        <div class="pagination-depart" v-if='total2>0'>
-          <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :current-page="currentPage2" :page-sizes="[10, 15, 50]" :page-size=pageSize2 layout="total, sizes, prev, pager, next, jumper" :total=total2>
-          </el-pagination>
-        </div>
-      </div>
-
-      <div class="untreatTask-table taskNum3" v-show=" 3 == num">
-        <el-table
-          :data="resultTask3"
-          style="width: 100%" @expand="startExpend" row-key="taskId"
-              :expand-row-keys="expands" @row-click="openDetails" empty-text='暂无数据'>
-          <el-table-column type="expand" v-show='hello'>
-            <template slot-scope="props">
-              <el-form label-position="left" inline class="demo-table-expand">
-                <el-form-item label="内容：">
-                  <span class='content-tab'>{{ props.row.content }}</span>
-                </el-form-item>
-                <el-form-item>
-                  <div class="input-back">
-                    <input type="text" name="" value="" class='inputValue'>
-                    <span @click='replyTask(props.row.index,props.row.taskId,$event)' class='replyValue'>回复</span>
-                  </div>
-                  <div class="" v-for='item in props.row.taskReplys'>
-                    <div class="reback-time">
-                      {{item.replyTimeDistanceDesc}}
-                    </div>
-                    <div class="reback" style="max-width: 294px;min-width: 296px;overflow:hidden;">
-                      <div style="float:left;">{{item.replyUser.userName}}：</div><div style="float:left;max-width: 247px;word-break: break-all; word-wrap:break-word;">{{item.replyContent}}</div>
-                    </div>
-                  </div>
-
-                </el-form-item>
-                <el-form-item label="">
-                  <div class="">
-                    概要：
-                  </div>
-                  <div class="reback reback1">
-                    发布人：{{ props.row.publisher.userName}}
-                  </div>
-                  <div class="reback reback1">
-                    执行人：{{ props.row.executor.userName }}
-                  </div>
-                  <div class="reback reback1">
-                    协助人：{{ props.row.taskAssistUsers }}
-                  </div>
-                  <div class="reback reback1">
-                    开始日期：{{ props.row.planStartDate }}
-                  </div>
-                  <div class="reback reback1">
-                    截止日期：{{ props.row.planEndDate  }}
-                  </div>
-                </el-form-item>
-                <el-form-item>
-                  <div class="special">
-                       特别
-                  </div>
-                </el-form-item>
-              </el-form>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="任务标题"
-            prop="id">
-            <template slot-scope="props">
-              <router-link :to="{ path: 'taskDetailHeader',query: {id:props.row.taskId}}" style="color:#505363;">
-              <div>{{ props.row.title }}</div>
-            </router-link>
-              <div>
-                <div class="title-left">
-                  <div v-show='props.row.grade=="PERSONALORD"'><span style="background: #108EE9;"></span><span>个人普通</span></div>
-                  <div v-show='props.row.grade=="COMPANY"'><span style="background: #F04134;"></span><span>公司重点</span></div>
-                  <div v-show='props.row.grade=="PERSONALIMP"'><span style="background: #00A854;"></span><span>个人重点</span></div>
-                  <div v-show='props.row.grade=="DEPARTMENT"'><span style="background: #FFBF00;"></span><span>部门重点</span></div>
-                </div>
-                <div class="title-right" style="border:none;">
-                  {{props.row.taskTypeStr}}
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="最新回复"
-            prop="name">
-            <template slot-scope="props">
-              <div class="" v-if='props.row.lastTaskReplyer!=null'>
-                <div v-if='props.row.lastReplyStatus=="UNREAD"' style="color:rgb(217, 52, 55)">
-                  <span>{{ props.row.lastTaskReplyer}}：</span><span>{{ props.row.lastTaskReplyContent}}</span>
-                </div>
-                <div v-if='props.row.lastReplyStatus=="READED"'>
-                  <span>{{ props.row.lastTaskReplyer}}：</span><span>{{ props.row.lastTaskReplyContent}}</span>
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="操作">
-            <template slot-scope="props">
-                <el-button
-                  size="small"
-                  class='complete' v-if='props.row.taskStatusType=="ASSIGNED"' @click='assignTask(props.row.taskId,$event)'>分配任务</el-button>
-                  <el-button
-                    size="small"
-                    class='complete' v-if='props.row.taskStatusType=="APPROVING"' @click='lateCheck(props.row.changeType,props.row.taskId,props.row.planEndDate,$event)'>任务审核</el-button>
-                    <el-button
-                      size="small"
-                      class='complete' v-if='props.row.taskStatusType=="WAITEVALUATE"' @click='completeModal(props.row.taskId,$event)'>任务评价</el-button>
-              </template>
-          </el-table-column>
-        </el-table>
-        <div class="pagination-depart" v-if='total3>0'>
-          <el-pagination @size-change="handleSizeChange3" @current-change="handleCurrentChange3" :current-page="currentPage3" :page-sizes="[10, 15, 50]" :page-size=pageSize3 layout="total, sizes, prev, pager, next, jumper" :total=total3>
-          </el-pagination>
-        </div>
-      </div>
-
-      <div class="untreatTask-table taskNum4" v-show=" 4 == num">
-        <el-table
-          :data="resultTask4"
-          style="width: 100%" @expand="startExpend" row-key="taskId"
-              :expand-row-keys="expands" @row-click="openDetails" empty-text='暂无数据'>
-          <el-table-column type="expand" v-show='hello'>
-            <template slot-scope="props">
-              <el-form label-position="left" inline class="demo-table-expand">
-                <el-form-item label="内容：">
-                  <span class='content-tab'>{{ props.row.content }}</span>
-                </el-form-item>
-                <el-form-item>
-                  <div class="input-back">
-                    <input type="text" name="" value="" class='inputValue'>
-                    <span @click='replyTask(props.row.index,props.row.taskId,$event)' class='replyValue'>回复</span>
-                  </div>
-                  <div class="" v-for='item in props.row.taskReplys'>
-                    <div class="reback-time">
-                      {{item.replyTimeDistanceDesc}}
-                    </div>
-                    <div class="reback" style="max-width: 294px;min-width: 296px;overflow:hidden;">
-                      <div style="float:left;">{{item.replyUser.userName}}：</div><div style="float:left;max-width: 247px;word-break: break-all; word-wrap:break-word;">{{item.replyContent}}</div>
-                    </div>
-                  </div>
-
-                </el-form-item>
-                <el-form-item label="">
-                  <div class="">
-                    概要：
-                  </div>
-                  <div class="reback reback1">
-                    发布人：{{ props.row.publisher.userName}}
-                  </div>
-                  <div class="reback reback1">
-                    执行人：{{ props.row.executor.userName }}
-                  </div>
-                  <div class="reback reback1">
-                    协助人：{{ props.row.taskAssistUsers }}
-                  </div>
-                  <div class="reback reback1">
-                    开始日期：{{ props.row.planStartDate }}
-                  </div>
-                  <div class="reback reback1">
-                    截止日期：{{ props.row.planEndDate  }}
-                  </div>
-                </el-form-item>
-                <el-form-item>
-                  <div class="special">
-                       特别
-                  </div>
-                </el-form-item>
-              </el-form>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="任务标题"
-            prop="id">
-            <template slot-scope="props">
-              <router-link :to="{ path: 'taskDetailHeader',query: {id:props.row.taskId}}" style="color:#505363;">
-              <div>{{ props.row.title }}</div>
-            </router-link>
-              <div>
-                <div class="title-left">
-                  <div v-show='props.row.grade=="PERSONALORD"'><span style="background: #108EE9;"></span><span>个人普通</span></div>
-                  <div v-show='props.row.grade=="COMPANY"'><span style="background: #F04134;"></span><span>公司重点</span></div>
-                  <div v-show='props.row.grade=="PERSONALIMP"'><span style="background: #00A854;"></span><span>个人重点</span></div>
-                  <div v-show='props.row.grade=="DEPARTMENT"'><span style="background: #FFBF00;"></span><span>部门重点</span></div>
-                </div>
-                <div class="title-right" style="border:none;">
-                  {{props.row.taskTypeStr}}
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="最新回复"
-            prop="name">
-            <template slot-scope="props">
-              <div class="" v-if='props.row.lastTaskReplyer!=null'>
-                <div v-if='props.row.lastReplyStatus=="UNREAD"' style="color:rgb(217, 52, 55)">
-                  <span>{{ props.row.lastTaskReplyer}}：</span><span>{{ props.row.lastTaskReplyContent}}</span>
-                </div>
-                <div v-if='props.row.lastReplyStatus=="READED"'>
-                  <span>{{ props.row.lastTaskReplyer}}：</span><span>{{ props.row.lastTaskReplyContent}}</span>
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="操作">
-            <template slot-scope="props">
-                <!-- <el-button
-                  size="small"
-                  class='complete' v-if='props.row.taskStatusType=="ASSIGNED"' @click='assignTask(props.row.taskId,$event)'>分配任务</el-button>
-                  <el-button
-                    size="small"
-                    class='complete' v-if='props.row.taskStatusType=="APPROVING"' @click='lateCheck(props.row.changeType,props.row.taskId,props.row.planEndDate,$event)'>任务审核</el-button>-->
-                    <el-button
-                      size="small"
-                      class='complete' @click='completeModal(props.row.taskId,$event)'>任务评价</el-button>
-              </template>
-          </el-table-column>
-        </el-table>
-        <div class="pagination-depart" v-if='total4>0'>
-          <el-pagination @size-change="handleSizeChange4" @current-change="handleCurrentChange4" :current-page="currentPage4" :page-sizes="[10, 15, 50]" :page-size=pageSize4 layout="total, sizes, prev, pager, next, jumper" :total=total4>
-          </el-pagination>
-        </div>
-      </div>
-      <!--待完善-->
-      <div class="untreatTask-table taskNum5" v-show=" 5 == num">
-        <el-table
-          :data="resultTask5"
-          style="width: 100%" @expand="startExpend" row-key="taskId"
-          :expand-row-keys="expands" @row-click="openDetails" empty-text='暂无数据'>
-          <el-table-column type="expand" v-show='hello'>
-            <template slot-scope="props">
-              <el-form label-position="left" inline class="demo-table-expand">
-                <el-form-item label="内容：">
-                  <span class='content-tab'>{{ props.row.content }}</span>
-                </el-form-item>
-                <el-form-item>
-                  <!-- <div class="input-back">
-                    <input type="text" name="" value="" class='inputValue'>
-                    <span @click='replyTask(props.row.index,props.row.taskId,$event)' class='replyValue'>回复</span>
-                  </div>
-                  <div class="" v-for='item in props.row.taskReplys'>
-                    <div class="reback-time">
-                      {{item.replyTimeDistanceDesc}}
-                    </div>
-                    <div class="reback" style="max-width: 294px;min-width: 296px;overflow:hidden;">
-                      <div style="float:left;">{{item.replyUser.userName}}：</div><div style="float:left;max-width: 247px;word-break: break-all; word-wrap:break-word;">{{item.replyContent}}</div>
-                    </div>
-                  </div> -->
-
-                </el-form-item>
-                <el-form-item label="">
-                  <div class="">
-                    概要：
-                  </div>
-                  <div class="reback reback1">
-                    发布人：{{ props.row.publisher.userName}}
-                  </div>
-                  <div class="reback reback1">
-                    执行人：{{ props.row.executor.userName }}
-                  </div>
-                  <div class="reback reback1">
-                    协助人：{{ props.row.taskAssistUsers }}
-                  </div>
-                  <!-- <div class="reback reback1">
-                    开始日期：{{ props.row.planStartDate }}
-                  </div>
-                  <div class="reback reback1">
-                    截止日期：{{ props.row.planEndDate  }}
-                  </div> -->
-                </el-form-item>
-                <el-form-item>
-                  <div class="special">
-                    特别
-                  </div>
-                </el-form-item>
-              </el-form>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="任务标题"
-            prop="id">
-            <template slot-scope="props">
-              <!-- <router-link :to="{ path: 'taskDetailHeader',query: {id:props.row.taskId}}" style="color:#505363;"> -->
-                <div>{{ props.row.title }}</div>
-              <!-- </router-link> -->
               <div>
                 <div class="title-left">
                   <div v-show='props.row.grade=="PERSONALORD"'><span style="background: #108EE9;"></span><span>个人普通</span></div>
@@ -669,29 +120,32 @@
             label="操作">
             <template slot-scope="props">
               <el-button
-                size="small"
-                class='complete' @click='editorTask(props.row.taskId,$event)'>编辑任务</el-button>
-            </template>
+                    size="small"
+                    class='complete' @click='lateCheck(props.row.changeType,props.row.id,props.row.planEndDate,1,$event)'>任务审核</el-button>
+                  <el-button
+                    size="small"
+                    class='complete' v-if='props.row.taskStatusType=="APPROVING"' @click='lateCheck(props.row.changeType,props.row.id,props.row.planEndDate,1,$event)'>任务审核</el-button>
+                    
+              </template>
           </el-table-column>
         </el-table>
-        <div class="pagination-depart" v-if='total5>0'>
-          <el-pagination @size-change="handleSizeChange5" @current-change="handleCurrentChange5"
-                         :current-page="currentPage5" :page-sizes="[10, 15, 50]"
-                         :page-size=pageSize5 layout="total, sizes, prev, pager, next, jumper" :total=total5>
+        <div class="pagination-depart" v-if='total>0'>
+          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 15, 50]" :page-size=pageSize layout="total, sizes, prev, pager, next, jumper" :total=total>
           </el-pagination>
         </div>
       </div>
 
       <!-- 我的任务 -->
-      <div class="untreatTask-button" >
-        <div class="important-task">
-          <ul>
-            <li style="background: #FBEBEC;border-color:#FBEBEC;width:130px;padding:0;">我的任务</li>
-          </ul>
+      <div class="take-top-wrapper m-t-10">
+        <div class="take-top" style="font-size: 14px;font-weight:normal">我的任务</div>
+        
+        <div class="take-bottom">
+            <div class="task-item" v-bind:class="{ active: tabsType === 0 }" @click="tabsTypeChange(0)">待处理</div>
+            <div class="task-item" v-bind:class="{ active: tabsType === 1 }" @click="tabsTypeChange(1)">全部任务</div>
         </div>
       </div>
       <div class="untreatTask-table mytask">
-        <el-table :data="result" @expand="startExpend" row-key="taskId"
+        <el-table :data="result" @expand="startExpend" row-key="id"
             :expand-row-keys="expands1" @row-click="openDetails1" style="width: 100%" empty-text='暂无数据'>
           <el-table-column type="expand" v-show='hello'>
             <template slot-scope="props">
@@ -702,7 +156,7 @@
                   <el-form-item>
                     <div class="input-back">
                       <input type="text" name="" value="" class='inputValue'>
-                      <span @click='replyTask(props.row.index,props.row.taskId,$event)' class='replyValue'>回复</span>
+                      <span @click='replyTask(props.row.index,props.row.id,$event)' class='replyValue'>回复</span>
                     </div>
                     <div class="" v-for='item in props.row.taskReplys'>
                       <div class="reback-time">
@@ -747,7 +201,7 @@
           </el-table-column>
           <el-table-column label="任务标题" prop="id">
             <template slot-scope="props">
-                <router-link :to="{ path: 'taskDetailHeader',query: {id:props.row.taskId}}" style="color:#505363;">
+                <router-link :to="{ path: 'taskDetailHeader',query: {id:props.row.id}}" style="color:#505363;">
                   <div>{{ props.row.title}}</div>
                 </router-link>
                 <div>
@@ -797,210 +251,49 @@
                 <span>
                   <!-- <el-button
                     size="small"
-                   :plain="true" :disabled="true" class='disable-button' v-if='props.row.taskStatus!="UNCOMPLETION"' @click='cancle(props.row.taskId)'>取消</el-button> -->
+                   :plain="true" :disabled="true" class='disable-button' v-if='props.row.taskStatus!="UNCOMPLETION"' @click='cancle(props.row.id)'>取消</el-button> -->
                    <el-button
                      size="small"
-                    class='complete' v-if='props.row.canUpdate==true&&props.row.taskStatus=="UNCOMPLETION"' @click='cancle(props.row.taskId,$event)'>取消</el-button>
+                    class='complete' v-if='props.row.canUpdate==true&&props.row.taskStatus=="UNCOMPLETION"' @click='cancle(props.row.id,$event)'>取消</el-button>
                 </span>
                 <span>
                   <!-- <el-button
                     size="small"
-                    :plain="true" :disabled="true" class='disable-button' v-if='props.row.taskStatus!="UNCOMPLETION"' @click='delay(props.row.taskId,props.row.planEndDate)'>延期</el-button> -->
+                    :plain="true" :disabled="true" class='disable-button' v-if='props.row.taskStatus!="UNCOMPLETION"' @click='delay(props.row.id,props.row.planEndDate)'>延期</el-button> -->
                     <el-button
                       size="small"
-                       class='complete' v-if='props.row.canUpdate&&props.row.taskStatus=="UNCOMPLETION"'   @click='delay(props.row.taskId,props.row.planEndDate,$event)'>延期</el-button>
+                       class='complete' v-if='props.row.canUpdate&&props.row.taskStatus=="UNCOMPLETION"'   @click='delay(props.row.id,props.row.planEndDate,$event)'>延期</el-button>
                   </span>
                   <span>
                     <!-- <el-button
                       size="small"
-                      :plain="true" :disabled="true" class='disable-button' v-if='props.row.taskStatus!="UNCOMPLETION"' @click='levelChange(props.row.taskId)'>等级变更</el-button> -->
+                      :plain="true" :disabled="true" class='disable-button' v-if='props.row.taskStatus!="UNCOMPLETION"' @click='levelChange(props.row.id)'>等级变更</el-button> -->
                       <el-button
                         size="small"
-                        class='complete' v-if='props.row.canUpdate&&props.row.taskStatus=="UNCOMPLETION"' @click='levelChange(props.row.taskId,$event)'>等级变更</el-button>
+                        class='complete' v-if='props.row.canUpdate&&props.row.taskStatus=="UNCOMPLETION"' @click='levelChange(props.row.id,$event)'>等级变更</el-button>
                     </span>
                     <span>
                       <!-- <el-button
                         size="small"
-                        :plain="true" :disabled="true" class='disable-button' v-if='props.row.taskStatus!="UNCOMPLETION"' @click='levelComeplete1(props.row.taskId)'>完成</el-button> -->
+                        :plain="true" :disabled="true" class='disable-button' v-if='props.row.taskStatus!="UNCOMPLETION"' @click='completeModal(props.row.id)'>完成</el-button> -->
                         <el-button
                           size="small"
-                          class='complete' v-if='props.row.canUpdate&&props.row.taskStatus=="UNCOMPLETION"' @click='levelComeplete1(props.row.taskId,$event)'>完成</el-button>
+                          class='complete' v-if='props.row.canUpdate&&props.row.taskStatus=="UNCOMPLETION"' @click='completeModal(props.row.id,$event)'>完成</el-button>
                     </span>
                     </span>
                     <span v-else>
                       <el-button
                         size="small"
-                        class='complete' @click='levelComeplete1(props.row.taskId,$event)'>确认完成</el-button>
+                        class='complete' @click='completeModal(props.row.id,$event)'>确认完成</el-button>
                         <el-button
                           size="small"
-                          class='complete' @click='unCompleteTask(props.row.taskId,$event)'>未完成</el-button>
+                          class='complete' @click='unCompleteTask(props.row.id,$event)'>未完成</el-button>
                     </span>
 
               </template>
           </el-table-column>
         </el-table>
       </div>
-
-      <div class="untreatTask-button" >
-        <div class="important-task">
-          <ul>
-            <li style="background: #FBEBEC;border-color:#FBEBEC;width:130px;padding:0;">其它任务</li>
-          </ul>
-        </div>
-      </div>
-      <div class="untreatTask-table otherTask">
-        <el-table :data="result11" @expand="startExpend" row-key="taskId"
-            :expand-row-keys="expands2" @row-click="openDetails2"  style="width: 100%" empty-text='暂无数据'>
-          <el-table-column type="expand" v-show='hello'>
-            <template slot-scope="props">
-                <el-form label-position="left" inline class="demo-table-expand">
-                  <el-form-item label="内容：">
-                    <span class='content-tab'>{{ props.row.content }}</span>
-                  </el-form-item>
-                  <el-form-item>
-                    <div class="input-back">
-                      <input type="text" name="" value="" class='inputValue'>
-                      <span @click='replyTask(props.row.index,props.row.taskId,$event)' class='replyValue'>回复</span>
-                    </div>
-                    <div class="" v-for='item in props.row.taskReplys'>
-                      <div class="reback-time">
-                        {{item.replyTimeDistanceDesc}}
-                      </div>
-                      <div class="reback" style="max-width: 294px;min-width: 296px;overflow:hidden;">
-                        <div style="float:left;">{{item.replyUser.userName}}：</div><div style="float:left;max-width: 247px;word-break: break-all; word-wrap:break-word;">{{item.replyContent}}</div>
-                      </div>
-                    </div>
-
-                  </el-form-item>
-                  <el-form-item label="">
-                    <div class="">
-                      概要：
-                    </div>
-                    <div class="reback reback1">
-                      发布人：{{ props.row.publisher.userName}}
-                    </div>
-                    <div class="reback reback1">
-                      执行人：{{ props.row.executor.userName }}
-                    </div>
-                    <div class="reback reback1">
-                      协助人：{{ props.row.taskAssistUsers }}
-                    </div>
-                    <div class="reback reback1">
-                      开始日期：{{ props.row.planStartDate }}
-                    </div>
-                    <div class="reback reback1">
-                      截止日期：{{ props.row.planEndDate  }}
-                    </div>
-                    <!-- <div class="reback reback1">
-                      自动回复：{{props.row.repeatRule }}
-                    </div> -->
-                  </el-form-item>
-                  <el-form-item>
-                    <div class="special">
-                         特别
-                    </div>
-                  </el-form-item>
-                </el-form>
-              </template>
-          </el-table-column>
-          <el-table-column label="任务标题" prop="id">
-            <template slot-scope="props">
-                <router-link :to="{ path: 'taskDetailHeader',query: {id:props.row.taskId}}" style="color:#505363;">
-                  <div>{{ props.row.title}}</div>
-                </router-link>
-                <div>
-                  <div class="title-left">
-                    <div v-show='props.row.grade=="PERSONALORD"'><span style="background: #108EE9;"></span><span>个人普通</span></div>
-                    <div v-show='props.row.grade=="COMPANY"'><span style="background: #F04134;"></span><span>公司重点</span></div>
-                    <div v-show='props.row.grade=="PERSONALIMP"'><span style="background: #00A854;"></span><span>个人重点</span></div>
-                    <div v-show='props.row.grade=="DEPARTMENT"'><span style="background: #FFBF00;"></span><span>部门重点</span></div>
-                  </div>
-                  <div class="title-right" style="border:none;">
-                    {{props.row.taskTypeStr}}
-                  </div>
-                </div>
-              </template>
-          </el-table-column>
-          <el-table-column label="最新回复" prop="name">
-            <template slot-scope="props">
-              <div class="" v-if='props.row.lastTaskReplyer!=null'>
-                <div v-if='props.row.lastReplyStatus=="UNREAD"' style="color:rgb(217, 52, 55)">
-                  <span>{{ props.row.lastTaskReplyer}}：</span><span>{{ props.row.lastTaskReplyContent}}</span>
-                </div>
-                <div v-if='props.row.lastReplyStatus=="READED"'>
-                  <span>{{ props.row.lastTaskReplyer}}：</span><span>{{ props.row.lastTaskReplyContent}}</span>
-                </div>
-              </div>
-              </template>
-          </el-table-column>
-          <el-table-column label="任务状态" prop="desc" width='180'>
-            <template slot-scope="props">
-                  <span>
-                    <div >
-                      <img class="icon_type" v-if="props.row.iconType=='FINISHU'"  src="../../images/lateTime2.png" alt="" >
-                      <img class="icon_type" v-if="props.row.iconType=='FINISHUW'" src="../../images/timeLate.png" alt="">
-                      <img class="icon_type" v-if="props.row.iconType=='EXCELLENT'" src="../../images/icon_excellent.png" alt="">
-                      <img class="icon_type" v-if="props.row.iconType=='GOOD'" src="../../images/icon_good.png" alt="">
-                      <img class="icon_type" v-if="props.row.iconType=='SECONDARY'" src="../../images/icon_well.png" alt="">
-                      <img class="icon_type" v-if="props.row.iconType=='DIFFERENCE'" src="../../images/icon_bad.png" alt="">
-                      <img class="icon_type" v-if="props.row.iconType=='POOR'" src="../../images/icon_worse.png" alt="">
-                      <span style="color:#D93437;">{{props.row.taskStatusStr}}</span>
-                    </div>
-                  </span>
-                </template>
-          </el-table-column>
-          <el-table-column label="操作">
-            <template slot-scope="props">
-              <span>
-                <span>
-                  <!-- <el-button
-                    size="small"
-                   :plain="true" :disabled="true" class='disable-button' v-if='props.row.taskStatus!="UNCOMPLETION"' @click='cancle(props.row.taskId)'>取消</el-button> -->
-                   <el-button
-                     size="small"
-                    class='complete' v-if='props.row.canUpdate==true' @click='cancle(props.row.taskId,$event)'>取消</el-button>
-                </span>
-                <span>
-                  <!-- <el-button
-                    size="small"
-                    :plain="true" :disabled="true" class='disable-button' v-if='props.row.taskStatus!="UNCOMPLETION"' @click='delay(props.row.taskId,props.row.planEndDate)'>延期</el-button>-->
-                    <el-button
-                      size="small"
-                       class='complete' v-if='props.row.canUpdate==true&&props.row.taskStatus=="UNCOMPLETION"'   @click='delay(props.row.taskId,props.row.planEndDate,$event)'>延期</el-button>
-                  </span>
-                  <span>
-                    <!-- <el-button
-                      size="small"
-                      :plain="true" :disabled="true" class='disable-button' v-if='props.row.taskStatus!="UNCOMPLETION"' @click='levelChange(props.row.taskId)'>等级变更</el-button> -->
-                      <el-button
-                        size="small"
-                        class='complete' v-if='props.row.canUpdate==true&&props.row.taskStatus=="UNCOMPLETION"' @click='levelChange(props.row.taskId,$event)'>等级变更</el-button>
-                    </span>
-                    <span v-if='props.row.myselfTaskJudge==false&&props.row.taskStatus=="UNCOMPLETION"'>
-                      <el-button
-                        size="small"
-                        class='complete' v-if='props.row.hadremind==false' @click='tipCompleteModal(props.row.taskId,$event)'>提醒完成</el-button>
-                        <el-button
-                          size="small"
-                          :plain="true" :disabled="true" class='disable-button' v-if='props.row.hadremind==true' @click='tipCompleteModal(props.row.taskId,$event)'>已提醒完成</el-button>
-                    </span>
-                    <span v-else>
-                      <el-button
-                        size="small"
-                        class='complete' v-if='props.row.taskStatus!="COMPLETION"'  @click='completeModal(props.row.taskId,$event)'>完成</el-button>
-                    </span>
-                    </span>
-              </template>
-          </el-table-column>
-        </el-table>
-        <div class="pagination-depart" v-if='total11>0'>
-          <el-pagination @size-change="handleSizeChange11" @current-change="handleCurrentChange11" :current-page="currentPage11" :page-sizes="[10, 15, 50]" :page-size=pageSize11 layout="total, sizes, prev, pager, next, jumper" :total=total11>
-          </el-pagination>
-        </div>
-
-      </div>
-
-
 
 
       <!-- 部门视图 -->
@@ -1008,221 +301,37 @@
         <!-- 投研中心 -->
         <div class="take-top-wrapper d_jump" index='01' style="margin-top:10px;">
           <div class="take-left">
-            <div class="take-top">
-              员工任务
-            </div>
+            <div class="take-top">员工任务</div>
           </div>
         </div>
-        <div class="staffView">
+        
+        <div class="staffView" v-for="(item,index) in depet" :key="index">
           <div class="take-top-wrapper" style="margin-top:10px;margin-bottom:5px;">
             <div class="take-left">
-              <div class="take-top" style="float:left;width:auto;min-width:280px;">
-                {{result3.deptName}}
-              </div>
+              <div class="take-top" style="float:left;width:auto;min-width:280px;">{{item.deptName}}</div>
             </div>
-            <div ref="mybox" class="packUp" @click='packUp()' style="margin-right:44px;float:right;margin-top:9px;cursor:pointer;text-align:center;font-size: 12px;line-height:28px;color:#D93538;width:65px;height:28px;border: 1px solid #D93538;border-radius: 4px;">
-              收起
+            <div ref="mybox" class="packUp" @click='deptOpen(item)' style="margin-right:44px;float:right;margin-top:9px;cursor:pointer;text-align:center;font-size: 12px;line-height:28px;color:#D93538;width:65px;height:28px;border: 1px solid #D93538;border-radius: 4px;">
+              {{item.isOpen ? '收起' : '展开'}}
             </div>
           </div>
-          <div class="">
+          <div class="" v-show="item.isOpen">
 
-          <div class="partView" v-for='(item1,index1) in result3.taskInfos'>
-            <div class="take-top-wrapper" style="margin-top:10px;background:rgba(217, 52, 55, 0.02);">
-              <div class="take-left">
-                <div class="take-top" style="float:left;width:auto;min-width:280px;">
-                  {{index1+1}}.{{item1.taskTypeName}}
-                </div>
-              </div>
-              <div @click='mindTask1(item1.taskTypeId)'style="float:right;margin-top:9px;margin-right:44px;margin-left:4px;cursor:pointer;text-align:center;font-size: 12px;line-height:28px;color:#D93538;width:65px;height:28px;border:1px solid #D93538;border-radius: 4px;">
-                添加任务
-              </div>
-              <div ref="mybox2" class="packUp mybox2" @click='packUp2(item1.index)' style="margin-left:6px;float:right;margin-top:9px;cursor:pointer;text-align:center;font-size: 12px;line-height:28px;color:#D93538;width:65px;height:28px;border:1px solid #D93538;border-radius: 4px;">
-                收起
-              </div>
-            </div>
-            <div class="untreatTask-table">
-              <el-table :data="item1.tasks" @expand="startExpend" row-key="taskId"
-                  :expand-row-keys="expands" @row-click="openDetails" style="width: 100%" empty-text='暂无数据'>
-                <el-table-column type="expand" v-show='hello'>
-                  <template slot-scope="props">
-                      <el-form label-position="left" inline class="demo-table-expand">
-                        <el-form-item label="内容：">
-                          <span class='content-tab'>{{ props.row.content }}</span>
-                        </el-form-item>
-                        <el-form-item>
-                          <div class="input-back">
-                            <input type="text" name="" value="" class='inputValue'>
-                            <span @click='replyTask(props.row.index,props.row.taskId,$event,1)' class='replyValue'>回复</span>
-                          </div>
-                          <div class="" v-for='item in props.row.taskReplys'>
-                            <div class="reback-time">
-                              {{item.replyTimeDistanceDesc}}
-                            </div>
-                            <div class="reback" style="max-width: 294px;min-width: 296px;overflow:hidden;">
-                              <div style="float:left;">{{item.replyUser.userName}}：</div><div style="float:left;max-width: 247px;word-break: break-all; word-wrap:break-word;">{{item.replyContent}}</div>
-                            </div>
-                          </div>
-
-                        </el-form-item>
-                        <el-form-item label="">
-                          <div class="">
-                            概要：
-                          </div>
-                          <div class="reback reback1">
-                            发布人：{{ props.row.publisher.userName}}
-                          </div>
-                          <div class="reback reback1">
-                            执行人：{{ props.row.executor.userName }}
-                          </div>
-                          <div class="reback reback1">
-                            协助人：{{ props.row.taskAssistUsers }}
-                          </div>
-                          <div class="reback reback1">
-                            开始日期：{{ props.row.planStartDate }}
-                          </div>
-                          <div class="reback reback1">
-                            截止日期：{{ props.row.planEndDate  }}
-                          </div>
-                          <!-- <div class="reback reback1">
-                            自动回复：{{props.row.repeatRule }}
-                          </div> -->
-                        </el-form-item>
-                        <el-form-item>
-                          <div class="special">
-                               特别
-                          </div>
-                        </el-form-item>
-                      </el-form>
-                    </template>
-                </el-table-column>
-                <el-table-column label="任务标题" prop="id">
-                  <template slot-scope="props">
-                      <router-link :to="{ path: 'taskDetailHeader',query: {id:props.row.taskId}}" style="color:#505363;">
-                      <div>{{ props.row.title}}</div>
-                    </router-link>
-                      <div>
-                        <div class="title-left">
-                          <div v-show='props.row.grade=="PERSONALORD"'><span style="background: #108EE9;"></span><span>个人普通</span></div>
-                          <div v-show='props.row.grade=="COMPANY"'><span style="background: #F04134;"></span><span>公司重点</span></div>
-                          <div v-show='props.row.grade=="PERSONALIMP"'><span style="background: #00A854;"></span><span>个人重点</span></div>
-                          <div v-show='props.row.grade=="DEPARTMENT"'><span style="background: #FFBF00;"></span><span>部门重点</span></div>
-                        </div>
-                        <div class="title-right" style="border:none;">
-                          {{props.row.taskTypeStr}}
-                        </div>
-                      </div>
-                    </template>
-                </el-table-column>
-                <el-table-column label="最新回复" prop="name">
-                  <template slot-scope="props">
-                    <div class="" v-if='props.row.lastTaskReplyer!=null'>
-                      <div v-if='props.row.lastReplyStatus=="UNREAD"' style="color:rgb(217, 52, 55)">
-
-                        <span>{{ props.row.lastTaskReplyer}}：</span><span>{{ props.row.lastTaskReplyContent}}</span>
-                      </div>
-                      <div v-if='props.row.lastReplyStatus=="READED"'>
-
-                        <span>{{ props.row.lastTaskReplyer}}：</span><span>{{ props.row.lastTaskReplyContent}}</span>
-                      </div>
-                    </div>
-                    </template>
-                </el-table-column>
-                <el-table-column label="任务状态" prop="desc" width='180'>
-                  <template slot-scope="props">
-                        <span>
-                          <div >
-                            <img class="icon_type" v-if="props.row.iconType=='FINISHU'"  src="../../images/lateTime2.png" alt="" >
-                            <img class="icon_type" v-if="props.row.iconType=='FINISHUW'" src="../../images/timeLate.png" alt="">
-                            <img class="icon_type" v-if="props.row.iconType=='EXCELLENT'" src="../../images/icon_excellent.png" alt="">
-                            <img class="icon_type" v-if="props.row.iconType=='GOOD'" src="../../images/icon_good.png" alt="">
-                            <img class="icon_type" v-if="props.row.iconType=='SECONDARY'" src="../../images/icon_well.png" alt="">
-                            <img class="icon_type" v-if="props.row.iconType=='DIFFERENCE'" src="../../images/icon_bad.png" alt="">
-                            <img class="icon_type" v-if="props.row.iconType=='POOR'" src="../../images/icon_worse.png" alt="">
-                            <span style="color:#D93437;">{{props.row.taskStatusStr}}</span>
-                          </div>
-                        </span>
-                      </template>
-                </el-table-column>
-                <el-table-column label="操作">
-                  <template slot-scope="props">
-                      <span>
-                        <!-- <el-button
-                          size="small"
-                         :plain="true" :disabled="true" class='disable-button' v-if='props.row.taskStatus!="UNCOMPLETION"' @click='cancle(props.row.taskId)'>取消</el-button> -->
-                         <el-button
-                           size="small"
-                          class='complete' v-if='props.row.taskStatus=="UNCOMPLETION"' @click='cancle(props.row.taskId,$event)'>取消</el-button>
-                      </span>
-                      <span>
-                        <!-- <el-button
-                          size="small"
-                          :plain="true" :disabled="true" class='disable-button' v-if='props.row.taskStatus!="UNCOMPLETION"' @click='delay(props.row.taskId,props.row.planEndDate)'>延期</el-button> -->
-                          <el-button
-                            size="small"
-                             class='complete' v-if='props.row.taskStatus=="UNCOMPLETION"'   @click='delay(props.row.taskId,props.row.planEndDate,$event)'>延期</el-button>
-                        </span>
-                        <span >
-                          <!-- <el-button
-                            size="small"
-                            :plain="true" :disabled="true" class='disable-button' v-if='props.row.taskStatus!="UNCOMPLETION"' @click='levelChange(props.row.taskId)'>等级变更</el-button> -->
-                            <el-button
-                              size="small"
-                              class='complete' v-if='props.row.taskStatus=="UNCOMPLETION"' @click='levelChange(props.row.taskId,$event)'>等级变更</el-button>
-                          </span>
-                          <span>
-                            <!-- <el-button
-                              size="small"
-                              :plain="true" :disabled="true" class='disable-button' v-if='props.row.taskStatus!="UNCOMPLETION"' @click='levelComeplete(props.row.taskId)'>完成</el-button> -->
-
-                            <span v-if='props.row.myselfTaskJudge==false&&props.row.taskStatus=="UNCOMPLETION"'>
-                              <el-button
-                                size="small"
-                                class='complete' v-if='props.row.hadremind==false' @click='tipCompleteModal(props.row.taskId,$event)'>提醒完成</el-button>
-                                <el-button
-                                  size="small"
-                                  :plain="true" :disabled="true" class='disable-button' v-if='props.row.hadremind==true' @click='tipCompleteModal(props.row.taskId,$event)'>已提醒完成</el-button>
-                            </span>
-                            <span v-else>
-                              <el-button
-                                size="small"
-                                class='complete' v-if='props.row.taskStatus!="COMPLETION"'  @click='completeModal(props.row.taskId,$event)'>完成</el-button>
-                            </span>
-                          </span>
-                    </template>
-                </el-table-column>
-              </el-table>
-            </div>
-          </div>
-          <div class="childrenView" v-for='(item2,index2) in result3.branchTaskInfoDeptmentalVos'>
-            <div class="take-top-wrapper" style="margin-top:10px;background:rgba(217, 53, 56, 0.1);">
-              <div class="take-left">
-                <div class="take-top" style="float:left;width:auto;min-width:280px;">
-                  {{item2.deptName}}
-                </div>
-              </div>
-              <div ref="mybox3" class="packUp mybox2" @click='packUp3(item2.index)' style="margin-right:44px;float:right;margin-top:9px;cursor:pointer;text-align:center;font-size: 12px;line-height:28px;color:#D93538;width:65px;height:28px;border:1px solid #D93538;border-radius: 4px;">
-                收起
-              </div>
-            </div>
-            <div class="">
-
-
-            <div class="" v-for='(item3,index3) in item2.taskInfos'>
+            <div class="partView" v-for='(item1,index1) in optionType'>
               <div class="take-top-wrapper" style="margin-top:10px;background:rgba(217, 52, 55, 0.02);">
                 <div class="take-left">
                   <div class="take-top" style="float:left;width:auto;min-width:280px;">
-                    {{index3+1}}、{{item3.taskTypeName}}
+                    {{index1+1}}.{{item1.taskTypeName}}
                   </div>
                 </div>
-                <div @click='mindTask1(item3.taskTypeId)'style="float:right;margin-top:9px;margin-right:44px;margin-left:4px;cursor:pointer;text-align:center;font-size: 12px;line-height:28px;color:#D93538;width:65px;height:28px;border:1px solid #D93538;border-radius: 4px;">
+                <div @click='mindTask1(item1.taskTypeId,item.deptId)'style="float:right;margin-top:9px;margin-right:44px;margin-left:4px;cursor:pointer;text-align:center;font-size: 12px;line-height:28px;color:#D93538;width:65px;height:28px;border:1px solid #D93538;border-radius: 4px;">
                   添加任务
                 </div>
-                <div ref="mybox2" class="packUp mybox2" @click='packUp2(item3.index)' style="margin-right:44px;float:right;margin-top:9px;cursor:pointer;text-align:center;font-size: 12px;line-height:28px;color:#D93538;width:65px;height:28px;border:1px solid #D93538;border-radius: 4px;">
-                  收起
+                <div ref="mybox2" class="packUp mybox2" @click='deptTaskOpen(item,item1.taskTypeId)' style="margin-left:6px;float:right;margin-top:9px;cursor:pointer;text-align:center;font-size: 12px;line-height:28px;color:#D93538;width:65px;height:28px;border:1px solid #D93538;border-radius: 4px;">
+                  {{openTaskTypeId == (item.deptId + '-' + item1.taskTypeId) ?  '收起' : '展开'}}
                 </div>
               </div>
-              <div class="untreatTask-table">
-                <el-table :data="item3.tasks" @expand="startExpend" row-key="taskId"
+              <div class="untreatTask-table" v-show="openTaskTypeId == (item.deptId + '-' + item1.taskTypeId)">
+                <el-table :data="item[item1.taskTypeId] ? item[item1.taskTypeId].data : []" @expand="startExpend" row-key="id"
                     :expand-row-keys="expands" @row-click="openDetails" style="width: 100%" empty-text='暂无数据'>
                   <el-table-column type="expand" v-show='hello'>
                     <template slot-scope="props">
@@ -1233,7 +342,7 @@
                           <el-form-item>
                             <div class="input-back">
                               <input type="text" name="" value="" class='inputValue'>
-                              <span @click='replyTask(props.row.index,props.row.taskId,$event,1)' class='replyValue'>回复</span>
+                              <span @click='replyTask(props.row.index,props.row.id,$event,1)' class='replyValue'>回复</span>
                             </div>
                             <div class="" v-for='item in props.row.taskReplys'>
                               <div class="reback-time">
@@ -1270,7 +379,7 @@
                           </el-form-item>
                           <el-form-item>
                             <div class="special">
-                                 特别
+                                特别
                             </div>
                           </el-form-item>
                         </el-form>
@@ -1278,7 +387,7 @@
                   </el-table-column>
                   <el-table-column label="任务标题" prop="id">
                     <template slot-scope="props">
-                        <router-link :to="{ path: 'taskDetailHeader',query: {id:props.row.taskId}}" style="color:#505363;">
+                        <router-link :to="{ path: 'taskDetailHeader',query: {id:props.row.id}}" style="color:#505363;">
                         <div>{{ props.row.title}}</div>
                       </router-link>
                         <div>
@@ -1326,47 +435,39 @@
                   </el-table-column>
                   <el-table-column label="操作">
                     <template slot-scope="props">
+                      <el-button size="small" class='complete' @click='tipCompleteModal(props.row.id,$event)'>提醒完成</el-button>
+                      <el-button size="small" class='complete' @click='levelComeplete(props.row.id,$event)'>任务评价</el-button>
+                      
                         <span>
-                          <!-- <el-button
+                          <el-button
                             size="small"
-                           :plain="true" :disabled="true" class='disable-button' v-if='props.row.taskStatus!="UNCOMPLETION"' @click='cancle(props.row.taskId)'>取消</el-button> -->
-                           <el-button
-                             size="small"
-                            class='complete' v-if='props.row.taskStatus=="UNCOMPLETION"' @click='cancle(props.row.taskId,$event)'>取消</el-button>
+                            class='complete' v-if='props.row.taskStatus=="UNCOMPLETION"' @click='cancle(props.row.id,$event)'>取消</el-button>
                         </span>
                         <span>
-                          <!-- <el-button
-                            size="small"
-                            :plain="true" :disabled="true" class='disable-button' v-if='props.row.taskStatus!="UNCOMPLETION"' @click='delay(props.row.taskId,props.row.planEndDate)'>延期</el-button> -->
                             <el-button
                               size="small"
-                               class='complete' v-if='props.row.taskStatus=="UNCOMPLETION"'   @click='delay(props.row.taskId,props.row.planEndDate,$event)'>延期</el-button>
+                              class='complete' v-if='props.row.taskStatus=="UNCOMPLETION"'   @click='delay(props.row.id,props.row.planEndDate,$event)'>延期</el-button>
                           </span>
                           <span >
-                            <!-- <el-button
-                              size="small"
-                              :plain="true" :disabled="true" class='disable-button' v-if='props.row.taskStatus!="UNCOMPLETION"' @click='levelChange(props.row.taskId)'>等级变更</el-button> -->
                               <el-button
                                 size="small"
-                                class='complete' v-if='props.row.taskStatus=="UNCOMPLETION"' @click='levelChange(props.row.taskId,$event)'>等级变更</el-button>
+                                class='complete' v-if='props.row.taskStatus=="UNCOMPLETION"' @click='levelChange(props.row.id,$event)'>等级变更</el-button>
                             </span>
                             <span>
-                              <!-- <el-button
-                                size="small"
-                                :plain="true" :disabled="true" class='disable-button' v-if='props.row.taskStatus!="UNCOMPLETION"' @click='levelComeplete(props.row.taskId)'>完成</el-button> -->
 
                               <span v-if='props.row.myselfTaskJudge==false&&props.row.taskStatus=="UNCOMPLETION"'>
                                 <el-button
                                   size="small"
-                                  class='complete' v-if='props.row.hadremind==false' @click='tipCompleteModal(props.row.taskId,$event)'>提醒完成</el-button>
+                                  class='complete' v-if='props.row.hadremind==false' @click='tipCompleteModal(props.row.id,$event)'>提醒完成</el-button>
                                   <el-button
                                     size="small"
-                                    :plain="true" :disabled="true" class='disable-button' v-if='props.row.hadremind==true' @click='tipCompleteModal(props.row.taskId,$event)'>已提醒完成</el-button>
+                                    :plain="true" :disabled="true" class='disable-button' v-if='props.row.hadremind==true' @click='tipCompleteModal(props.row.id,$event)'>已提醒完成</el-button>
                               </span>
                               <span v-else>
                                 <el-button
                                   size="small"
-                                  class='complete' v-if='props.row.taskStatus!="COMPLETION"'  @click='completeModal(props.row.taskId,$event)'>完成</el-button>
+                                  class='complete' v-if='props.row.taskStatus!="COMPLETION"'  @click='completeModal(props.row.id,$event)'>完成</el-button>
+                                  
                               </span>
                             </span>
                       </template>
@@ -1374,9 +475,7 @@
                 </el-table>
               </div>
             </div>
-            </div>
           </div>
-        </div>
       </div>
 
       </div>
@@ -1440,26 +539,13 @@
         </el-dialog>
       </div>
       <div class="">
-        <!--发布任务模态窗-->
-        <el-dialog title='完成任务' :visible.sync="dialogVisible8" size="tiny" :before-close="handleClose8" top='23%'>
+        <el-dialog title='评价任务' :visible.sync="dialogVisible8" size="tiny" :before-close="handleClose8" top='23%'>
           <el-form :model="ruleForm8" :rules="rules" ref="ruleForm8" label-width="112px" class="demo-ruleForm">
-            <el-form-item label="完成质量:" prop="mass" required style="margin-right: 40px !important;">
-              <el-select v-model="ruleForm8.mass" placeholder="请选择完成质量" style="width:100%;" @change='completeMass'>
-                <el-option v-for="item in options3" :key="item.value" :label="item.label" :value="item.value">
-                </el-option>
-              </el-select>
+            <el-form-item label="任务打分：" prop="score8" required style="margin-right: 40px !important;">
+              <el-input v-model="ruleForm8.score8"></el-input>
             </el-form-item>
-            <el-form-item label="快速点评:"  style="margin-right: 40px !important;">
-              <el-select v-model="ruleForm8.rate" placeholder="请选择快速点评" style="width:100%;" @change='completeRate'>
-                <el-option v-for="item in options4" :key="item.value" :label="item.label" :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="任务评价：" prop="rateContent" required style="margin-right: 40px !important;">
-              <el-input type="textarea" v-model="ruleForm8.rateContent"></el-input>
-            </el-form-item>
-            <el-form-item label="自我评价："  required style="margin-right: 40px !important;">
-              <el-input type="textarea" v-model="ruleForm8.rateMine" :disabled="true"></el-input>
+            <el-form-item label="任务总结：" prop="comment8" required style="margin-right: 40px !important;">
+              <el-input type="textarea" v-model="ruleForm8.comment8"></el-input>
             </el-form-item>
           </el-form>
           <span slot="footer" class="dialog-footer">
@@ -1472,7 +558,11 @@
         <!--完成任务-->
         <el-dialog title="完成任务" :visible.sync="dialogVisible44" size="tiny" :before-close="handleClose44" top='25%' class=" noticeManageModel">
           <el-form :model="ruleForm44" :rules="rules" ref="ruleForm44" label-width="112px" class="demo-ruleForm">
-            <el-form-item label="自我评价：" prop="cause4" required style="margin-right: 40px !important;">
+            
+            <el-form-item label="自评打分：" prop="score4" required style="margin-right: 40px !important;">
+              <el-input v-model="ruleForm44.score4"></el-input>
+            </el-form-item>
+            <el-form-item label="任务总结：" prop="cause4" required style="margin-right: 40px !important;">
               <el-input type="textarea" v-model="ruleForm44.cause4"></el-input>
             </el-form-item>
           </el-form>
@@ -1527,99 +617,7 @@
       </div>
       <div class="">
         <!--发布任务模态窗-->
-        <el-dialog title="分配任务" :visible.sync="dialogVisible3" size="tiny" :before-close="handleClose3" top='10%' class=" noticeManageModel">
-          <el-form :model="ruleForm13" :rules="rules" ref="ruleForm13" label-width="112px" class="demo-ruleForm">
-            <el-form-item label="任务标题:" prop="name13" style="margin-right: 40px !important;">
-              <el-input v-model="ruleForm13.name13" :disabled="true"></el-input>
-            </el-form-item>
-
-            <el-form-item label="执行人:" prop="value15" required style="margin-right: 40px !important;">
-              <el-select v-model="ruleForm13.value15" filterable placeholder="请选择执行人" style="width:100%;" @change='goLink1'>
-                <el-option v-for="item in users" :key="item.userId" :label="item.userName" :value="item.userId">
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="任务类型:" prop="value14" required style="margin-right: 40px !important;">
-              <el-select v-model="ruleForm13.value14" :disabled="true" placeholder="请选择类型" style="width:100%;" @click="choseTaskType13">
-                <el-option v-for="item in optionType1" :key="item.taskTypeId" :label="item.taskTypeName" :value="item.taskTypeId">
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="任务汇报对象:" required prop="telObj13" style="margin-right: 40px !important;">
-              <el-select v-model="ruleForm13.telObj13" filterable placeholder="请选择任务汇报对象" style="width:100%;">
-                <el-option v-for="item in optionsObj1" :key="item.userId" :label="item.userName" :value="item.userId">
-                </el-option>
-              </el-select>
-              <!-- <el-input v-model="ruleForm.telObj"></el-input> -->
-            </el-form-item>
-            <el-form-item label="任务重要等级:" prop="value13" :disabled="true" required class="special1" style="margin-right: 40px !important;">
-              <el-select v-model="ruleForm13.value13" placeholder="请选择任务等级" style="width:100%;" :disabled="true">
-                <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value">
-                </el-option>
-              </el-select>
-              <i class="el-icon-information" style="float:left;margin-right: 40px !important;" @mouseenter="iconEnter1" @mouseleave="iconLeave1"></i>
-              <div class="tip-information" ref="displayShow1">
-                <p>任务重要程度：</p>
-                <p>公司重点任务，重要系数：4</p>
-                <p>部门重点任务，重要系数：2</p>
-                <p>个人重点任务，重要系数：1</p>
-                <p>个人普通任务，重要系数：0.5</p>
-                <!-- <p>个人重点任务有数量限制，所有重要任务中，只有20%为个人重点，超出部分要提示用户移除一个现有的个人重点任务</p> -->
-              </div>
-            </el-form-item>
-            <el-form-item label="完成时间:" style="margin-right: 40px !important;height:36px;">
-              <el-form-item prop="date13">
-                <el-date-picker type="date" :disabled="true" :picker-options="pickerOptions0" placeholder="选择日期" v-model="ruleForm13.date13" style="width: 100%;"></el-date-picker>
-              </el-form-item>
-            </el-form-item>
-            <el-form-item label="任务内容：" prop="content13" required style="margin-right: 40px !important;">
-              <el-input type="textarea" v-model="ruleForm13.content13"></el-input>
-            </el-form-item>
-            <div v-show="stretch1">
-              <div class="user-wrapper" style="line-height:32px;margin-bottom:13px;margin-left:21px;">
-                <div class='user-left'>任务协助人：</div>
-                <div style="float:left;" class='user-right-wrapper'>
-                  <div class='user-right' @click='adduser13'>添加协助人</div>
-                  <div class="user-item ellipsis" v-for='(item,index) in brr13'>
-                    <span class="ellipsis" style="display: inline-block;width: 100%">{{item.username}}（{{item.proportion}}%）</span>
-                    <i class="el-icon-circle-close" @click="removeTodo13(index)"></i>
-                  </div>
-
-                </div>
-              </div>
-              <el-form-item label="关联项目:" style="margin-right: 40px !important;">
-                <el-select v-model="ruleForm13.value17" placeholder="请选择关联项目" style="width:100%;" @click='choseRelateProject13'>
-                  <el-option v-for="item in projects" :key="item.projectId" :label="item.projectName" :value="item.projectId">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="任务可见范围:" style="margin-right: 40px !important;">
-                <el-select  multiple  v-model="ruleForm13.value71" placeholder="请选择部门"  style="width:100%;">
-                  <el-option
-                    v-for="item in depet"
-                    :key="item.deptId"
-                    :label="item.deptName"
-                    :value="item.deptId">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </div>
-            <div style="text-align: center">
-              <div style="cursor: pointer" @click="Collapse1">
-                <span>{{msg1}}</span>
-                <i :class="stretch1 ? 'el-icon-arrow-up':'el-icon-arrow-down'"></i>
-              </div>
-            </div>
-          </el-form>
-          <span slot="footer" class="dialog-footer">
-              <button  @click="resetForm3('ruleForm13')">取 消</button>
-              <button  @click="submitForm3('ruleForm13')">分配任务</button>
-            </span>
-        </el-dialog>
-      </div>
-      <div class="">
-        <!--发布任务模态窗-->
-        <el-dialog title="发起任务" :visible.sync="dialogVisible" size="tiny" :before-close="handleClose" top='10%' class=" noticeManageModel">
+        <el-dialog title="发起任务" :visible.sync="dialogVisible" size="tiny" :before-close="handleClose" top='10%' class="noticeManageModel">
           <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="112px" class="demo-ruleForm">
             <div style="margin-left:32px;margin-bottom:18px;overflow:hidden;">
               <span style="float:left;line-height:36px;"><label style="color:#ff4949">* </label>任务标题:</span>
@@ -1629,9 +627,8 @@
               <span style="float:left;vertical-align:middle;line-height:36px;">
                 <label style="color:#ff4949">* </label>执行人:</span>
                 <span style="width:363px;margin-left:12px;float:left;">
-                  <el-select v-model="ruleForm.value5" filterable placeholder="请选择执行人" style="width:100%;" @change='goLink'>
-                    <el-option v-for="item in users" :key="item.userId" :label="item.userName" :value="item.userId">
-                    </el-option>
+                  <el-select v-model="ruleForm.executorId" filterable placeholder="请选择执行人" style="width:100%;" @change='goLink'>
+                    <el-option v-for="item in users" :key="item.userId" :label="item.userName" :value="item.userId"></el-option>
                   </el-select>
                 </span>
             </div>
@@ -1640,7 +637,7 @@
                 <label style="color:#ff4949">* </label>任务类型:
               </span>
               <span style="width:363px;margin-left:12px;float:left;">
-                <el-select v-model="ruleForm.value4" placeholder="请选择类型" style="width:100%;" @click="choseTaskType1">
+                <el-select v-model="ruleForm.taskTypeId" placeholder="请选择类型" style="width:100%;" @click="choseTaskType1">
                   <el-option v-for="item in optionType" :key="item.taskTypeId" :label="item.taskTypeName" :value="item.taskTypeId">
                   </el-option>
                 </el-select>
@@ -1657,25 +654,31 @@
                 </el-select>
               </span>
             </div>
-            <div style="margin-left:4px;margin-bottom:18px;overflow:hidden;" class="clearfix">
-              <span style="float:left;vertical-align:middle;line-height:36px;">
-                <label style="color:#ff4949">* </label>任务重要等级:
-              </span>
-              <span style="width:363px;margin-left:12px;float:left;" class="special1">
-                <el-select v-model="ruleForm.value3" placeholder="请选择任务等级" style="width:100%;">
-                  <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-select>
-                <i class="el-icon-information" style="float:left;margin-right: 40px !important;" @mouseenter="iconEnter" @mouseleave="iconLeave"></i>
-                <div class="tip-information" ref="displayShow">
-                  <p>任务重要程度：</p>
-                  <p>公司重点任务，重要系数：4</p>
-                  <p>部门重点任务，重要系数：2</p>
-                  <p>个人重点任务，重要系数：1</p>
-                  <p>个人普通任务，重要系数：0.5</p>
-                </div>
-             </span>
-           </div>
+           
+            <div
+                style="margin-left:18px;margin-bottom:18px;"
+                class="clearfix">
+                <span style="float:left;vertical-align:middle;line-height:36px;">
+                    <label style="color:#ff4949">* </label>任务工作量:
+                </span>
+                <span style="width:363px;margin-left:12px;float:left;" class="special1">
+                    <el-select v-model="ruleForm.taskWorkload" placeholder="请选择任务工作量" style="width:100%;">
+                        <el-option v-for="item in 10" :key="item" :label="item" :value="item"></el-option>
+                    </el-select>
+                    <i
+                        class="el-icon-information"
+                        style="float:left;margin-right: 40px !important;"
+                        @mouseenter="iconEnter"
+                        @mouseleave="iconLeave"></i>
+                    <div class="tip-information" ref="displayShow">
+                        <p>任务工作量说明：</p>
+                        <p>- 本月基准任务为“完成2篇投后月报”，占本月计划考核权重的13%；</p>
+                        <p>- 任务发布后会由上级进行审核，审核通过后本月计划中所有任务的权重都自动修改；</p>
+                        <p>- 任务工作量基数为“1”时，不需要上级审核。</p>
+                    </div>
+                </span>
+            </div>
+            
            <div style="margin-left:32px;margin-bottom:18px;overflow:hidden;">
               <span style="float:left;vertical-align:middle;line-height:36px;">
                 <label style="color:#ff4949">* </label>完成时间:
@@ -1693,19 +696,32 @@
              </span>
            </div>
             <div v-show="stretch">
-              <div class="user-wrapper" style="line-height:32px;margin-bottom:13px;margin-left:21px;">
-                <div class='user-left'>任务协助人：</div>
-                <div style="float:left;" class='user-right-wrapper'>
-                  <div class='user-right' @click='adduser'>添加协助人</div>
-                  <div class="user-item ellipsis" v-for='(item,index) in brr'>
-                    <span class="ellipsis" style="display: inline-block;width: 100%">{{item.username}}（{{item.proportion}}%）</span>
-                    <i class="el-icon-circle-close" @click="removeTodo(index)"></i>
+              
+              <el-form-item label="任务性质:">
+                  <el-radio-group v-model="ruleForm.taskCategory">
+                      <el-radio :label="0">单条任务</el-radio>
+                      <el-radio :label="1">任务组任务</el-radio>
+                  </el-radio-group>
+              </el-form-item>
+              <el-form-item label="关联任务组:" v-if="ruleForm.taskCategory == 0">
+                  <el-select v-model="ruleForm.taskGroupId" placeholder="请选择关联项目" style="width: 363px;">
+                      <el-option
+                          v-for="item in groupLists"
+                          :key="item.taskGroupId"
+                          :label="item.taskGroupName"
+                          :value="item.taskGroupId">
+                      </el-option>
+                  </el-select>
+              </el-form-item>
+              <el-form-item label="任务组成员:" v-if="ruleForm.taskCategory == 1">
+                  <div class="user-right" @click="adduser">添加任务组成员</div>
+                  <div class="user-item ellipsis" v-for="(item, index) in brr">
+                      <span class="ellipsis" style="display: inline-block;width: 100%;">{{ item.username }}</span>
+                      <i class="el-icon-circle-close"  @click="removeTodo(index)"></i>
                   </div>
-
-                </div>
-              </div>
+              </el-form-item>
               <el-form-item label="关联项目:" style="margin-right: 40px !important;">
-                <el-select v-model="ruleForm.value7" placeholder="请选择关联项目" style="width:100%;" @click='choseRelateProject'>
+                <el-select v-model="ruleForm.projectId" placeholder="请选择关联项目" style="width:100%;" @click='choseRelateProject'>
                   <el-option v-for="item in projects" :key="item.projectId" :label="item.projectName" :value="item.projectId">
                   </el-option>
                 </el-select>
@@ -1730,36 +746,47 @@
           </el-form>
           <span slot="footer" class="dialog-footer">
               <button  @click="resetForm('ruleForm')">取 消</button>
-              <button  @click="saveDrafts('ruleForm')" class='saveDrafts'>保存草稿</button>
-              <button  @click="submitForm('ruleForm')">发布任务</button>
+              <button  @click="submitForm(0)" class="saveDrafts">保存草稿</button>
+              <button  @click="submitForm(1)">发布任务</button>
             </span>
         </el-dialog>
       </div>
       <div class="">
-        <!--添加协助人-->
-        <el-dialog title="添加协助人" :visible.sync="dialogVisible15" size="tiny" :before-close="handleClose15" top='25%' class=" noticeManageModel">
-          <el-form :model="ruleForm5" :rules="rules" ref="ruleForm5" label-width="112px" class="demo-ruleForm">
-            <el-form-item label="姓名:" prop="username" style="margin-right: 40px !important;">
-              <!-- <el-select v-model="ruleForm5.username" placeholder="请选择协助人" style="width:100%;" @click='choseUsers2'>
-                 <el-option
-                   v-for="item in users"
-                   :key="item.userId"
-                   :label="item.userName"
-                   :value="item.userId">
-                 </el-option>
-               </el-select> -->
-              <el-select v-model="ruleForm5.username" filterable placeholder="请选择协助人" style="width:100%;">
-                <el-option v-for="item in usersT" :key="item.userId" :label="item.userName" :value="item.userId">
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="占比:" prop="percent" style="margin-right: 80px !important;" class='addPercent'>
-              <el-input v-model.number="ruleForm5.percent"></el-input><span>%</span>
-            </el-form-item>
-          </el-form>
-          <span slot="footer" class="dialog-footer">
-              <button  @click="resetForm15('ruleForm5')">取 消</button>
-              <button  @click="submitForm15('ruleForm5')">确定</button>
+        <!--添加任务组成员-->
+        <el-dialog
+            title="添加任务组成员"
+            :visible.sync="dialogVisible5"
+            size="tiny"
+            :before-close="handleClose5"
+            top="25%"
+            class=" noticeManageModel">
+            <el-form
+                :model="ruleForm5"
+                :rules="rules"
+                ref="ruleForm5"
+                label-width="112px"
+                class="demo-ruleForm">
+                <el-form-item
+                    label="姓名:"
+                    prop="username"
+                    style="margin-right: 40px !important;">
+                    <el-select
+                        v-model="ruleForm5.username"
+                        filterable
+                        placeholder="请选择任务组成员"
+                        style="width:100%;">
+                        <el-option
+                            v-for="item in usersT"
+                            :key="item.userId"
+                            :label="item.userName"
+                            :value="item.userId">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <button @click="resetForm5('ruleForm5')">取 消</button>
+                <button @click="submitForm5('ruleForm5')">确定</button>
             </span>
         </el-dialog>
       </div>
@@ -1787,14 +814,7 @@
         <el-dialog title="添加协助人" :visible.sync="dialogVisible25" size="tiny" :before-close="handleClose25" top='25%' class=" noticeManageModel">
           <el-form :model="ruleForm25" :rules="rules" ref="ruleForm25" label-width="112px" class="demo-ruleForm">
             <el-form-item label="姓名:" prop="username" style="margin-right: 40px !important;">
-              <!-- <el-select v-model="ruleForm5.username" placeholder="请选择协助人" style="width:100%;" @click='choseUsers2'>
-                 <el-option
-                   v-for="item in users"
-                   :key="item.userId"
-                   :label="item.userName"
-                   :value="item.userId">
-                 </el-option>
-               </el-select> -->
+              
               <el-select v-model="ruleForm25.username" filterable placeholder="请选择协助人" style="width:100%;">
                 <el-option v-for="item in usersT" :key="item.userId" :label="item.userName" :value="item.userId">
                 </el-option>
@@ -1814,8 +834,8 @@
         <!--申请变更任务重要等级-->
         <el-dialog title="申请变更任务重要等级" :visible.sync="dialogVisible13" size="tiny" :before-close="handleClose13" top='25%' class=" noticeManageModel">
           <el-form :model="ruleForm3" :rules="rules" ref="ruleForm3" label-width="112px" class="demo-ruleForm">
-            <el-form-item label="任务重要等级:" prop="value3" required style="margin-right: 40px !important;">
-              <el-select v-model="ruleForm3.value3" placeholder="请选择任务等级" style="width:100%;" @change='choseLevel3'>
+            <el-form-item label="任务重要等级:" prop="taskWorkload" required style="margin-right: 40px !important;">
+              <el-select v-model="ruleForm3.taskWorkload" placeholder="请选择任务等级" style="width:100%;" @change='choseLevel3'>
                 <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
               </el-select>
@@ -1916,97 +936,199 @@
             </span>
         </el-dialog>
       </div>
+      
       <!--编辑任务模态窗-->
-      <el-dialog title="编辑任务"
-                 :visible.sync="dialogVisible10"
-                 size="tiny"
-                 :before-close="handleClose10"
-                 top='10%'
-                 class=" noticeManageModel">
-        <el-form :model="ruleForm31" :rules="rules31" ref="ruleForm31" label-width="112px" class="demo-ruleForm">
-          <el-form-item label="任务标题:" required prop="name13" style="margin-right: 40px !important;">
-            <el-input v-model="ruleForm31.name13"></el-input>
-          </el-form-item>
-          <el-form-item label="执行人:"  required style="margin-right: 40px !important;">
-            <el-select v-model="ruleForm31.value15" filterable placeholder="请选择执行人" style="width:100%;" @change='goLink'>
-              <el-option v-for="item in users" :key="item.userId" :label="item.userName" :value="item.userId">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="任务类型:" prop="value14" required style="margin-right: 40px !important;">
-            <el-select v-model="ruleForm31.value14" placeholder="请选择类型" style="width:100%;" @click="choseTaskType1">
-              <el-option v-for="item in optionType" :key="item.taskTypeId" :label="item.taskTypeName" :value="item.taskTypeId">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="任务汇报对象:" prop='telObj13' required  style="margin-right: 40px !important;">
-            <el-select v-model="ruleForm31.telObj13" filterable placeholder="请选择任务汇报对象" style="width:100%;">
-              <el-option v-for="item in optionsObj" :key="item.userId" :label="item.userName" :value="item.userId">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="任务重要等级:" required class="special1" style="margin-right: 40px !important;">
-            <el-select v-model="ruleForm31.value13" placeholder="请选择任务等级" style="width:100%;">
-              <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value">
-              </el-option>
-            </el-select>
-            <i class="el-icon-information" style="float:left;margin-right: 40px !important;" @mouseenter="iconEnter" @mouseleave="iconLeave"></i>
-            <div class="tip-information" ref="displayShow">
-              <p>任务重要程度：</p>
-              <p>公司重点任务，重要系数：4</p>
-              <p>部门重点任务，重要系数：2</p>
-              <p>个人重点任务，重要系数：1</p>
-              <p>个人普通任务，重要系数：0.5</p>
-              <!-- <p>个人重点任务有数量限制，所有重要任务中，只有20%为个人重点，超出部分要提示用户移除一个现有的个人重点任务</p> -->
-            </div>
-          </el-form-item>
-          <el-form-item label="完成时间:" required style="margin-right: 40px !important;height:36px;">
-            <el-form-item>
-              <el-date-picker type="date" :picker-options="pickerOptions0" placeholder="选择日期" v-model="ruleForm31.date13" style="width: 100%;"></el-date-picker>
-            </el-form-item>
-          </el-form-item>
-          <el-form-item label="任务内容：" required prop="content13" style="margin-right: 40px !important;">
-            <el-input type="textarea" v-model="ruleForm31.content13"></el-input>
-          </el-form-item>
-          <div v-show="stretch">
-            <div class="user-wrapper" style="line-height:32px;margin-bottom:13px;margin-left:21px;">
-              <div class='user-left'>任务协助人：</div>
-              <div style="float:left;" class='user-right-wrapper'>
-                <div class='user-right' @click='adduser'>添加协助人</div>
-                <div class="user-item ellipsis" v-for='(item,index) in brr'>
-                  <span class="ellipsis" style="display: inline-block;width: 100%">{{item.username}}（{{item.proportion}}%）</span>
-                  <i class="el-icon-circle-close" @click="removeTodo(index)"></i>
-                </div>
-
+      <el-dialog
+          title="编辑任务"
+          :visible.sync="dialogVisible10"
+          size="tiny"
+          :before-close="handleClose10"
+          top="10%"
+          class=" noticeManageModel">
+          <el-form
+              :model="ruleForm31"
+              :rules="rules31"
+              ref="ruleForm31"
+              label-width="112px"
+              class="demo-ruleForm">
+              <el-form-item
+                  label="任务标题:"
+                  required
+                  prop="title"
+                  style="margin-right: 40px !important;">
+                  <el-input v-model="ruleForm31.title"></el-input>
+              </el-form-item>
+              
+              <el-form-item
+                  label="执行人:"
+                  required
+                  style="margin-right: 40px !important;">
+                  <el-select
+                      v-model="ruleForm31.executorId"
+                      filterable
+                      placeholder="请选择执行人"
+                      style="width:100%;"
+                      @change="goLink">
+                      <el-option
+                          v-for="item in users"
+                          :key="item.userId"
+                          :label="item.userName"
+                          :value="item.userId"
+                      >
+                      </el-option>
+                  </el-select>
+              </el-form-item>
+              <el-form-item
+                  label="任务类型:"
+                  prop="taskTypeId"
+                  required
+                  style="margin-right: 40px !important;">
+                  <el-select
+                      v-model="ruleForm31.taskTypeId"
+                      placeholder="请选择类型"
+                      style="width:100%;"
+                  >
+                      <el-option
+                          v-for="item in optionType"
+                          :key="item.taskTypeId"
+                          :label="item.taskTypeName"
+                          :value="item.taskTypeId"
+                      >
+                      </el-option>
+                  </el-select>
+              </el-form-item>
+              <el-form-item
+                  label="任务汇报对象:"
+                  prop="reportId"
+                  required
+                  style="margin-right: 40px !important;">
+                  <el-select
+                      v-model="ruleForm31.reportId"
+                      filterable
+                      placeholder="请选择任务汇报对象"
+                      style="width:100%;"
+                  >
+                      <el-option
+                          v-for="item in optionsObj"
+                          :key="item.userId"
+                          :label="item.userName"
+                          :value="item.userId"
+                      >
+                      </el-option>
+                  </el-select>
+              </el-form-item>
+              <el-form-item
+                  label="任务工作量:"
+                  required
+                  class="special1"
+                  style="margin-right: 40px !important;">
+                  <el-select
+                      v-model="ruleForm31.taskWorkload"
+                      placeholder="请选择任务工作量"
+                      style="width:100%;">
+                      <el-option v-for="item in 10" :key="item" :label="item" :value="item"></el-option>
+                  </el-select>
+                  <i
+                      class="el-icon-information"
+                      style="float:left;margin-right: 40px !important;"
+                      @mouseenter="iconEnter2"
+                      @mouseleave="iconLeave2"></i>
+                  <div class="tip-information" ref="displayShow2">
+                      <p>任务工作量说明：</p>
+                      <p>- 本月基准任务为“完成2篇投后月报”，占本月计划考核权重的13%；</p>
+                      <p>- 任务发布后会由上级进行审核，审核通过后本月计划中所有任务的权重都自动修改；</p>
+                      <p>- 任务工作量基数为“1”时，不需要上级审核。</p>
+                  </div>
+              </el-form-item>
+              <el-form-item
+                  label="完成时间:"
+                  required
+                  style="margin-right: 40px !important;height:36px;">
+                  <el-form-item>
+                      <el-date-picker
+                          type="date"
+                          :picker-options="pickerOptions0"
+                          placeholder="选择日期"
+                          v-model="ruleForm31.planEndDate"
+                          style="width: 100%;"
+                      ></el-date-picker>
+                  </el-form-item>
+              </el-form-item>
+              <el-form-item label="任务内容：" required prop="content" style="margin-right: 40px !important;">
+                  <el-input type="textarea" v-model="ruleForm31.content"></el-input>
+              </el-form-item>
+              <el-form-item label="修改原因：" required prop="modifyReason" style="margin-right: 40px !important;">
+                  <el-input type="textarea" v-model="ruleForm31.modifyReason"></el-input>
+              </el-form-item>
+          
+              <div v-show="stretch">
+                  
+                  <el-form-item label="任务性质:">
+                      <el-radio-group v-model="ruleForm31.taskCategory">
+                          <el-radio :label="0">单条任务</el-radio>
+                          <el-radio :label="1">任务组任务</el-radio>
+                      </el-radio-group>
+                  </el-form-item>
+                  <el-form-item label="关联任务组:" v-if="ruleForm31.taskCategory == 0">
+                      <el-select v-model="ruleForm31.taskGroupId" placeholder="请选择关联项目" style="width:100%;">
+                          <el-option
+                              v-for="item in groupLists"
+                              :key="item.taskGroupId"
+                              :label="item.taskGroupName"
+                              :value="item.taskGroupId">
+                          </el-option>
+                      </el-select>
+                  </el-form-item>
+                  <el-form-item label="任务组成员:" v-if="ruleForm31.taskCategory == 1">
+                      <div class="user-right" @click="adduser13">添加任务组成员</div>
+                      <div class="user-item ellipsis" v-for="(item, index) in brr13">
+                          <span class="ellipsis" style="display: inline-block;width: 100%;">{{ item.username }}</span>
+                          <i class="el-icon-circle-close"  @click="removeTodo13(index)"></i>
+                      </div>
+                  </el-form-item>
+                  <el-form-item
+                      label="关联项目:"
+                      style="margin-right: 40px !important;">
+                      <el-select
+                          v-model="ruleForm31.projectId"
+                          placeholder="请选择关联项目"
+                          style="width:100%;">
+                          <el-option
+                              v-for="item in projects"
+                              :key="item.projectId"
+                              :label="item.projectName"
+                              :value="item.projectId">
+                          </el-option>
+                      </el-select>
+                  </el-form-item>
+                  <el-form-item
+                      label="任务可见范围:"
+                      style="margin-right: 40px !important;">
+                      <el-select
+                          multiple
+                          v-model="ruleForm31.value71"
+                          placeholder="请选择部门"
+                          style="width:100%;">
+                          <el-option
+                              v-for="item in depet"
+                              :key="item.deptId"
+                              :label="item.deptName"
+                              :value="item.deptId"
+                          >
+                          </el-option>
+                      </el-select>
+                  </el-form-item>
               </div>
-            </div>
-            <el-form-item label="关联项目:" style="margin-right: 40px !important;">
-              <el-select v-model="ruleForm.value7" placeholder="请选择关联项目" style="width:100%;" @click='choseRelateProject'>
-                <el-option v-for="item in projects" :key="item.projectId" :label="item.projectName" :value="item.projectId">
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="任务可见范围:" style="margin-right: 40px !important;">
-              <el-select  multiple  v-model="ruleForm.value71" placeholder="请选择部门"  style="width:100%;">
-                <el-option
-                  v-for="item in depet"
-                  :key="item.deptId"
-                  :label="item.deptName"
-                  :value="item.deptId">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </div>
-          <div style="text-align: center">
-            <div style="cursor: pointer" @click="Collapse">
-              <span>{{msg}}</span>
-              <i :class="stretch ? 'el-icon-arrow-up':'el-icon-arrow-down'"></i>
-            </div>
-          </div>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-            <button  @click="resetForm31('ruleForm31')">取 消</button>
-            <button  @click="submitForm31('ruleForm31')">保存</button>
+              <div style="text-align: center">
+                  <div style="cursor: pointer" @click="Collapse">
+                      <span>{{ msg }}</span>
+                      <i :class=" stretch ? 'el-icon-arrow-up' : 'el-icon-arrow-down' " ></i>
+                  </div>
+              </div>
+          </el-form>
+          <span slot="footer" class="dialog-footer">
+              <button @click="resetForm31('ruleForm31')">取 消</button>
+              <button @click="submitForm31('ruleForm31')">编辑任务</button>
           </span>
       </el-dialog>
     </div>
@@ -2014,7 +1136,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-// 注意标签和引入驼峰，可以有区别
+import moment from 'moment'
 import {
   listPending,
   delayTaskCause,
@@ -2024,24 +1146,23 @@ import {
   assignmentTask,
   listReportingUsers,
   assessTask,
-  assessTaskDetail,
   getChangeType,
   completeTask,
   approvalTask,
   taskHeader,
   getCurrentUserDept,
-  departNewTaskPending,
+  listDeptPendingTasks,
   departChangeTaskPending,
   departCommentTaskPending,
   departAssignedTaskPending,
   impChangeOrdTask,
   getTaskComment,
-  userTaskList,
+  listMyPendingTask,
+  listPersonalAllByPage,
   departCommentTaskPendingUnCompleted,
   listTaskExecutors,
   publishTask,
   getUsersObj,
-  getStaffAssisTask1,
   getAllStatisticsDepet,
   getDeptStatistics,
   userTaskReply,
@@ -2055,7 +1176,9 @@ import {
   editorTaskMain,
   dragTask,
   sureEditorTask,
-  listDraftTask
+  listDraftTask,
+  listPendingTaskByTaskTypeId,
+  saveDraftTask,
 } from 'service/getData'
 //import Tab from 'components/common/tab'
 import {
@@ -2082,6 +1205,7 @@ export default {
       }
     };
     return {
+      activeColl: '1',
       pickerOptions0: {
         disabledDate(time) {
           return time.getTime() < Date.now() - 8.64e7;
@@ -2095,8 +1219,6 @@ export default {
       expands1: [],
       expands2: [],
       optionsObj1:[],
-      resultTask4:[],
-      resultTask5:[],
       ruleFormS: {
         becomCuase2:''
       },
@@ -2127,9 +1249,6 @@ export default {
       checkedValue: [],
       usersT:[],
       taskNumber:'',
-      resultTask1:[],
-      resultTask2:[],
-      resultTask3:[],
       result11:[],
       total:0,
       departName:'',
@@ -2166,7 +1285,6 @@ export default {
       taskName: '任务组视图',
       dialogVisible4: false,
       dialogVisibleS:false,
-      dialogVisible3: false,
       dialogVisible5: false,
       dialogVisible6: false,
       dialogVisible7: false,
@@ -2180,19 +1298,14 @@ export default {
       dialogVisible10:false,
       taskChangeId: '',
       result: [],
-      pendingTaskSize: '',
-      cimpTaskSize: '',
-      dimpTaskSize: '',
-      pimpTaskSize: '',
-      pcommonTaskSize: '',
-      totalTaskSize: '',
+      tabsType: 0,
+      taskCountLists: [], // 任务数统计
+
       show1: true,
       show2: false,
       result3: [],
       brr13: [],
       taskId: '',
-      num:0,
-      tabs: ["新任务/待审核", "变更任务/待审核","任务已完成待评价","待分配","任务未完成待评价","待完善"],
       activeName: false,
       dialogVisible: false,
       dialogVisible1: false,
@@ -2251,6 +1364,7 @@ export default {
       }],
       value: '',
       ruleForm44: {
+        score4: '',
         cause4: '',
       },
       ruleForm6: {
@@ -2263,10 +1377,8 @@ export default {
         becomCuase1: ''
       },
       ruleForm8: {
-        mass: '',
-        rate: '',
-        rateContent: '',
-        rateMine: '',
+        score8: '',
+        comment8:''
       },
       ruleForm14: {
         date2: '',
@@ -2279,52 +1391,35 @@ export default {
         num2: '',
         num3: '',
       },
-      ruleForm13: {
-        name13: '',
-        value14: '',
-        value15: '',
-        telObj13: '',
-        value17: '',
-        value13: '',
-        date13: '',
-        content13: '',
-        value71:[],
+      ruleForm31: {
+          title: "", // 任务标题
+          taskTypeId: "",// 任务类型
+          executorId: "", // 执行人
+          reportId: "", // 任务汇报对象
+          projectId: "", // 关联项目
+          taskWorkload: "",// 任务工作量
+          planEndDate: "",// 完成时间
+          content: "", // 任务内容
+          modifyReason: '', //修改原因
+          taskCategory: 0, // 任务性质
+          taskGroupId: '', // 关联任务组
+          value71: [] // 任务可见范围部门
+          
       },
+      
       ruleForm: {
-        name: '',
-        name13: '',
-        date1: '',
-        date2: '',
-        date13: '',
-        dateM: '',
-        region1: '',
-        region: '',
-        content: '',
-        desc: '',
-        telObj: '',
-        telObj13: '',
-        content13: '',
-        value3: '',
-        value13: '',
-        value4: '',
-        value14: '',
-        value15: '',
-        value5: '',
-        value6: '',
-        value16: '',
-        value7: '',
-        value17: '',
-        value71: [],
-        mass: '',
-        rate: '',
-        rateContent: '',
-        becomCuase2: '',
-        becomCuase3: '',
-        becomCuase4: '',
-        becomCuase1: '',
-        cancleCause: '',
-        grades: '',
-        delayCause: '',
+          name: "", // 任务标题
+          date1: "", // 完成时间
+          content: "", // 任务内容
+          telObj: "", // 任务汇报对象
+          taskWorkload: "", // 任务工作量
+          taskTypeId: "", // 任务类型
+          executorId: "", // 执行人
+          taskCategory: 0, // 任务性质
+          taskGroupId: '', // 关联任务组
+          projectId: "", // 关联项目
+          value71: [] // 任务可见范围部门
+          
       },
       ruleForm1: {
         cause: ''
@@ -2334,15 +1429,11 @@ export default {
         date1: '',
       },
       ruleForm3: {
-        value3: '',
+        taskWorkload: '',
         cause3: '',
       },
-      ruleForm4: {
-        cause4: '',
-      },
       ruleForm5: {
-        username: '',
-        percent: '',
+          username: ""
       },
       ruleForm25: {
         username: '',
@@ -2354,6 +1445,7 @@ export default {
       users: [],
       users13: [],
       optionType: [],
+      groupLists: [], // 任务组
       optionType1: [],
       addUsers: [],
       addUsers13: [],
@@ -2390,15 +1482,19 @@ export default {
         label: '每月重复'
       }],
       ruleForm31: {
-        name13: '',
-        value14: '',
-        value15: '',
-        telObj13:'',
-        value17:'',
-        value13:'',
-        date13:'',
-        content13:'',
-        value71:[],
+          title: "", // 任务标题
+          taskTypeId: "",// 任务类型
+          executorId: "", // 执行人
+          reportId: "", // 任务汇报对象
+          projectId: "", // 关联项目
+          taskWorkload: "",// 任务工作量
+          planEndDate: "",// 完成时间
+          content: "", // 任务内容
+          modifyReason: '', //修改原因
+          taskCategory: 0, // 任务性质
+          taskGroupId: '', // 关联任务组
+          value71: [] // 任务可见范围部门
+          
       },
       rules31: {
         becomCuase1: [{
@@ -2470,10 +1566,8 @@ export default {
           { required: true, message: '请输入变更原因' },
           {max: 200, message: '变更原因不能超过200个字符'}
         ],
-        cause4: [
-          { required: true, message: '请输入自我评价' },
-          {max: 200, message: '自我评价不能超过200个字符'}
-        ],
+        
+        
         region1: [
           { required: true, message: '请选择关联项目'},
         ],
@@ -2494,7 +1588,7 @@ export default {
           { required: true, message: '请输入任务内容',},
           {max: 200, message: '任务内容不能超过200个字符'}
         ],
-        value3: [{
+        taskWorkload: [{
           required: true,
           message: '请选择任务重要等级',
         }, ],
@@ -2502,7 +1596,7 @@ export default {
           required: true,
           message: '请选择任务重要等级',
         }, ],
-        value4: [{
+        taskTypeId: [{
           required: true,
           message: '请选择任务类型',
           type: 'number'
@@ -2512,7 +1606,7 @@ export default {
           message: '请选择任务类型',
           type: 'number'
         }, ],
-        value5: [{
+        executorId: [{
           required: true,
           message: '请选择任务执行人',
           type: 'number'
@@ -2550,11 +1644,6 @@ export default {
       taskSecond:[],
       taskIds:"",
       rules: {
-        // cause4: [{
-        //   required: true,
-        //   message: '请输入自我评价',
-        //   trigger: 'blur'
-        // }, ],
         telObj: [{
           required: true,
           message: '请选择任务汇报对象',
@@ -2677,10 +1766,14 @@ export default {
           required: true,
           message: '请输入变更原因',
         }, {max: 200, message: '变更原因不能超过200个字符'}],
-        cause4: [{
-          required: true,
-          message: '请输入自我评价',
-        }, {max: 200, message: '自我评价不能超过200个字符'}],
+        
+        score4: [
+          { required: true, message: '请输入自评分值'},
+        ],
+        cause4: [
+          { required: true, message: '请输入任务总结' },
+          {max: 200, message: '不能超过200个字符'}
+        ],
         region1: [{
           required: true,
           message: '请选择关联项目',
@@ -2717,7 +1810,7 @@ export default {
           required: true,
           message: '请输入任务内容',
         },   {max: 200, message: '任务内容不能超过200个字符'}],
-        value3: [{
+        taskWorkload: [{
           required: true,
           message: '请选择任务重要等级',
         }, ],
@@ -2725,7 +1818,7 @@ export default {
           required: true,
           message: '请选择任务重要等级',
         }, ],
-        value4: [{
+        taskTypeId: [{
           required: true,
           message: '请选择任务类型',
           type: 'number'
@@ -2735,7 +1828,7 @@ export default {
           message: '请选择任务类型',
           type: 'number'
         }, ],
-        value5: [{
+        executorId: [{
           required: true,
           message: '请选择任务执行人',
           type: 'number'
@@ -2761,31 +1854,29 @@ export default {
           required: true,
           message: '请输入公告内容',
         }, ],
+        score8: [{ required: true, message: '请输入' }],
+        comment8: [{ required: true, message: '请输入' }],
       },
+
+
+      openTaskTypeId: '', // 当前打开的id
     };
   },
   components: {
-//    Tab
+  //    Tab
   },
   mounted() {
     this.getUntreatTask()
-    this.getChangeTask()
-    this.getAssignedTask()
-    this.departCommentTaskUnCompleted()
-    this._listDraftTask()
-    this.getCommentTask()
     this.getUntreatTask1()
     this.getProjectList1()
     //this.getTaskType1()
     this.listAllUsers1()
     this.getUsersObj1()
-    this.gettaskHeader()
     this.listAllUsersT()
     this.getData()
-    this.getData1()
     this.getUserDetailName()
     this.departmentList1()//获取部门
-    this.tabs = ["新任务/待审核<span style='color:#C2453A;'> ("+this.total+")</span>", "变更任务/待审核<span style='color:#C2453A;'> ("+this.total1+")</span>","任务已完成待评价<span style='color:#C2453A;'> ("+this.total2+")</span>","待分配<span style='color:#C2453A;'> ("+this.total3+")","任务未完成待评价<span style='color:#C2453A;'> ("+this.total4+")","待完善<span style='color:#C2453A;'> ("+this.total5+")"]
+    
   },
   methods: {
     packUp2(index){
@@ -2871,7 +1962,7 @@ export default {
     // 展开和收起
     packUp(index){
       console.log(this.$refs.mybox.parentNode.parentNode.childNodes[2])
-//        部门视图
+      //        部门视图
       if(this.result3){
         var aa = localStorage.key(1)
         console.log(aa)
@@ -2921,34 +2012,11 @@ export default {
         }
      })
     },
-    getData1() {
-      let self = this
-      const params = {
-        nowPage: this.nowPage11,
-        pageShow: this.pageSize11
-      }
-      this.result11=[]
-      getStaffAssisTask1(params).then((res) => {
-        if (res.code == ERR_OK) {
-          self.total11 = res.data.totalCount
-          self.result11 = res.data.result
-          this.$nextTick(() => {
-            this.setSort_otherTask(this.result11)
-          })
-        }
-      })
-    },
     //获取部门
     departmentList1(){
-      let self = this
       departmentList().then((res) => {
         if(res.code == ERR_OK) {
-          let data = res
-          self.depet = data.data.result
-          self.depet.unshift(
-            {deptId:0,
-            deptName:'公司'}
-          )
+          this.depet = res.data.result;
         }
      })
     },
@@ -2993,14 +2061,6 @@ export default {
       this.pageSize1 = val
       this.getChangeTask()
     },
-    handleCurrentChange11(val) {
-      this.nowPage11 = val
-      this.getData1()
-    },
-    handleSizeChange11(val) {
-      this.pageSize11 = val
-      this.getData1()
-    },
     handleCurrentChange2(val) {
       this.nowPage2 = val
       this.getCommentTask()
@@ -3032,10 +2092,6 @@ export default {
     handleCurrentChange5(val) {
       this.nowPage5 = val
       this._listDraftTask()
-    },
-    // tab切换
-    tab(index) {
-      this.num = index
     },
     openDetails1(row, event, column) {
         Array.prototype.remove = function (val) {
@@ -3141,7 +2197,6 @@ export default {
             this.getAssignedTask()
             this.departCommentTaskUnCompleted()
             this._listDraftTask()
-            self.gettaskHeader(scrolled)
             this.$notify({
               title: '成功',
               message: '任务成功降为个人普通等级',
@@ -3196,7 +2251,8 @@ export default {
       this.$refs[formName1].validate((valid) => {
         if (valid) {
           const params = {
-            taskId: self.taskId,
+            id: self.taskId,
+            score: self.ruleForm44.score4,
             comment: self.ruleForm44.cause4
           }
           completeTask(params).then((res) => {
@@ -3204,7 +2260,6 @@ export default {
               self.dialogVisible44 = false
               self.$refs[formName1].resetFields()
               self.getData()
-              self.getData1()
               self.getUntreatTask1()
               this.$notify({
                 title: '成功',
@@ -3237,7 +2292,6 @@ export default {
         resetTaskRemindFlag(params).then((res) => {
           if (res.code == ERR_OK) {
             self.getData()
-            self.getData1()
             self.getUntreatTask1()
             this.$notify({
               title: '成功',
@@ -3268,18 +2322,8 @@ export default {
       this.dialogVisible8 = true
       this.mineRate = false
     },
-    levelComeplete1(val,event) {
-      var e = event;
-      if(e&&e.stopPropagation){
-          e.stopPropagation()
-      }else if(window.event){
-          window.event.cancelBubble=true;
-      }
-      this.taskId = val
-      this.dialogVisible44 = true
-    },
     choseLevel3(val) {
-      this.ruleForm3.value3 = val
+      this.ruleForm3.taskWorkload = val
     },
     handleClose13(done) {
       this.dialogVisible13 = false
@@ -3294,15 +2338,13 @@ export default {
       }
       let self =this
       const params =　{
-        taskId:val
+        id:val
       }
       remindTaskList(params).then((res) => {
         if(res.code == ERR_OK) {
           self.dialogVisible8 = false
           let scrolled = document.documentElement.scrollTop || document.body.scrollTop
-          self.getData1()
           console.log(scrolled)
-          self.gettaskHeader(scrolled)
           this.$notify({
             title: '成功',
             message: '已提醒该员工该任务已完成',
@@ -3316,125 +2358,153 @@ export default {
         }
       })
     },
-//    编辑任务
-    editorTask(val,event){
-      var e = event;
-      if(e&&e.stopPropagation){
-        e.stopPropagation()
-      }else if(window.event){
-        window.event.cancelBubble=true;
-      }
-      this.addUsers=[]
-      this.ruleForm31.name13 = "";
-      this.ruleForm31.value15 = "";
-      this.ruleForm31.value14="";
-      this.ruleForm31.telObj13="";
-      this.ruleForm31.value13="";
-      this.ruleForm31.date13= "";
-      this.ruleForm31.content13 = "";
-      this.ruleForm.value71 = [];
-      this.ruleForm.value7="";
-      this.brr=[]
-      this.addUsers=[]
-      this.dialogVisible10=true;
-      let params={
-        taskId:val
-      }
-      this.taskIds=val
-      editorTaskMain(params).then((res) => {
-        if (res.code == ERR_OK) {
-          this.ruleForm31.name13 = res.data.title
-          this.ruleForm31.value15 = res.data.executor.userId
-          this.ruleForm31.value14=res.data.taskTypeId
-          this.ruleForm31.telObj13=res.data.reporter.userId
-          this.ruleForm31.value13=res.data.grade
-          this.ruleForm31.date13= res.data.planEndDate
-          this.ruleForm31.content13 = res.data.content
-          var crr = []
-          if(res.data.taskAssists.length>0){
-            for(let i=0;i<res.data.taskAssists.length;i++){
-              crr.push({
-                assistUserName:'',
-                proportion:'',
-                assistUserId:''
-              })
+    
+        //    编辑任务
+        editorTask(id, event) {
+            
+            var e = event;
+            if (e && e.stopPropagation) {
+                e.stopPropagation();
+            } else if (window.event) {
+                window.event.cancelBubble = true;
             }
-            for(let j=0;j<res.data.taskAssists.length;j++){
-              crr[j].assistUserName= res.data.taskAssists[j].assistUserName
-              crr[j].proportion= res.data.taskAssists[j].proportion
-              crr[j].assistUserId= res.data.taskAssists[j].assistUserId
-            }
-          }
-          this.brr= crr
-          this.ruleForm.value7=res.data.projectId
-          if(res.data.visibleRange===''){
-            this.ruleForm.value71 = []
-          }else if(res.data.visibleRange.indexOf(',')<0){
-            this.ruleForm.value71 = JSON.parse('['+parseInt(res.data.visibleRange)+']')
-          }else{
-            this.ruleForm.value71 = JSON.parse('[' + String(res.data.visibleRange.split(',')) + ']')
-          }
-        }
-      })
-    },
-//    确定编辑任务
-    submitForm31(formName) {
-      let self = this
-      console.log(this.addUsers);
-      var value71 = this.ruleForm.value71.join(',')
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-           let d = new Date(this.ruleForm31.date13)
-           let time = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
-          const params = {
-            taskId: this.taskIds,
-            title: this.ruleForm31.name13,
-            taskTypeId: this.ruleForm31.value14,
-            reportId:this.ruleForm31.telObj13,
-            executorId: this.ruleForm31.value15,
-            projectId:this.ruleForm.value7,
-            planEndDate:time,
-            grade: this.ruleForm31.value13,
-            ptaskAssists: JSON.stringify(this.addUsers),
-            visibleRange:value71,
-            content: this.ruleForm31.content13
-          }
-          sureEditorTask(params).then((res) => {
-            if (res.code == ERR_OK) {
-              self.dialogVisible10 = false
-              self.$refs[formName].resetFields()
-              this._listDraftTask()
-              this.$notify({
-                title: '成功',
-                message: '编辑任务成功',
-                type: 'success'
-              });
-            }else if(res.code == 'exceedPersonal'){
-              self.dialogVisible11 = true
-              self.taskNumber = res.data.length
-              self.Taskoptions = res.data
-            } else {
-              this.$notify.error({
-                title: '错误',
-                message:res.msg
-              });
-            }
-          })
-        } else {
-          return false;
-        }
-      })
-    },
-    adduser31(){
-      this.dialogVisible251 = true
-    },
+            this.addUsers13 = [];
+            this.ruleForm31.title = "";
+            this.ruleForm31.executorId = "";
+            this.ruleForm31.taskTypeId = "";
+            this.ruleForm31.reportId = "";
+            this.ruleForm31.taskWorkload = "";
+            this.ruleForm31.planEndDate = "";
+            this.ruleForm31.content = "";
+            this.ruleForm31.modifyReason = "";
+            
+            this.dialogVisible10 = true;
+            let params = {
+                id: id
+            };
+            this.taskIds = id;
+            editorTaskMain(params).then(res => {
+                if (res.code == ERR_OK) {
+                    
+
+                    this.ruleForm31.title = res.data.title;
+                    this.ruleForm31.executorId = res.data.executorId;
+                    this.ruleForm31.taskTypeId = res.data.taskTypeId;
+                    this.ruleForm31.reportId = res.data.reportId;
+                    this.ruleForm31.taskWorkload = res.data.taskWorkload;
+                    this.ruleForm31.planEndDate = res.data.planEndDate;
+                    this.ruleForm31.content = res.data.content;
+                    this.ruleForm31.taskCategory = res.data.taskCategory;
+                    this.ruleForm31.modifyReason = res.data.modifyReason;
+                    
+                    this.ruleForm31.projectId = res.data.projectId;
+
+                    var _assistUserIds = [],_assistUserNames = [];
+                    if (res.data.taskGroupMemberIds && res.data.taskGroupMemberIds.length > 0) {
+                        var _taskGroupMemberIds = res.data.taskGroupMemberIds.split(',');
+                        for (let item of _taskGroupMemberIds) {
+                            if (item) {
+                                _assistUserIds.push({
+                                    assistUserId: item
+                                });
+                            }
+                            
+                        }
+                        var _taskGroupMemberName = res.data.taskGroupMemberNames.split(',');
+                        for (let item of _taskGroupMemberName) {
+                            if (item) {
+                                _assistUserNames.push({
+                                    username: item
+                                });
+                            }
+                        }
+                    }
+                    this.brr13 = [..._assistUserNames];
+                    this.addUsers131 = [..._assistUserIds];
+
+                    console.log(this.brr13,this.addUsers131 )
+                    
+                    if (res.data.visibleRange === "") {
+                        this.ruleForm31.value71 = [];
+                    } else if (res.data.visibleRange.indexOf(",") < 0) {
+                        this.ruleForm31.value71 = JSON.parse("[" + parseInt(res.data.visibleRange) + "]");
+                    } else {
+                        this.ruleForm31.value71 = JSON.parse("[" + String(res.data.visibleRange.split(",")) + "]");
+                    }
+                }
+            });
+        },
+        resetForm31(formName) {
+            this.$refs["ruleForm31"].resetFields();
+            this.dialogVisible10 = false;
+        },
+        //    确定编辑任务
+        submitForm31(formName) {
+            let self = this;
+            var value71 = this.ruleForm31.value71.join(",");
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    let time = moment(this.ruleForm31.planEndDate).format('YYYY-MM-DD');
+                    let params = {
+                        id: this.taskIds,
+                        title: this.ruleForm31.title, // 任务标题
+                        taskTypeId: this.ruleForm31.taskTypeId, // 任务类型ID
+                        executorId: this.ruleForm31.executorId, // 执行人
+                        reportId: this.ruleForm31.reportId, // 任务汇报对象
+                        projectId: this.ruleForm31.projectId, // 关联项目
+                        taskWorkload: this.ruleForm31.taskWorkload, // 任务工作量
+                        taskCategory: this.ruleForm31.taskCategory, // 任务性质
+                        visibleRange: value71,
+                        planEndDate: time,
+                        content: this.ruleForm31.content,
+                        modifyReason: this.ruleForm31.modifyReason,
+                    };
+                    if (this.ruleForm.taskCategory == 0) {
+                        params.taskGroupId = this.ruleForm.taskGroupId;
+                    } else if (this.ruleForm.taskCategory == 1) {
+                        let usersArr = [];
+                        for(let item of this.addUsers) {
+                            usersArr.push(item.assistUserId);
+                        }
+                        params.taskGroupMemberIds = usersArr.join(',');
+                    }
+
+
+                    sureEditorTask(params).then(res => {
+                        if (res.code == ERR_OK) {
+                            self.dialogVisible10 = false;
+                            self.$refs[formName].resetFields();
+                            
+                            if (self.isActive == true) {
+                                self.getData(completed, self.nowPage, self.pageShow);
+                            } else {
+                                self.getData1(self.nowPage, self.pageShow);
+                            }
+
+                            self.$notify({
+                                title: "成功",
+                                message: "编辑任务成功",
+                                type: "success"
+                            });
+                        } else {
+                            self.$notify.error({
+                                title: "错误",
+                                message: res.msg
+                            });
+                        }
+                    });
+                } else {
+                    return false;
+                }
+            });
+        },
     submitForm13(formName1) {
       let self = this
       this.$refs[formName1].validate((valid) => {
         if (valid) {
           const params = {
             taskId: self.taskId,
-            grade: self.ruleForm3.value3,
+            grade: self.ruleForm3.taskWorkload,
             reason: self.ruleForm3.cause3
           }
           changeTaskLevel(params).then((res) => {
@@ -3443,8 +2513,6 @@ export default {
               let scrolled = document.documentElement.scrollTop || document.body.scrollTop
               self.getUntreatTask1()
               self.getData()
-              self.getData1()
-              self.gettaskHeader(scrolled)
               self.$refs[formName1].resetFields()
               this.$notify({
                 title: '成功',
@@ -3503,8 +2571,6 @@ export default {
               let scrolled = document.documentElement.scrollTop || document.body.scrollTop
               self.getUntreatTask1()
               self.getData()
-              self.getData1()
-              self.gettaskHeader(scrolled)
               self.$notify({
                 title: '成功',
                 message: '申请任务延期已发送',
@@ -3551,155 +2617,33 @@ export default {
       this.brr13.splice(index, 1);
       this.addUsers13.splice(index, 1);
     },
-    completeMass(val) {
-      this.ruleForm8.mass = val
-      this.options4 = []
-      this.ruleForm8.rate = ''
-      this.ruleForm8.rateContent = ''
-      if(val == 'EXCELLENT'){
-        this.options4 =  [{
-          value: '任务完成超出预期',
-           label: '任务完成超出预期'
-         },{
-           value: '任务完成非常出色',
-            label: '任务完成非常出色'
-           }]
-      }else if(val == 'GOOD'){
-        this.options4 =  [{
-          value: '任务完成出色',
-          label: '任务完成出色'
-        },{
-          value: '干的不错',
-          label: '干的不错'
-        }]
-      }else if(val == 'SECONDARY'){
-        this.options4 =  [{
-          value: '再接再厉',
-          label: '再接再厉'
-        },{
-          value: '继续努力',
-          label: '继续努力'
-        }]
-      }else if(val == 'DIFFERENCE'){
-        this.options4 =  [{
-          value: '需要注意',
-          label: '需要注意'
-        },{
-          value: '多思考',
-          label: '多思考'
-        }]
-      }else if(val == 'POOR'){
-        this.options4 =  [{
-          value: '需要反思一下',
-          label: '需要反思一下'
-        },{
-          value: '多跟同事们请教',
-          label: '多跟同事们请教'
-        }]
-      }
-    },
-    completeRate(val) {
-      this.ruleForm8.rate = val
-      this.ruleForm8.rateContent = val
-    },
-    gettaskHeader(val) {
-      this.result3=[]
-      console.log(val)
-      taskHeader().then((res) => {
-        if (res.code == ERR_OK) {
-          this.result3 = res.data
-
-          this.taskDept = []
-          this.taskSecond = []
-          if(this.result3) {
-            for(var j=0;j<this.result3.taskInfos.length;j++) {
-              for(var k=0;k<this.result3.taskInfos[j].tasks.length;k++) {
-                this.taskDept.push(this.result3.taskInfos[j].tasks[k])
-              }
-            }
-
-            for(var m=0;m<this.result3.branchTaskInfoDeptmentalVos.length;m++) {
-              for(var n=0;n<this.result3.branchTaskInfoDeptmentalVos[m].taskInfos.length;n++) {
-                for(var t=0;t<this.result3.branchTaskInfoDeptmentalVos[m].taskInfos[n].tasks.length;t++) {
-                  this.taskDept.push(this.result3.branchTaskInfoDeptmentalVos[m].taskInfos[n].tasks[t])
-                }
-              }
-            }
-
-            for(var m=0;m<this.result3.branchTaskInfoDeptmentalVos.length;m++) {
-              this.taskSecond.push(this.result3.branchTaskInfoDeptmentalVos[m])
-            }
-          }
-
-          this.$nextTick(() => {
-            if(JSON.parse(localStorage.getItem("showData_dept1"))){
-              const data=JSON.parse(localStorage.getItem("showData_dept1"))
-              if(data[0].show){
-                this.$refs.mybox.innerText = '收起'
-                this.$refs.mybox.parentNode.parentNode.childNodes[2].style.display = 'block'
-              }
-              if(!data[0].show){
-                this.$refs.mybox.innerText = '展开'
-                this.$refs.mybox.parentNode.parentNode.childNodes[2].style.display = 'none'
-              }
-            }
-            this.setSort_staffView(this.result3)
-          })
-
-          this.$nextTick(() => {
-            if(JSON.parse(localStorage.getItem("showData_deptTask1"))){
-              const data=JSON.parse(localStorage.getItem("showData_deptTask1"))
-              for(let i=0;i<data.length;i++){
-                if(data[i].show){
-                  this.$refs.mybox2[i].innerText = '收起'
-                  this.$refs.mybox2[i].parentNode.parentNode.childNodes[2].style.display = 'block'
-                }
-                if(!data[i].show){
-                  this.$refs.mybox2[i].innerText = '展开'
-                  this.$refs.mybox2[i].parentNode.parentNode.childNodes[2].style.display = 'none'
-                }
-              }
-            }
-
-            if(JSON.parse(localStorage.getItem("showData_deptSecond1"))){
-              const data=JSON.parse(localStorage.getItem("showData_deptSecond1"))
-              for(let i=0;i<data.length;i++){
-                if(data[i].show){
-                  this.$refs.mybox3[i].innerText = '收起'
-                  this.$refs.mybox3[i].parentNode.parentNode.childNodes[2].style.display = 'block'
-                }
-                else{
-                  this.$refs.mybox3[i].innerText = '展开'
-                  this.$refs.mybox3[i].parentNode.parentNode.childNodes[2].style.display = 'none'
-                }
-              }
-            }
-
-          })
-          this.$nextTick(() => {
-            if(val){
-              document.body.scrollTop = val
-              document.documentElement.scrollTop = val
-            }
-          })
-          //console.log(this.result3)
-        }
-      })
+    tabsTypeChange(type) {
+      this.tabsType = type;
+      this.getData();
     },
     getData() {
       let self = this
-      const params = {
-        completed: false,
+      self.result=[];
+      if (this.tabsType === 0) {
+        listMyPendingTask({}).then((res) => {
+          if (res.code == ERR_OK) {
+            self.result = res.data.result
+            this.$nextTick(() => {
+              this.setSort_myTask(self.result)
+            })
+          }
+        })
+      } else {
+        
+        listPersonalAllByPage({}).then((res) => {
+          if (res.code == ERR_OK) {
+            self.result = res.data.result
+            this.$nextTick(() => {
+              this.setSort_myTask(self.result)
+            })
+          }
+        })
       }
-      self.result=[]
-      userTaskList(params).then((res) => {
-        if (res.code == ERR_OK) {
-          self.result = res.data.result
-          this.$nextTick(() => {
-            this.setSort_myTask(self.result)
-          })
-        }
-      })
     },
     getUsersObj1(userId) {
       const params = {
@@ -3718,43 +2662,19 @@ export default {
         }
       })
     },
-    getUsersObj2(userId) {
-      const params = {
-        userId:userId
-      }
-      this.optionsObj1 = []
-      this.ruleForm13.telObj13 = ''
-      listReportingUsers(params).then((res) => {
-        if (res.code == ERR_OK) {
-          this.optionsObj1 = res.data
-          for (let i in this.optionsObj1) {
-            if (this.optionsObj1[i].checked == true) {
-              this.ruleForm13.telObj13 = this.optionsObj1[i].userId
-            }
-          }
-        }
-      })
-    },
     goLink(val){
       this.getUsersObj1(val)
       this._listByExecutor(val,1)
     },
-    goLink1(val){
-      this.getUsersObj2(val)
-      //this._listByExecutor(val,2)
+    
+    // 获取任务组列表
+    getTaskGroupLists() {
+      getTaskGroupList().then((res) => {
+        if (res.code == ERR_OK) {
+          this.groupLists = res.data;
+        }
+      })
     },
-    // 获取任务类型
-    // getTaskType1() {
-    //   getTaskType().then((res) => {
-    //     if (res.code == ERR_OK) {
-    //       this.optionType = res.data
-    //       this.optionType.unshift({
-    //         taskTypeId: '',
-    //         taskTypeName: '请选择任务类型'
-    //       })
-    //     }
-    //   })
-    // },
     //获取任务组
     _listByExecutor(userId,key){
       let self = this
@@ -3764,20 +2684,8 @@ export default {
       listByExecutor(params).then((res) => {
         if(res.code == ERR_OK) {
           if(key==1){
-            this.ruleForm.value4 = ''
-            this.optionType = res.data
-            this.optionType.unshift({
-              taskTypeId:'',
-              taskTypeName: '请选择任务类型'
-            })
-          }else{
-            console.log('33')
-            this.ruleForm13.value14 = ''
-            this.optionType1 = res.data
-            this.optionType1.unshift({
-              taskTypeId:'',
-              taskTypeName: '请选择任务类型'
-            })
+            this.ruleForm.taskTypeId = ''
+            this.optionType = res.data;
           }
 
         }
@@ -3793,38 +2701,9 @@ export default {
         if(res.code == ERR_OK) {
           if(key==1){
             this.optionType = res.data
-            this.optionType.unshift({
-              taskTypeId:'',
-              taskTypeName: '请选择任务类型'
-            })
-              this.ruleForm.value4 = id
-          }else{
-            console.log('33')
-            this.ruleForm13.value14 = ''
-            this.optionType1 = res.data
-            this.optionType1.unshift({
-              taskTypeId:'',
-              taskTypeName: '请选择任务类型'
-            })
+              this.ruleForm.taskTypeId = id
           }
 
-        }
-     })
-    },
-    //获取任务组
-    _listByExecutor1(userId,key){
-      let self = this
-      const params = {
-        userId:userId
-      }
-      listByExecutor(params).then((res) => {
-        if(res.code == ERR_OK) {
-            self.optionType1 = res.data
-            self.optionType1.unshift({
-              taskTypeId:'',
-              taskTypeName: '请选择任务类型'
-            })
-            self.ruleForm13.value14 = key
         }
      })
     },
@@ -3834,11 +2713,11 @@ export default {
           this.users = res.data
           for (let i in this.users) {
             if (this.users[i].checked==true) {
-              this.ruleForm.value5 = this.users[i].userId
+              this.ruleForm.executorId = this.users[i].userId
             }
           }
-          this.getUsersObj1(this.ruleForm.value5)
-          this._listByExecutor(this.ruleForm.value5,1)
+          this.getUsersObj1(this.ruleForm.executorId)
+          this._listByExecutor(this.ruleForm.executorId,1)
         }
       })
     },
@@ -3849,11 +2728,11 @@ export default {
           this.users = res.data
           for (let i in this.users) {
             if (this.users[i].checked==true) {
-              this.ruleForm.value5 = this.users[i].userId
+              this.ruleForm.executorId = this.users[i].userId
             }
           }
-          this.getUsersObj1(this.ruleForm.value5)
-          this._listByExecutor4(this.ruleForm.value5,1,id)
+          this.getUsersObj1(this.ruleForm.executorId)
+          this._listByExecutor4(this.ruleForm.executorId,1,id)
         }
       })
     },
@@ -3884,130 +2763,64 @@ export default {
     choseRelateProject13(val) {
       this.ruleForm.value17 = val
     },
-    // 点击添加协助人
-    adduser() {
-      this.dialogVisible15 = true
-      this.ruleForm5.username=""
-      this.ruleForm5.percent=""
-    },
-    // 点击添加协助人
-    adduser13() {
-      this.dialogVisible25 = true
-      this.ruleForm25.username=""
-      this.ruleForm25.percent1=""
-    },
-    handleClose25(done) {
-      this.dialogVisible25 = false
-      this.$refs['ruleForm25'].resetFields();
-    },
-    submitForm25(formName1) {
-      let self = this
-      this.$refs[formName1].validate((valid) => {
-        if (valid) {
-          if(self.ruleForm25.username === self.ruleForm13.value15){
-            self.$notify.error({
-              title: '错误',
-              message:'执行人和协助人不能相同',
+    
+        adduser() {
+            this.dialogVisible5 = true;
+        },
+        // 添加任务组成员模态框
+        handleClose25(done) {
+            this.dialogVisible25 = false;
+            this.$refs["ruleForm25"].resetFields();
+        },
+        // 添加任务组成员模态框
+        submitForm25(formName1) {
+            let self = this;
+            this.$refs[formName1].validate(valid => {
+                if (valid) {
+                    if (self.ruleForm25.username === 
+                    self.ruleForm31.executorId) {
+                        self.$notify.error({
+                            title: "错误",
+                            message: "执行人和任务组成员不能相同"
+                        });
+                        return;
+                    }
+                    if (self.addUsers13.length > 0) {
+                        for (let item of self.addUsers13) {
+                            if (
+                                item.assistUserId === self.ruleForm25.username
+                            ) {
+                                self.$notify.error({
+                                    title: "错误",
+                                    message: "不能选择相同的任务组成员"
+                                });
+                                return;
+                            }
+                        }
+                    }
+                    self.dialogVisible25 = false;
+                    self.addUsers131 = [];
+                    let obj = {
+                        assistUserId: self.ruleForm25.username
+                    };
+                    self.addUsers131.push(obj);
+                    for (var i = 0; i < self.usersT.length; i++) {
+                        for (var j = 0; j < self.addUsers131.length; j++) {
+                            if ( self.usersT[i].userId === self.addUsers131[j].assistUserId ) {
+                                self.brr13.push({
+                                    username: self.usersT[i].userName
+                                });
+                            }
+                        }
+                    }
+                } else {
+                    return false;
+                }
             });
-            return
-          }
-          if(self.addUsers13.length>0){
-            for(let item of self.addUsers13){
-              if(item.assistUserId === self.ruleForm25.username){
-                self.$notify.error({
-                  title: '错误',
-                  message:'不能选择相同的协助人',
-                });
-                return
-              }
-            }
-          }
-          self.dialogVisible25 = false
-          let obj = {
-            assistUserId: self.ruleForm25.username,
-            proportion: self.ruleForm25.percent1
-          }
-          self.addUsers13.push(obj)
-//          console.log(self.addUsers13)
-          this.brr13 = []
-          for (var i = 0; i < self.usersT.length; i++) {
-            for (var j = 0; j < self.addUsers13.length; j++) {
-              if (self.usersT[i].userId == self.addUsers13[j].assistUserId) {
-                self.brr13.push({
-                  username: self.usersT[i].userName,
-                  proportion: self.addUsers13[j].proportion,
-                  assistUserId:self.addUsers13[j].assistUserId
-                })
-              }
-            }
-          }
-//          console.log(self.brr13.username)
-        } else {
-          return false;
-        }
-      });
-    },
-    resetForm25(formName1) {
-      this.dialogVisible25 = false
-      this.$refs[formName1].resetFields();
-    },
-    handleClose15(done) {
-      this.dialogVisible15 = false
-      this.$refs['ruleForm5'].resetFields();
-    },
-    submitForm15(formName1) {
-      let self = this
-      this.$refs[formName1].validate((valid) => {
-        if (valid) {
-          if(self.ruleForm5.username === self.ruleForm.value5){
-            self.$notify.error({
-              title: '错误',
-              message:'执行人和协助人不能相同',
-            });
-            return
-          }
-          if(self.addUsers.length>0){
-            for(let item of self.addUsers){
-              if(item.assistUserId === self.ruleForm5.username){
-                self.$notify.error({
-                  title: '错误',
-                  message:'不能选择相同的协助人',
-                });
-                return
-              }
-            }
-          }
-          self.dialogVisible15 = false
-          let obj = {
-            assistUserId: self.ruleForm5.username,
-            proportion: self.ruleForm5.percent
-          }
-          self.addUsers.push(obj)
-          this.brr = []
-          for (var i = 0; i < self.usersT.length; i++) {
-            for (var j = 0; j < self.addUsers.length; j++) {
-              if (self.usersT[i].userId == self.addUsers[j].assistUserId) {
-                self.brr.push({
-                  username: self.usersT[i].userName,
-                  proportion: self.addUsers[j].proportion,
-                  assistUserId:self.addUsers[j].assistUserId
-                })
-              }
-            }
-          }
-//          console.log(self.brr)
-        } else {
-          return false;
-        }
-      });
-    },
-    resetForm15(formName1) {
-      this.dialogVisible15 = false
-      this.$refs[formName1].resetFields();
-    },
+        },
     // 模态框的选择任务类型
     choseTaskType1(val) {
-      this.ruleForm.value4 = val
+      this.ruleForm.taskTypeId = val
     },
     // 模态框的选择任务类型
     choseTaskType13(val) {
@@ -4037,7 +2850,6 @@ export default {
           if (res.code == ERR_OK) {
             if(keys){
               let scrolled = document.documentElement.scrollTop || document.body.scrollTop
-              self.gettaskHeader(scrolled)
             }else{
               self.getAssignedTask()
               self.departCommentTaskUnCompleted()
@@ -4046,7 +2858,6 @@ export default {
               self.getChangeTask()
               self.getCommentTask()
               self.getData()
-              self.getData1()
             }
             self.$notify({
               title: '成功',
@@ -4065,107 +2876,12 @@ export default {
     // 待处理任务列表
     getUntreatTask() {
       this.result1=[]
-      departNewTaskPending().then((res) => {
+      listDeptPendingTasks().then((res) => {
         if (res.code == ERR_OK) {
-          this.result1 = res.data.result
-          this.total = res.data.totalCount
+          this.result1 = res.data
           this.$nextTick(() => {
             this.setSort_Tab0(this.result1)
           })
-          this.tabs = ["新任务/待审核<span style='color:#C2453A;'> ("+this.total+")</span>", "变更任务/待审核<span style='color:#C2453A;'> ("+this.total1+")</span>","任务已完成待评价<span style='color:#C2453A;'> ("+this.total2+")</span>","待分配<span style='color:#C2453A;'> ("+this.total3+")","任务未完成待评价<span style='color:#C2453A;'> ("+this.total4+")","待完善<span style='color:#C2453A;'> ("+this.total5+")"]
-        }
-      })
-    },
-    // 变更任务/待审核
-    getChangeTask(){
-      const params = {
-        nowPage:this.nowPage1,
-        pageShow:this.pageSize1
-      }
-      this.resultTask1=[]
-      departChangeTaskPending(params).then((res) => {
-        if(res.code == ERR_OK) {
-          this.resultTask1 = res.data.result
-          this.total1 = res.data.totalCount
-          this.$nextTick(() => {
-            this.setSort_Tab1(this.resultTask1)
-          })
-          this.tabs = ["新任务/待审核<span style='color:#C2453A;'> ("+this.total+")</span>", "变更任务/待审核<span style='color:#C2453A;'> ("+this.total1+")</span>","任务已完成待评价<span style='color:#C2453A;'> ("+this.total2+")</span>","待分配<span style='color:#C2453A;'> ("+this.total3+")","任务未完成待评价<span style='color:#C2453A;'> ("+this.total4+")","待完善<span style='color:#C2453A;'> ("+this.total5+")"]
-        }
-     })
-    },
-    // 待评级
-    getCommentTask(){
-      const params = {
-        nowPage:this.nowPage2,
-        pageShow:this.pageSize2
-      }
-      this.resultTask2=[]
-      departCommentTaskPending(params).then((res) => {
-        if(res.code == ERR_OK) {
-          this.resultTask2 = res.data.result
-          this.total2 = res.data.totalCount
-          this.$nextTick(() => {
-            this.setSort_Tab2(this.resultTask2)
-          })
-          this.tabs = ["新任务/待审核<span style='color:#C2453A;'> ("+this.total+")</span>", "变更任务/待审核<span style='color:#C2453A;'> ("+this.total1+")</span>","任务已完成待评价<span style='color:#C2453A;'> ("+this.total2+")</span>","待分配<span style='color:#C2453A;'> ("+this.total3+")","任务未完成待评价<span style='color:#C2453A;'> ("+this.total4+")","待完善<span style='color:#C2453A;'> ("+this.total5+")"]
-        }
-     })
-    },
-    // 待分配
-    getAssignedTask(){
-      const params = {
-        nowPage:this.nowPage3,
-        pageShow:this.pageSize3
-      }
-      this.resultTask3=[]
-      departAssignedTaskPending(params).then((res) => {
-        if(res.code == ERR_OK) {
-          this.resultTask3 = res.data.result
-          //console.log(res.data.totalCount)
-          this.total3 = res.data.totalCount
-          this.$nextTick(() => {
-            this.setSort_Tab3(this.resultTask3)
-          })
-          this.tabs = ["新任务/待审核<span style='color:#C2453A;'> ("+this.total+")</span>", "变更任务/待审核<span style='color:#C2453A;'> ("+this.total1+")</span>","任务已完成待评价<span style='color:#C2453A;'> ("+this.total2+")</span>","待分配<span style='color:#C2453A;'> ("+this.total3+")","任务未完成待评价<span style='color:#C2453A;'> ("+this.total4+")","待完善<span style='color:#C2453A;'> ("+this.total5+")"]
-        }
-     })
-    },
-    // 任务未完成待评价
-    departCommentTaskUnCompleted(){
-      const params = {
-        nowPage:this.nowPage4,
-        pageShow:this.pageSize4
-      }
-      this.resultTask4=[]
-      departCommentTaskPendingUnCompleted(params).then((res) => {
-        if(res.code == ERR_OK) {
-          if(res.data){
-            this.resultTask4 = res.data.result
-            this.total4 = res.data.totalCount
-            this.$nextTick(() => {
-              this.setSort_Tab4()
-            })
-          }
-          this.tabs = ["新任务/待审核<span style='color:#C2453A;'> ("+this.total+")</span>", "变更任务/待审核<span style='color:#C2453A;'> ("+this.total1+")</span>","任务已完成待评价<span style='color:#C2453A;'> ("+this.total2+")</span>","待分配<span style='color:#C2453A;'> ("+this.total3+")","任务未完成待评价<span style='color:#C2453A;'> ("+this.total4+")","待完善<span style='color:#C2453A;'> ("+this.total5+")"]
-        }
-     })
-    },
-    //    待完善
-    _listDraftTask(){
-      const params = {
-        nowPage:this.nowPage5,
-        pageShow:this.pageSize5
-      }
-      this.resultTask5=[]
-      listDraftTask(params).then((res) => {
-        if(res.code == ERR_OK) {
-          this.resultTask5 = res.data.result
-          this.total5 = res.data.totalCount
-          this.$nextTick(() => {
-             this.setSort_Tab5(this.resultTask5)
-          })
-          this.tabs = ["新任务/待审核<span style='color:#C2453A;'> ("+this.total+")</span>", "变更任务/待审核<span style='color:#C2453A;'> ("+this.total1+")</span>","任务已完成待评价<span style='color:#C2453A;'> ("+this.total2+")</span>","待分配<span style='color:#C2453A;'> ("+this.total3+")","任务未完成待评价<span style='color:#C2453A;'> ("+this.total4+")","待完善<span style='color:#C2453A;'> ("+this.total5+")"]
         }
       })
     },
@@ -4173,16 +2889,11 @@ export default {
     getUntreatTask1() {
       getDeptStatistics().then((res) => {
         if (res.code == ERR_OK) {
-          this.cimpTaskSize = res.data.cimpTaskSize
-          this.dimpTaskSize = res.data.dimpTaskSize
-          this.pimpTaskSize = res.data.pimpTaskSize
-          this.totalTaskSize = res.data.totalTaskSize
-          this.pcommonTaskSize = res.data.pcommonTaskSize
-          this.pendingTaskSize = res.data.pendingTaskSize
+          this.taskCountLists = res.data;
         }
       })
     },
-//  拖动排序接口
+    //  拖动排序接口
     _dragTask(sourceTaskId,targetBeforeTaskId,targetAfterTaskId,num){
       const param={
         sourceTaskId:sourceTaskId,
@@ -4208,12 +2919,8 @@ export default {
         if(num==6){
          this.getData()
         }
-        if(num==7){
-         this.getData1()
-        }
         if(num==8){
           let scrolled = document.documentElement.scrollTop || document.body.scrollTop
-          this.gettaskHeader(scrolled)
         }
         if(num==9){
           this._listDraftTask()
@@ -4257,152 +2964,7 @@ export default {
         }
       })
     },
-//    变更任务/待审核
-    setSort_Tab1(){
-      const el = document.querySelectorAll('.taskNum1 .el-table__body-wrapper > table > tbody')[0]
-      this.sortable = Sortable.create(el, {
-        onEnd: evt => {
-          var oldIndex=evt.oldIndex;
-          var newIndex=evt.newIndex;
-          if(oldIndex>newIndex){
-            if(newIndex==0){
-              this._dragTask(this.resultTask1[oldIndex].taskId,'',this.resultTask1[newIndex].taskId,2)
-            }else{
-              this._dragTask(this.resultTask1[oldIndex].taskId,this.resultTask1[newIndex-1].taskId,this.resultTask1[newIndex].taskId,2)
-            }
-          }else{
-            if(newIndex==0){
-              this._dragTask(this.resultTask1[oldIndex].taskId,'',this.resultTask1[newIndex].taskId,2)
-            }else if(newIndex==this.resultTask1.length-1){
-              this._dragTask(this.resultTask1[oldIndex].taskId,this.resultTask1[newIndex].taskId,'',2)
-            }else{
-              if(newIndex>=this.resultTask1.length){
-                this._dragTask(this.resultTask1[oldIndex].taskId,this.resultTask1[newIndex-1].taskId,'',2)
-              }else{
-                this._dragTask(this.resultTask1[oldIndex].taskId,this.resultTask1[newIndex].taskId,this.resultTask1[newIndex+1].taskId,2)
-              }
-            }
-          }
-        }
-      })
-    },
-//    任务已完成待评价
-    setSort_Tab2(){
-      const el = document.querySelectorAll('.taskNum2 .el-table__body-wrapper > table > tbody')[0]
-      this.sortable = Sortable.create(el, {
-        onEnd: evt => {
-          var oldIndex=evt.oldIndex;
-          var newIndex=evt.newIndex;
-          if(oldIndex>newIndex){
-            if(newIndex==0){
-              this._dragTask(this.resultTask2[oldIndex].taskId,'',this.resultTask2[newIndex].taskId,3)
-            }else{
-              this._dragTask(this.resultTask2[oldIndex].taskId,this.resultTask2[newIndex-1].taskId,this.resultTask2[newIndex].taskId,3)
-            }
-          }else{
-            if(newIndex==0){
-              this._dragTask(this.resultTask2[oldIndex].taskId,'',this.resultTask2[newIndex].taskId,3)
-            }else if(newIndex==this.resultTask2.length-1){
-              this._dragTask(this.resultTask2[oldIndex].taskId,this.resultTask2[newIndex].taskId,'',3)
-            }else{
-              if(newIndex>=this.resultTask2.length){
-                this._dragTask(this.resultTask2[oldIndex].taskId,this.resultTask2[newIndex-1].taskId,'',3)
-              }else{
-                this._dragTask(this.resultTask2[oldIndex].taskId,this.resultTask2[newIndex].taskId,this.resultTask2[newIndex+1].taskId,3)
-              }
-            }
-          }
-        }
-      })
-    },
-//待分配
-    setSort_Tab3(){
-      const el = document.querySelectorAll('.taskNum3 .el-table__body-wrapper > table > tbody')[0]
-      this.sortable = Sortable.create(el, {
-        onEnd: evt => {
-          var oldIndex=evt.oldIndex;
-          var newIndex=evt.newIndex;
-          if(oldIndex>newIndex){
-            if(newIndex==0){
-              this._dragTask(this.resultTask3[oldIndex].taskId,'',this.resultTask3[newIndex].taskId,4)
-            }else{
-              this._dragTask(this.resultTask3[oldIndex].taskId,this.resultTask3[newIndex-1].taskId,this.resultTask3[newIndex].taskId,4)
-            }
-          }else{
-            if(newIndex==0){
-              this._dragTask(this.resultTask3[oldIndex].taskId,'',this.resultTask3[newIndex].taskId,4)
-            }else if(newIndex==this.resultTask3.length-1){
-              this._dragTask(this.resultTask3[oldIndex].taskId,this.resultTask3[newIndex].taskId,'',4)
-            }else{
-              if(newIndex>=this.resultTask3.length){
-                this._dragTask(this.resultTask3[oldIndex].taskId,this.resultTask3[newIndex-1].taskId,'',4)
-              }else{
-                this._dragTask(this.resultTask3[oldIndex].taskId,this.resultTask3[newIndex].taskId,this.resultTask3[newIndex+1].taskId,4)
-              }
-            }
-          }
-        }
-      })
-    },
-//    任务未完成待评价
-    setSort_Tab4(){
-      const el = document.querySelectorAll('.taskNum4 .el-table__body-wrapper > table > tbody')[0]
-      this.sortable = Sortable.create(el, {
-        onEnd: evt => {
-          var oldIndex=evt.oldIndex;
-          var newIndex=evt.newIndex;
-          if(oldIndex>newIndex){
-            if(newIndex==0){
-              this._dragTask(this.resultTask4[oldIndex].taskId,'',this.resultTask4[newIndex].taskId,5)
-            }else{
-              this._dragTask(this.resultTask4[oldIndex].taskId,this.resultTask4[newIndex-1].taskId,this.resultTask4[newIndex].taskId,5)
-            }
-          }else{
-            if(newIndex==0){
-              this._dragTask(this.resultTask4[oldIndex].taskId,'',this.resultTask4[newIndex].taskId,5)
-            }else if(newIndex==this.resultTask4.length-1){
-              this._dragTask(this.resultTask4[oldIndex].taskId,this.resultTask4[newIndex].taskId,'',5)
-            }else{
-              if(newIndex>=this.resultTask4.length){
-                this._dragTask(this.resultTask4[oldIndex].taskId,this.resultTask4[newIndex-1].taskId,'',5)
-              }else{
-                this._dragTask(this.resultTask4[oldIndex].taskId,this.resultTask4[newIndex].taskId,this.resultTask4[newIndex+1].taskId,5)
-              }
-            }
-          }
-        }
-      })
-    },
-//    待完善
-    setSort_Tab5(){
-      const el = document.querySelectorAll('.taskNum5 .el-table__body-wrapper > table > tbody')[0]
-      this.sortable = Sortable.create(el, {
-        onEnd: evt => {
-          var oldIndex=evt.oldIndex;
-          var newIndex=evt.newIndex;
-          if(oldIndex>newIndex){
-            if(newIndex==0){
-              this._dragTask(this.resultTask5[oldIndex].taskId,'',this.resultTask5[newIndex].taskId,9)
-            }else{
-              this._dragTask(this.resultTask5[oldIndex].taskId,this.resultTask5[newIndex-1].taskId,this.resultTask5[newIndex].taskId,9)
-            }
-          }else{
-            if(newIndex==0){
-              this._dragTask(this.resultTask5[oldIndex].taskId,'',this.resultTask5[newIndex].taskId,9)
-            }else if(newIndex==this.resultTask5.length-1){
-              this._dragTask(this.resultTask5[oldIndex].taskId,this.resultTask5[newIndex].taskId,'',9)
-            }else{
-              if(newIndex>=this.resultTask5.length){
-                this._dragTask(this.resultTask5[oldIndex].taskId,this.resultTask5[newIndex-1].taskId,'',9)
-              }else{
-                this._dragTask(this.resultTask5[oldIndex].taskId,this.resultTask5[newIndex].taskId,this.resultTask5[newIndex+1].taskId,5)
-              }
-            }
-          }
-        }
-      })
-    },
-//我的任务
+    //我的任务
     setSort_myTask(){
       const el = document.querySelectorAll('.mytask .el-table__body-wrapper > table > tbody')[0]
       this.sortable = Sortable.create(el, {
@@ -4431,161 +2993,7 @@ export default {
         }
       })
     },
-//    其他任务
-    setSort_otherTask(){
-      const el = document.querySelectorAll('.otherTask .el-table__body-wrapper > table > tbody')[0]
-      this.sortable = Sortable.create(el, {
-        onEnd: evt => {
-          var oldIndex=evt.oldIndex;
-          var newIndex=evt.newIndex;
-          if(oldIndex>newIndex){
-            if(newIndex==0){
-              this._dragTask(this.result11[oldIndex].taskId,'',this.result11[newIndex].taskId,7)
-            }else{
-              this._dragTask(this.result11[oldIndex].taskId,this.result11[newIndex-1].taskId,this.result11[newIndex].taskId,7)
-            }
-          }else{
-            if(newIndex==0){
-              this._dragTask(this.result11[oldIndex].taskId,'',this.result11[newIndex].taskId,7)
-            }else if(newIndex==this.result11.length-1){
-              this._dragTask(this.result11[oldIndex].taskId,this.result11[newIndex].taskId,'',7)
-            }else{
-              if(newIndex>=this.result11.length){
-                this._dragTask(this.result11[oldIndex].taskId,this.result11[newIndex-1].taskId,'',7)
-              }else{
-                this._dragTask(this.result11[oldIndex].taskId,this.result11[newIndex].taskId,this.result11[newIndex+1].taskId,7)
-              }
-            }
-          }
-        }
-      })
-    },
-//    员工任务staffView
-    setSort_staffView(){
-      const el = document.querySelectorAll('.partView .el-table__body-wrapper > table > tbody')
-      const childrenView = document.querySelectorAll('.childrenView .el-table__body-wrapper > table > tbody')
-      console.log(el.length,childrenView.length)
-      var arr = [];
-      var brr = [];
 
-      for(let n=0;n<this.result3.taskInfos.length;n++) {
-        arr.push(this.result3.taskInfos[n])
-      }
-
-      for(let n=0;n<this.result3.branchTaskInfoDeptmentalVos.length;n++) {
-        for(let j=0;j<this.result3.branchTaskInfoDeptmentalVos[n].taskInfos.length;j++) {
-          brr.push(this.result3.branchTaskInfoDeptmentalVos[n].taskInfos[j])
-        }
-      }
-      for(let i=0;i<el.length;i++){
-        this.sortable = Sortable.create(el[i], {
-          onEnd: evt => {
-            var oldIndex=evt.oldIndex;
-            var newIndex=evt.newIndex;
-            if(oldIndex>newIndex){
-              if(newIndex==0){
-                this._dragTask(arr[i].tasks[oldIndex].taskId,'',arr[i].tasks[newIndex].taskId,8)
-              }else{
-                this._dragTask(arr[i].tasks[oldIndex].taskId,arr[i].tasks[newIndex-1].taskId,arr[i].tasks[newIndex].taskId,8)
-              }
-            }else{
-              if(newIndex==0){
-                this._dragTask(arr[i].tasks[oldIndex].taskId,'',arr[i].tasks[newIndex].taskId,8)
-              }else if(newIndex==arr[i].tasks.length-1){
-                this._dragTask(arr[i].tasks[oldIndex].taskId,arr[i].tasks[newIndex].taskId,'',8)
-              }else{
-                if(newIndex>=arr[i].tasks.length){
-                  this._dragTask(arr[i].tasks[oldIndex].taskId,arr[i].tasks[newIndex-1].taskId,'',8)
-                }else{
-                  this._dragTask(arr[i].tasks[oldIndex].taskId,arr[i].tasks[newIndex].taskId,arr[i].tasks[newIndex+1].taskId,8)
-                }
-              }
-            }
-          }
-        })
-      }
-
-      for(let i=0;i<childrenView.length;i++){
-        this.sortable = Sortable.create(childrenView[i], {
-          onEnd: evt => {
-            var oldIndex=evt.oldIndex;
-            var newIndex=evt.newIndex;
-            if(oldIndex>newIndex){
-              if(newIndex==0){
-                this._dragTask(brr[i].tasks[oldIndex].taskId,'',brr[i].tasks[newIndex].taskId,8)
-              }else{
-                this._dragTask(brr[i].tasks[oldIndex].taskId,brr[i].tasks[newIndex-1].taskId,brr[i].tasks[newIndex].taskId,8)
-              }
-            }else{
-              if(newIndex==0){
-                this._dragTask(brr[i].tasks[oldIndex].taskId,'',brr[i].tasks[newIndex].taskId,8)
-              }else if(newIndex==brr[i].tasks.length-1){
-                this._dragTask(brr[i].tasks[oldIndex].taskId,brr[i].tasks[newIndex].taskId,'',8)
-              }else{
-                if(newIndex>=brr[i].tasks.length){
-                  this._dragTask(brr[i].tasks[oldIndex].taskId,brr[i].tasks[newIndex-1].taskId,'',8)
-                }else{
-                  this._dragTask(brr[i].tasks[oldIndex].taskId,brr[i].tasks[newIndex].taskId,brr[i].tasks[newIndex+1].taskId,8)
-                }
-              }
-            }
-          }
-        })
-      }
-
-    },
-    addTaskType() {
-      this.dialogVisible5 = true
-    },
-    handleClose5() {
-      this.dialogVisible5 = false
-      this.$refs['ruleForm'].resetFields();
-    },
-    submitForm5(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.dialogVisible5 = false
-        } else {
-          return false;
-        }
-      });
-    },
-    resetForm5(formName) {
-      this.dialogVisible5 = false
-      this.$refs[formName].resetFields();
-    },
-
-    assignTask(val,event) {
-      var e = event;
-      if(e&&e.stopPropagation){
-          e.stopPropagation()
-      }else if(window.event){
-          window.event.cancelBubble=true;
-      }
-      this.taskId = val
-      this.dialogVisible3 = true
-      this.addUsers13 = []
-      this.brr13 = []
-      this.ruleForm13.value71 = []
-      const params = {
-        taskId: val
-      }
-      assessTaskDetail(params).then((res) => {
-        if (res.code == ERR_OK) {
-          this.ruleForm13.name13 = res.data.title
-          this.ruleForm13.value15 = res.data.executorId
-          this._listByExecutor1(res.data.executorId,res.data.taskTypeId)
-          this.ruleForm13.telObj13 = res.data.reportId
-          //this.ruleForm13.value14 = res.data.taskTypeId
-          //this.ruleForm13.value17 = res.data.projectId
-          this.getUsersObjAssign(res.data.executorId,res.data.reportId)
-          this.ruleForm13.value13 = res.data.grade
-          this.ruleForm13.date13 = new Date(res.data.planEndDate)
-          //this.ruleForm.value16 = res.data.repeatMode
-          this.ruleForm13.content13 = res.data.content
-        }
-      })
-    },
     //获取汇报对象
     getUsersObjAssign(userId,reportId) {
       const params = {
@@ -4601,8 +3009,8 @@ export default {
     },
     mindTask() {
       this.ruleForm.name = ''
-      this.ruleForm.value4 = ''
-      this.ruleForm.value3 = ''
+      this.ruleForm.taskTypeId = ''
+      this.ruleForm.taskWorkload = ''
       this.ruleForm.date1 = ''
       this.ruleForm.content = ''
       this.dialogVisible = true
@@ -4618,8 +3026,8 @@ export default {
     },
     mindTask1(id) {
       this.ruleForm.name = ''
-      this.ruleForm.value4 = ''
-      this.ruleForm.value3 = ''
+      this.ruleForm.taskTypeId = ''
+      this.ruleForm.taskWorkload = ''
       this.ruleForm.date1 = ''
       this.ruleForm.content = ''
       this.dialogVisible = true
@@ -4652,70 +3060,6 @@ export default {
 //      console.log(val)
       //console.log(`当前页: ${val}`);
     },
-
-    handleClose3() {
-      this.dialogVisible3 = false
-      this.$refs['ruleForm13'].resetFields();
-    },
-    submitForm3(formName) {
-      let self = this
-//      console.log(self.ruleForm.value15)
-      //console.log(this.ruleForm.value5 )
-      var value71 = this.ruleForm13.value71.join(',')
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          let d = new Date(self.ruleForm.date13)
-          let time = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
-
-          const params = {
-            taskId: self.taskId,
-            title: self.ruleForm13.name13,
-            taskTypeId: self.ruleForm13.value14,
-            executorId: self.ruleForm13.value15,
-            reportId: self.ruleForm13.telObj13,
-            projectId: self.ruleForm13.value17,
-            grade: self.ruleForm13.value13,
-            visibleRange:value71,
-            ptaskAssists: JSON.stringify(self.addUsers13),
-            //repeatMode: self.ruleForm.value16,
-            content: self.ruleForm13.content13
-          }
-          assignmentTask(params).then((res) => {
-            if (res.code == ERR_OK) {
-              self.getAssignedTask()
-              self.departCommentTaskUnCompleted()
-              self._listDraftTask()
-              let scrolled = document.documentElement.scrollTop || document.body.scrollTop
-              self.getUntreatTask1()
-              self.getData()
-              self.gettaskHeader(scrolled)
-              self.dialogVisible3 = false
-              self.$refs[formName].resetFields()
-              this.$notify({
-                title: '成功',
-                message: '分配任务成功',
-                type: 'success'
-              });
-            } else if(res.code == 'exceedPersonal'){
-              self.dialogVisible11 = true
-              self.taskNumber = res.data.length
-              self.Taskoptions = res.data
-            }else{
-              this.$notify.error({
-                title: '错误',
-                message:res.msg
-              });
-            }
-          })
-        } else {
-          return false;
-        }
-      });
-    },
-    resetForm3(formName) {
-      this.dialogVisible3 = false
-      this.$refs[formName].resetFields();
-    },
     // 完成任务
     completeModal(val,event) {
       var e = event;
@@ -4725,22 +3069,8 @@ export default {
           window.event.cancelBubble=true;
       }
       this.taskId = val
-      this.dialogVisible8 = true
+      this.dialogVisible44 = true
       this.mineRate = true
-      const params={
-         id:this.taskId
-      }
-      getTaskComment(params).then((res) => {
-        if (res.code == ERR_OK) {
-          this.ruleForm8.rateMine = res.data.comment
-        } else {
-          this.$notify.error({
-            title: '错误',
-            message: res.msg
-          });
-        }
-      })
-
     },
     handleClose8() {
       this.dialogVisible8 = false
@@ -4751,9 +3081,9 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           const params = 　 {
-            taskId: self.taskId,
-            finishQuality: self.ruleForm8.mass,
-            changeContent: self.ruleForm8.rateContent
+            id: self.taskId,
+            score:self.ruleForm8.score8,
+            comment:self.ruleForm8.comment8
           }
           assessTask(params).then((res) => {
             if (res.code == ERR_OK) {
@@ -4763,8 +3093,6 @@ export default {
               self.getUntreatTask1()
               self.$refs[formName].resetFields()
               self.getData()
-              self.getData1()
-              self.gettaskHeader(scrolled)
               this.$notify({
                 title: '成功',
                 message: '评价完成',
@@ -4811,8 +3139,6 @@ export default {
               let scrolled = document.documentElement.scrollTop || document.body.scrollTop
               self.$refs[formName].resetFields()
               self.getData()
-              self.getData1()
-              self.gettaskHeader(scrolled)
               this.$notify.info({
                 title: '提示',
                 message: '审核完成'
@@ -4852,8 +3178,6 @@ export default {
           self.getChangeTask()
           let scrolled = document.documentElement.scrollTop || document.body.scrollTop
           self.getData()
-          self.getData1()
-          self.gettaskHeader(scrolled)
           self.$refs['ruleFormS'].resetFields()
           this.$notify.info({
             title: '提示',
@@ -4886,8 +3210,6 @@ export default {
             self.getCommentTask()
             let scrolled = document.documentElement.scrollTop || document.body.scrollTop
             self.getData()
-            self.getData1()
-            self.gettaskHeader(scrolled)
             self.$refs['ruleFormS'].resetFields()
             this.$notify.info({
               title: '提示',
@@ -4923,8 +3245,6 @@ export default {
             self.getCommentTask()
             let scrolled = document.documentElement.scrollTop || document.body.scrollTop
             self.getData()
-            self.getData1()
-            self.gettaskHeader(scrolled)
             self.$refs['ruleForm14'].resetFields()
             self.$refs['ruleFormS'].resetFields()
             self.$notify.info({
@@ -4959,45 +3279,6 @@ export default {
     resetForm7(formName) {
       let self = this
       this.dialogVisibleS = true
-      // this.$refs[formName].validate((valid) => {
-      //   if (valid) {
-      //     const params = 　 {
-      //       taskId: self.taskId,
-      //       changeStatus: 'REJECT',
-      //       changeReason: self.ruleForm7.becomCuase1,
-      //       changeContent: self.ruleForm7.grades,
-      //       taskChangeId: self.taskChangeId,
-      //       rejectReason: self.ruleForm7.becomCuase2
-      //     }
-      //     approvalTask(params).then((res) => {
-      //       if (res.code == ERR_OK) {
-      //         self.dialogVisible7 = false
-      //         self.getUntreatTask()
-      //         self.getUntreatTask1()
-      //         self.getChangeTask()
-      //         self.gettaskHeader()
-      //         self.getData()
-      //         self.getData1()
-      //         self.$refs[formName].resetFields()
-      //         this.$notify.info({
-      //           title: '提示',
-      //           message: '审核不通过'
-      //         });
-      //       } else if(res.code == 'exceedPersonal'){
-      //         self.dialogVisible11 = true
-      //         self.taskNumber = res.data.length
-      //         self.Taskoptions = res.data
-      //       }else{
-      //         this.$notify.error({
-      //           title: '错误',
-      //           message:res.msg
-      //         });
-      //       }
-      //     })
-      //   } else {
-      //     return false;
-      //   }
-      // });
     },
     handleClose6() {
       this.dialogVisible6 = false
@@ -5028,8 +3309,6 @@ export default {
               let scrolled = document.documentElement.scrollTop || document.body.scrollTop
               self.$refs[formName].resetFields()
               self.getData()
-              self.getData1()
-              self.gettaskHeader(scrolled)
               this.$notify.info({
                 title: '提示',
                 message: '审核通过'
@@ -5049,41 +3328,6 @@ export default {
     resetForm6(formName) {
       let self = this
       this.dialogVisibleS = true
-      // this.$refs[formName].validate((valid) => {
-      //   if (valid) {
-      //     const params = 　 {
-      //       taskId: self.taskId,
-      //       changeStatus: 'REJECT',
-      //       changeReason: self.ruleForm6.cancleCause,
-      //       taskChangeId: self.taskChangeId,
-      //       rejectReason: self.ruleForm6.becomCuase3
-      //     }
-      //     approvalTask(params).then((res) => {
-      //       if (res.code == ERR_OK) {
-      //         self.dialogVisible6 = false
-      //         self.getUntreatTask()
-      //         self.getUntreatTask1()
-      //         self.getChangeTask()
-      //         self.getCommentTask()
-      //         self.gettaskHeader()
-      //         self.getData()
-      //         self.getData1()
-      //         self.$refs[formName].resetFields()
-      //         self.$notify.info({
-      //           title: '消息',
-      //           message: '审核不通过'
-      //         });
-      //       } else {
-      //         self.$notify.error({
-      //           title: '错误',
-      //           message:res.msg
-      //         });
-      //       }
-      //     })
-      //   } else {
-      //     return false;
-      //   }
-      // });
     },
     lateCheck(val,keys,dates,become,event) {
       var e = event;
@@ -5180,8 +3424,6 @@ export default {
               let scrolled = document.documentElement.scrollTop || document.body.scrollTop
               self.$refs[formName].resetFields()
               self.getData()
-              self.getData1()
-              self.gettaskHeader(scrolled)
               this.$notify.info({
                 title: '提示',
                 message: '审核通过'
@@ -5201,210 +3443,148 @@ export default {
     resetForm4(formName) {
       let self = this
       this.dialogVisibleS = true
-      // this.$refs[formName].validate((valid) => {
-      //   if (valid) {
-      //
-      //     let d = new Date(self.ruleForm14.date2)
-      //     let time = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
-      //     const params = 　 {
-      //       taskId: self.taskId,
-      //       changeStatus: 'REJECT',
-      //       changeReason: self.ruleForm14.delayCause,
-      //       taskChangeId: self.taskChangeId,
-      //       rejectReason: self.ruleForm14.becomCuase4,
-      //       changeContent: time
-      //     }
-      //     approvalTask(params).then((res) => {
-      //       if (res.code == ERR_OK) {
-      //         self.dialogVisible4 = false
-      //         self.getUntreatTask()
-      //         self.getUntreatTask1()
-      //         self.getChangeTask()
-      //         self.getCommentTask()
-      //         self.gettaskHeader()
-      //         self.getData()
-      //         self.getData1()
-      //         self.$refs[formName].resetFields()
-      //         self.$notify.info({
-      //           title: '提示',
-      //           message: '审核不通过'
-      //         });
-      //       } else {
-      //         self.$notify.error({
-      //           title: '错误',
-      //           message: res.msg
-      //         });
-      //       }
-      //     })
-      //   } else {
-      //     return false;
-      //   }
-      // });
     },
     handleClose(done) {
       this.dialogVisible = false
       this.$refs['ruleForm'].resetFields();
     },
-    saveDrafts(formName) {
-      let self = this
-      if(this.ruleForm.name==''){
-        this.$notify.error({
-          title: '错误',
-          message:'请输入任务标题'
-        });
-        return false;
-      }
-      var time;
-      var value71 = this.ruleForm.value71.join(',')
-      if(self.ruleForm.date1=='') {
-        time = ''
-      }else{
-        var d = new Date(self.ruleForm.date1)
-        time = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
-      }
-      const params = {
-        title:self.ruleForm.name,
-        taskTypeId:self.ruleForm.value4,
-        executorId:self.ruleForm.value5,
-        reportId:self.ruleForm.telObj,
-        projectId:self.ruleForm.value7,
-        grade:self.ruleForm.value3,
-        ptaskAssists:JSON.stringify(self.addUsers),
-        planEndDate:time,
-        visibleRange:value71,
-        draftTask:true,
-        content:self.ruleForm.content
-      }
-      publishTask(params).then((res) => {
-        if (res.code == ERR_OK) {
-          self.dialogVisible = false
-          self.$refs[formName].resetFields();
-          self.getAssignedTask()
-          self.departCommentTaskUnCompleted()
-          self._listDraftTask()
-          self.getUntreatTask()
-          self.getUntreatTask1()
-          self.getChangeTask()
-          self.getCommentTask()
-          let scrolled = document.documentElement.scrollTop || document.body.scrollTop
-          self.getData()
-          self.getData1()
-          self.gettaskHeader(scrolled)
-          self.$refs[formName].resetFields()
-          self.$notify({
-            title: '成功',
-            message: '发起任务成功',
-            type: 'success'
-          });
-        }else{
-          this.$notify.error({
-            title: '错误',
-            message:res.msg
-          });
+    
+    submitForm(submitType) {
+        // submitType 提交类型 1 提交  0 保存草稿
+        let self = this;
+        if (this.ruleForm.name == "") {
+            this.$notify.error({
+                title: "错误",
+                message: "请输入任务标题"
+            });
+            return false;
         }
-      })
-    },
-    submitForm(formName) {
-      let self = this
-      if(this.ruleForm.name==''){
-        this.$notify.error({
-          title: '错误',
-          message:'请输入任务标题'
-        });
-        return false;
-      }
-      if(this.ruleForm.name.trim().length>50){
-        this.$notify.error({
-          title: '错误',
-          message:'任务标题不能超过50个字符'
-        });
-        return false;
-      }
-      if(this.ruleForm.value5==''&&this.ruleForm.value5!=0){
-        this.$notify.error({
-          title: '错误',
-          message:'请选择执行人'
-        });
-        return false;
-      }
-      if(this.ruleForm.telObj==''&&this.ruleForm.telObj!=0){
-        this.$notify.error({
-          title: '错误',
-          message:'请选择任务汇报对象'
-        });
-        return false;
-      }
-      if(this.ruleForm.value4==''){
-        this.$notify.error({
-          title: '错误',
-          message:'请选择任务类型'
-        });
-        return false;
-      }
-      if(this.ruleForm.value3==''){
-        this.$notify.error({
-          title: '错误',
-          message:'请选择任务重要等级'
-        });
-        return false;
-      }
-      if(this.ruleForm.date1==''){
-        this.$notify.error({
-          title: '错误',
-          message:'请输入完成时间'
-        });
-        return false;
-      }
-      if(this.ruleForm.content==''){
-        this.$notify.error({
-          title: '错误',
-          message:'请输入任务内容'
-        });
-        return false;
-      }
-      var value71 = this.ruleForm.value71.join(',')
-      let d = new Date(self.ruleForm.date1)
-      let time = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
-      const params = {
-        title:self.ruleForm.name,
-        taskTypeId:self.ruleForm.value4,
-        executorId:self.ruleForm.value5,
-        reportId:self.ruleForm.telObj,
-        projectId:self.ruleForm.value7,
-        grade:self.ruleForm.value3,
-        ptaskAssists:JSON.stringify(self.addUsers),
-        planEndDate:time,
-        visibleRange:value71,
-        content:self.ruleForm.content
-      }
-      publishTask(params).then((res) => {
-        if (res.code == ERR_OK) {
-          self.dialogVisible = false
-          self.$refs[formName].resetFields();
-          self.getAssignedTask()
-          self.departCommentTaskUnCompleted()
-          self._listDraftTask()
-          self.getUntreatTask()
-          self.getUntreatTask1()
-          self.getChangeTask()
-          self.getCommentTask()
-          let scrolled = document.documentElement.scrollTop || document.body.scrollTop
-          self.getData()
-          self.getData1()
-          self.gettaskHeader(scrolled)
-          self.$refs[formName].resetFields()
-          self.$notify({
-            title: '成功',
-            message: '发起任务成功',
-            type: 'success'
-          });
-        }else{
-          this.$notify.error({
-            title: '错误',
-            message:res.msg
-          });
+        if (this.ruleForm.name.trim().length > 50) {
+            this.$notify.error({
+                title: "错误",
+                message: "任务标题不能超过50个字符"
+            });
+            return false;
         }
-      })
+        if (submitType === 1) {
+            if (this.ruleForm.executorId == "" && this.ruleForm.executorId != 0) {
+                this.$notify.error({
+                    title: "错误",
+                    message: "请选择执行人"
+                });
+                return false;
+            }
+            if (this.ruleForm.taskTypeId == "") {
+                this.$notify.error({
+                    title: "错误",
+                    message: "请选择任务类型"
+                });
+                return false;
+            }
+            if (this.ruleForm.telObj == "" && this.ruleForm.telObj != 0) {
+                this.$notify.error({
+                    title: "错误",
+                    message: "请选择任务汇报对象"
+                });
+                return false;
+            }
+            if (this.ruleForm.taskWorkload == "") {
+                this.$notify.error({
+                    title: "错误",
+                    message: "请选择任务工作量"
+                });
+                return false;
+            }
+            if (this.ruleForm.date1 == "") {
+                this.$notify.error({
+                    title: "错误",
+                    message: "请输入完成时间"
+                });
+                return false;
+            }
+            if (this.ruleForm.content == "") {
+                this.$notify.error({
+                    title: "错误",
+                    message: "请输入任务内容"
+                });
+                return false;
+            }
+            if (this.ruleForm.content.trim().length > 200) {
+                this.$notify.error({
+                    title: "错误",
+                    message: "任务内容不能超过200个字符"
+                });
+                return false;
+            }
+        }
+
+        var time;
+        var value71 = this.ruleForm.value71.join(",");
+        if (self.ruleForm.date1 == "") {
+            time = "";
+        } else {
+            time = moment(self.ruleForm.date1).format('YYYY-MM-DD');
+        }
+        
+        let params = {
+            title: self.ruleForm.name, // 任务标题
+            taskTypeId: self.ruleForm.taskTypeId, // 任务类型ID
+            executorId: self.ruleForm.executorId, // 执行人
+            reportId: self.ruleForm.telObj, // 任务汇报对象
+            projectId: self.ruleForm.projectId, // 关联项目
+            taskWorkload: self.ruleForm.taskWorkload, // 任务工作量
+            taskCategory: self.ruleForm.taskCategory, // 任务性质
+            visibleRange: value71,
+            planEndDate: time,
+            content: self.ruleForm.content
+        };
+        if (self.ruleForm.taskCategory == 0) {
+            params.taskGroupId = self.ruleForm.taskGroupId;
+        } else if (self.ruleForm.taskCategory == 1) {
+            let usersArr = [];
+            for(let item of self.addUsers) {
+                usersArr.push(item.assistUserId);
+            }
+            params.taskGroupMemberIds = usersArr.join(',');
+        }
+        
+        if (submitType === 0) {
+            saveDraftTask(params).then(res => {
+                if (res.code == ERR_OK) {
+                    self.dialogVisible = false;
+                    
+                    this.$refs.ruleForm.resetFields();
+                    this.$notify({
+                        title: "成功",
+                        message: "发起任务成功",
+                        type: "success"
+                    });
+                } else {
+                    this.$notify.error({
+                        title: "错误",
+                        message: res.msg
+                    });
+                }
+            });
+        } else if (submitType === 1) {
+            publishTask(params).then(res => {
+                if (res.code == ERR_OK) {
+                    self.dialogVisible = false;
+                    
+                    this.$refs.ruleForm.resetFields();
+                    this.$notify({
+                        title: "成功",
+                        message: "发起任务成功",
+                        type: "success"
+                    });
+                } else {
+                    this.$notify.error({
+                        title: "错误",
+                        message: res.msg
+                    });
+                }
+            });
+        }
     },
     resetForm(formName) {
       this.dialogVisible = false
@@ -5490,7 +3670,7 @@ export default {
       this.$refs[formName1].validate((valid) => {
         if (valid) {
           const params = {
-            taskId: self.taskId,
+            id: self.taskId,
             reason: self.ruleForm1.cause
           }
           cancelTaskCause(params).then((res) => {
@@ -5499,8 +3679,6 @@ export default {
               let scrolled = document.documentElement.scrollTop || document.body.scrollTop
               self.getUntreatTask1()
               self.getData()
-              self.getData1()
-              self.gettaskHeader(scrolled)
               self.$refs[formName1].resetFields()
               this.$notify({
                 title: '成功',
@@ -5534,7 +3712,112 @@ export default {
     },
     iconLeave1() {
       this.$refs.displayShow1.style.display = 'none'
-    }
+    },
+
+    
+    deptOpen(item) {
+      this.depet.map((v)=>{
+        if (v.deptId != item.deptId) {
+          this.$set(v, 'isOpen', false);
+        }
+      })
+      this.$set(item, 'isOpen', !item.isOpen);
+    },
+    
+    
+        iconEnter2() {
+            this.$refs.displayShow2.style.display = "block";
+        },
+        iconLeave2() {
+            this.$refs.displayShow2.style.display = "none";
+        },
+        // 点击添加任务组成员
+        adduser13() {
+            this.dialogVisible25 = true;
+        },
+        handleClose5(done) {
+            this.dialogVisible5 = false;
+            this.$refs["ruleForm5"].resetFields();
+        },
+        submitForm5(formName1) {
+            let self = this;
+            this.$refs[formName1].validate(valid => {
+                if (valid) {
+                    if (self.ruleForm5.username === self.ruleForm.executorId) {
+                        self.$notify.error({
+                            title: "错误",
+                            message: "执行人和任务组成员不能相同"
+                        });
+                        return;
+                    }
+                    if (self.addUsers.length > 0) {
+                        for (let item of self.addUsers) {
+                            if (item.assistUserId === self.ruleForm5.username) {
+                                self.$notify.error({
+                                    title: "错误",
+                                    message: "不能选择相同的任务组成员"
+                                });
+                                return;
+                            }
+                        }
+                    }
+                    self.dialogVisible5 = false;
+
+                    let obj = {
+                        assistUserId: self.ruleForm5.username
+                    };
+
+                    self.addUsers.push(obj);
+                    this.brr = [];
+                    for (var i = 0; i < self.usersT.length; i++) {
+                        for (var j = 0; j < self.addUsers.length; j++) {
+                            if ( self.usersT[i].userId === self.addUsers[j].assistUserId ) {
+                                self.brr.push({ username: self.usersT[i].userName });
+                            }
+                        }
+                    }
+
+                } else {
+                    return false;
+                }
+            });
+        },
+        resetForm5(formName1) {
+            this.dialogVisible5 = false;
+            this.$refs[formName1].resetFields();
+        },
+    deptTaskOpen(item,taskTypeId){
+      console.log('展开',item,taskTypeId)
+      let deptIdAndTaskTypeId = item.deptId + '-' + taskTypeId;
+      if (this.openTaskTypeId == deptIdAndTaskTypeId) {
+        this.openTaskTypeId = '';
+      } else {
+        this.openTaskTypeId = deptIdAndTaskTypeId;
+      }
+      if (item[taskTypeId] && item[taskTypeId].data && item[taskTypeId].data.length > 0) {
+        // 缓存，如果有数据则不再重复取
+        return;
+      }
+      this.$set(item, taskTypeId, {
+        data: []
+      });
+      listPendingTaskByTaskTypeId({
+        deptId: item.deptId,
+        taskTypeId: taskTypeId
+      }).then((res) => {
+        if (res.code == ERR_OK) {
+          this.$set(item, taskTypeId, {
+            data: res.data ? res.data : []
+          });
+        }else{
+          this.$notify.error({
+            title: '错误',
+            message:res.msg
+          });
+        }
+      })
+      
+    },
   }
 };
 </script>
@@ -5810,6 +4093,9 @@ export default {
     font-size: 14px;
     color: #333333;
     background: #fff;
+}
+.untreatTask ul {
+  display: block;
 }
 .untreatTask ul li {
     float: left;

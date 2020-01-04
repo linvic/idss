@@ -344,7 +344,7 @@ export function addEnabled(params){
 
 /**取消任务原因**/
 export function cancelTaskCause(params){
-  return fetchPost('/taskChange/cancelTask',param(params))
+  return fetchPost('/taskInfos/cancelTask',param(params))
 }
 /**延期任务原因**/
 export function delayTaskCause(params){
@@ -354,13 +354,17 @@ export function delayTaskCause(params){
 export function changeTaskLevel(params){
   return fetchPost('/taskChange/gradeChangeTask',param(params))
 }
-/**变更任务等级**/
+/**完成任务**/
 export function completeTask(params){
-  return fetchPost('/taskChange/completeTask',param(params))
+  return fetchPost('/taskInfos/finishTask',param(params))
 }
 /**发布任务**/
 export function publishTask(params){
-  return fetchPost('/taskInfo/publishTask',param(params))
+  return fetchPost('/taskInfos/publishTask',param(params))
+}
+/**草稿任务**/
+export function saveDraftTask(params){
+  return fetchPost('/taskInfos/saveDraftTask',param(params))
 }
 /**获取汇报对象**/
 export function getUsersObj(params){
@@ -369,7 +373,16 @@ export function getUsersObj(params){
 
 /**获取任务详情**/
 export function getTaskGroupDetail(params){
-  return fetchGet('/taskInfo/taskDetail',param(params))
+  return fetchGet('/taskInfos/detail',param(params))
+}
+// 任务操作记录
+export function taskChangeLog(params){
+  return fetchGet('/taskInfos/taskChangeLog',param(params))
+}
+// 任务评价
+
+export function getTaskEvaluate(params){
+  return fetchGet('/taskInfos/getTaskEvaluate',param(params))
 }
 
 // 任务管理列表下拉查看
@@ -391,6 +404,21 @@ export function getStaffNewRecordList(params){
 export function userTaskList(params){
   return fetchGet('/taskInfo/getMyTask',param(params))
 }
+// 获取待处理任务列表
+export function listMyPendingTask(params){
+  return fetchGet('/taskInfos/listMyPendingTask',param(params))
+}
+// 获取我的所有任务列表
+export function listPersonalAllByPage(params){
+  return fetchGet('/taskInfos/listPersonalAllByPage',param(params))
+}
+// 部门负责人-员工任务列表
+export function listPendingTaskByTaskTypeId(params){
+  return fetchGet('/taskInfos/listPendingTaskByTaskTypeId',param(params))
+}
+
+
+
 // 员工任务管理列表
 export function userTaskReply(params){
   return fetchPost('/taskInfo/replyTask',param(params))
@@ -444,7 +472,7 @@ export function approvalTask(params){
 }
 //部门负责人 任务评价
 export function assessTask(params){
-  return fetchPost('/taskManager/assessTask',param(params))
+  return fetchPost('/taskInfos/evaluateTask',param(params))
 }
 //部门负责人 分配任务
 export function assessTaskDetail(params){
@@ -543,16 +571,16 @@ export function assignTaskManage(params){
 }
 //总经理(编辑任务)任务详情列表
 export function editorTaskMain(params){
-  return fetchGet('/taskInfo/getTaskMainById',param(params))
+  return fetchGet('/taskInfos/detail',param(params))
 }
 //总经理(确认编辑任务)任务详情列表
 export function sureEditorTask(params){
-  return fetchPost('/taskInfo/updateTask',param(params))
+  return fetchPut('/taskInfos/updateTask',param(params))
 }
 
-//部门负责人(新任务待审核)任务管理列表
-export function departNewTaskPending(params){
-  return fetchGet('/taskDepartmentHead/listNewTaskPending',param(params))
+// 部门负责人-待处理任务
+export function listDeptPendingTasks(params){
+  return fetchGet('/taskInfos/listDeptPendingTasks',param(params))
 }
 //部门负责人(变更任务待审核)任务管理列表
 export function departChangeTaskPending(params){
@@ -807,7 +835,7 @@ export function listThisWeekTask(params){
 
 //统计部门负责人数据
 export function getDeptStatistics(params){
-  return fetchGet('/taskStatistics/getDeptStatistics',param(params))
+  return fetchGet('/taskInfos/deptTaskCountList',param(params))
 }
 
 //个人重点任务超出
@@ -874,7 +902,7 @@ export function listRecentDeptWeekly(params){
 
 //任务提醒
 export function remindTaskList(params){
-  return fetchPost('/taskManager/remindTask',param(params))
+  return fetchGet('/taskInfos/remindTask',param(params))
 }
 //待完善接口
 export function listDraftTask(params){
