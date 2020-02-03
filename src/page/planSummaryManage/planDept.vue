@@ -233,7 +233,7 @@ export default {
             let isValidate = true;
             let _PlanInfoPojo = [];
             for(let item of this.detailList) {
-                if (!isValidate) return;
+                if (submitType !== 0 && !isValidate) return;
                 for(let j of item.planInfoList) {
                     if( !j.taskInfoList || j.taskInfoList.length == 0) {
                         if (j.canEditNoSubmitReason) {
