@@ -7,7 +7,7 @@
           <span class="child1">系统设置</span>
         </router-link>
         /
-        <router-link to="/role">
+        <router-link to="/setCenter/role">
           <span class="child2">角色管理</span>
         </router-link>
       </div>
@@ -21,7 +21,7 @@
         <div class="role-num">
           禁用数：{{pageShow}}
         </div>
-        <router-link :to="{ path: '/addRole' }">
+        <router-link :to="{ path: '/setCenter/addRole' }">
           <div class="role-button">
             添加角色
           </div>
@@ -36,11 +36,11 @@
                 {{item.roleName}}
               </div>
               <div class="role-right">
-                  <router-link :to="{ path: 'editorRole',query: {id:item.roleId}}" style='color:#7F7F7F'><i class="el-icon-edit"></i></router-link>
+                  <router-link :to="{ path: '/setCenter/editorRole',query: {id:item.roleId}}" style='color:#7F7F7F'><i class="el-icon-edit"></i></router-link>
                   <i v-if="!item.enabled" class="el-icon-delete" @click="delet(item.roleId,item.roleName)"></i>
               </div>
             </div>
-            <router-link :to="{ path: 'roleDetail',query: {id:item.roleId}}">
+            <router-link :to="{ path: '/setCenter/roleDetail',query: {id:item.roleId}}">
             <div class="role-content">
               <div class="populations-status">
                 <div class="populations-left">
@@ -61,7 +61,7 @@
     <el-dialog
       title="删除角色"
       :visible.sync="dialogVisible"
-      size="tiny"
+      width="560px"
       :before-close="handleClose" top='25%' class="department deleteDepartment">
       <span>确定删除{{roleName}}角色吗？</span>
       <span slot="footer" class="dialog-footer">

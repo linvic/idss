@@ -22,11 +22,10 @@
                                 <i class="el-icon-edit" style="margin-right: 20px"  @click="listEdit(jtem)"></i>
                             </div>
                         </div>
-                        <!-- <router-link :to="{ path: 'departmentDetail',query: {id:item.deptId}}"> -->
                         <div class="card-list-content">
                             <div class="card-list-content-item">
                                 <div class="card-list-content-item-label">考核时间：</div>
-                                <p class="card-list-content-item-value">{{jtem.examineTime || '-'}}</p>
+                                <p class="card-list-content-item-value">{{jtem.examineTime | filterExamineTime}}</p>
                             </div>
                             <div class="card-list-content-item">
                                 <div class="card-list-content-item-label">重复月份：</div>
@@ -43,13 +42,13 @@
             </div>
         </div>
         
-        <el-dialog title="提交时间设置" :visible.sync="dialogEdit" v-if="dialogEdit" size="tiny">
+        <el-dialog title="提交时间设置" :visible.sync="dialogEdit" v-if="dialogEdit" width="560px">
             <el-form :model="handleForm" ref="handleForm" :rules="handleFormRules" label-position="top" label-suffix="：" label-width="60px">
                 <el-form-item label="绩效组名称" prop="name">
                     <el-input v-model="handleForm.name" placeholder="请输入绩效组名称" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="绩效单位" prop="unit">
-                    <el-input v-model="handleForm.unit" placeholder="请输入绩效单位" size="small"></el-input>
+                    <el-input v-model="handleForm.unit" @keyup.native="onkeyupChinese($event)" placeholder="请输入绩效单位" size="small"></el-input>
                 </el-form-item>
                 
                 <el-form-item label="考核时间" prop="examineTime">
@@ -76,7 +75,7 @@
                     </div>
                 </el-form-item>
                 <el-form-item label="考核成员" prop="checkUserIds">
-                    <el-select v-model="checkUserIds" style="width: 100%" multiple placeholder="请选择">
+                    <el-select v-model="checkUserIds" filterable clearable style="width: 100%" multiple placeholder="请选择">
                         <el-option
                             v-for="item in users"
                             :key="item.userId"
@@ -85,11 +84,13 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item class="text-right">
+            </el-form>
+            
+            <div slot="footer" class="text-right">
+                
                     <el-button type="primary" @click="changeSubmit">确 定</el-button>
                     <el-button @click="dialogEdit = false">取 消</el-button>
-                </el-form-item>
-            </el-form>
+            </div>
         </el-dialog>
         
         
@@ -106,6 +107,15 @@ export default {
         dayPickNext
     },
     filters: {
+        
+        filterExamineTime: function(val) {
+            if (!val || val.split('-').length !== 2) {
+                return '-';
+            }
+            let minDayStr = val.split('-');
+            return '当月' + minDayStr[0] + '日 ' + minDayStr[1];
+
+        },
     },
     data () {
         var validateExamineTime = (rule, value, callback) => {
@@ -170,8 +180,8 @@ export default {
     },
     methods: {
         // 全选
-        handleCheckAllChange(event) {
-            this.months = event.target.checked ? [1,2,3,4,5,6,7,8,9,10,11,12] : [];
+        handleCheckAllChange(val) {
+            this.months = val ? [1,2,3,4,5,6,7,8,9,10,11,12] : [];
             this.isIndeterminate = false;
         },
         handleCheckedCitiesChange(value) {

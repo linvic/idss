@@ -6,7 +6,7 @@
         <router-link to="/setCenter">
           <span class="child1">系统设置</span>
         </router-link>  /
-        <router-link to="/noticeManage">
+        <router-link to="/setCenter/noticeManage">
           <span class="child2">公告管理</span>
         </router-link>
       </div>
@@ -44,7 +44,7 @@
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="props">
-              <router-link :to="{ path: 'noticeDetail',query: {id:props.row.noticeId}}">
+              <router-link :to="{ path: '/setCenter/noticeDetail',query: {id:props.row.noticeId}}">
               <el-button
                 size="small"
                  >查看</el-button>
@@ -56,7 +56,7 @@
         </el-table>
       </div>
       <div class="pagination-depart" v-if='total>0'>
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4"
+        <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4"
                        :page-sizes="[10, 15, 50]" :page-size="pageShow"
                        layout="total, sizes, prev, pager, next, jumper" :total="total">
         </el-pagination>
@@ -66,7 +66,7 @@
     <el-dialog
       title="发布公告"
       :visible.sync="dialogVisible"
-      size="tiny"
+      width="560px"
       :before-close="handleClose" top='17%' class="departmentDetail noticeManageModel">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
         <el-form-item label="公告标题:" prop="name" style="margin-right: 40px !important;">
@@ -99,7 +99,7 @@
     <el-dialog
       title="删除公告"
       :visible.sync="dialogDelete"
-      size="tiny"
+      width="560px"
       :before-close="handleClose1" top='25%' class="department">
       <span>确定要删除该公告吗？删除后不可恢复</span>
       <span slot="footer" class="dialog-footer">

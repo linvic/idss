@@ -5,17 +5,16 @@
 				<img src="../../images/company_logo.png" v-if="isCollapse">
 			</h1> -->
 			<el-menu class="site-menu" :default-active="$route.path" router unique-opened :collapse="isCollapse">
-                <template v-for="item in routes" v-if="!item.hidden&&item.children">
+                <template v-for="item in roleRoutes" v-if="!item.hidden&&item.children">
 					
-						
-					<router-link v-if="hasOneShowingChildren(item.children) && !item.children[0].children&&!item.alwaysShow" :to="item.children[0].path"
+					<router-link v-if="hasOneShowingChildren(item.children) && !item.children[0].children&&!item.alwaysShow" :to="item.path+'/'+item.children[0].path"
 											 :key="item.children[0].name">
-						<el-menu-item :index="item.children[0].path" :class="{'submenu-title-noDropdown':!isNest}">
+						<el-menu-item :index="item.path+'/'+item.children[0].path" :class="{'submenu-title-noDropdown':!isNest}">
 							<i v-if="item.children[0].meta&&item.children[0].meta.icon" :class="item.children[0].meta.icon"></i>
 							<span v-if="item.children[0].meta&&item.children[0].meta.title" slot="title">{{item.children[0].meta.title}}</span>
 						</el-menu-item>
 					</router-link>
-					<el-submenu v-else :index="item.name||item.path" :key="item.name">
+					<el-submenu v-else :index="item.path" :key="item.name">
 						<template slot="title">
 							<i v-if="item.meta&&item.meta.icon" :class="item.meta.icon"></i>
 							<span v-if="item.meta&&item.meta.title" slot="title" :to="item.path">{{item.meta.title}}</span>
@@ -30,17 +29,22 @@
 									<span v-if="child.meta&&child.meta.title" slot="title">{{child.meta.title}}</span>
 								</el-menu-item>
 							</router-link>
+							
 						</template>
 					</el-submenu>
 				</template>
 
 			</el-menu>
+			
 		</el-scrollbar>
 	</div>
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+	import { mapGetters } from 'vuex'
+	import {loadMenuResources} from 'service/getData'
+	import {  ERR_OK } from 'service/config'
+	import router from '../../router/index'
 	export default {
 		props: {
 			// isCollapse: {
@@ -60,224 +64,20 @@
 			return {
 				isCollapse: false,
 				userView: 'MANAGER', // MANAGER   DEPT   STAFF
-				routes: [
-					{
-						meta: {
-							title: '首页'
-						},
-						name: 'index',
-						path: '/index',
-						children: [
-							{
-								name: 'index',
-								path: '/index',
-								meta: {
-									title: '首页'
-								},
-							}
-						]
-					},
-					{
-						meta: {
-							title: '计划管理'
-						},
-						name: 'PLAN',
-						children: [
-							{
-								name: (()=>{
-									switch (this.userView) {
-										case 'MANAGER':
-											return 'palyManage';
-											break;
-										case 'DEPT':
-											return 'weekManageDepartLeader';
-											break;
-										case 'STAFF':
-											return 'weekMange';
-											break;
-										default:
-											return 'palyManage';
-											break;
-									}
-								})(),
-								path: (()=>{
-									switch (this.userView) {
-										case 'MANAGER':
-											return '/palyManage';
-											break;
-										case 'DEPT':
-											return '/weekManageDepartLeader';
-											break;
-										case 'STAFF':
-											return '/weekMange';
-											break;
-										default:
-											return '/palyManage';
-											break;
-									}
-								})(),
-								meta: {
-									title: '计划管理'
-								}
-							}
-						]
-					},
-					{
-						meta: {
-							title: '任务管理'
-						},
-						name: 'TASK',
-						children: [
-							{
-								name: (()=>{
-									switch (this.userView) {
-										case 'MANAGER':
-											return 'taskManageManager';
-											break;
-										case 'DEPT':
-											return 'taskDepartHeader';
-											break;
-										case 'STAFF':
-											return 'taskManage';
-											break;
-										default:
-											return 'taskManageManager';
-											break;
-									}
-								})(),
-								path: (()=>{
-									switch (this.userView) {
-										case 'MANAGER':
-											return '/taskManageManager';
-											break;
-										case 'DEPT':
-											return '/taskDepartHeader';
-											break;
-										case 'STAFF':
-											return '/taskManage';
-											break;
-										default:
-											return '/taskManageManager';
-											break;
-									}
-								})(),
-								meta: {
-									title: '任务管理'
-								}
-							}
-						]
-					},
-					{
-						meta: {
-							title: '日报管理'
-						},
-						name: 'DAILY',
-						children: [
-							{
-								name: 'dailyManage',
-								path: '/dailyManage',
-								meta: {
-									title: '日报管理'
-								}
-							}
-						]
-					},
-					{
-						meta: {
-							title: '周报管理'
-						},
-						name: 'WEEKLY',
-						children: [
-							{
-								name: 'weekMange',
-								path: '/weekMange',
-								meta: {
-									title: '周报管理'
-								}
-							}
-						]
-					},
-					{
-						meta: {
-							title: '绩效管理'
-						},
-						name: 'PERFM',
-						children: [
-							{
-								name: (()=>{
-									switch (this.userView) {
-										case 'MANAGER':
-											return 'performanceManageManger';
-											break;
-										case 'DEPT':
-											return 'performanceDept';
-											break;
-										case 'STAFF':
-											return 'performanceManage';
-											break;
-										default:
-											return 'performanceManageManger';
-											break;
-									}
-								})(),
-								path: (()=>{
-									switch (this.userView) {
-										case 'MANAGER':
-											return '/performanceManageManger';
-											break;
-										case 'DEPT':
-											return '/performanceDept';
-											break;
-										case 'STAFF':
-											return '/performanceManage';
-											break;
-										default:
-											return '/performanceManageManger';
-											break;
-									}
-								})(),
-								meta: {
-									title: '绩效管理'
-								}
-							}
-						]
-					},
-					{
-						redirect: "/planSummaryManage",
-						name: "planSummaryManage",
-						meta: {
-							title: "计划总结管理"
-						},
-						children: [
-							{
-								path: "/planSummaryManage/planManage",
-								name: "planManage",
-								meta: {
-									title: "计划管理",
-									noCache: true
-								}
-							},
-							{
-								path: "/planSummaryManage/summaryManage",
-								name: "summaryManage",
-								meta: {
-									title: "总结管理",
-									noCache: true
-								}
-							}
-						]
-					}
-				]
+				routes: router.options.routes,
+				roleRoutes: [],
 			}
 		},
 		created() {
+			console.log(this.routes)
+            this.getMenuResources();
 		},
 		methods: {
 			hasOneShowingChildren(children) {
                 const showingChildren = children.filter(item => {
 					return !item.hidden
 				})
-                if (showingChildren.length === 1&& showingChildren[0].name=='index') {
+                if (showingChildren.length === 1&& showingChildren[0].name=='index' || showingChildren[0].name=='setCenter') {
 					return true
 				}
 				return false
@@ -289,7 +89,33 @@
                     })
                     window.open(href, '_blank')
                 }
-			}
+			},
+			//      获取用户菜单权限
+			getMenuResources() {
+				loadMenuResources({}).then(res => {
+					if (res.code == ERR_OK) {
+						let menuRoles = [];
+						for(let item of res.data) {
+							menuRoles.push(item.resourceNo)
+						}
+						
+						let _roleRoutes = router.options.routes;
+						for(let j of _roleRoutes) {
+							if (j.meta && j.meta.roles&& (menuRoles.indexOf(j.meta.roles) > -1) ) {
+								j.hidden = false;
+							} else {
+								j.hidden = true;
+							}
+						}
+						this.$set(this,'roleRoutes',_roleRoutes)
+					} else {
+						this.$notify.error({
+							title: "错误",
+							message: res.msg
+						});
+					}
+				});
+			},
 		},
 		watch: {
 			'isCollapse' (val) {

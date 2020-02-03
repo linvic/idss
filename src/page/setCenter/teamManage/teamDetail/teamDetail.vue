@@ -7,11 +7,11 @@
           <span class="child1">系统设置</span>
         </router-link>
         /
-        <router-link to="/teamManage">
+        <router-link to="/setCenter/teamManage">
           <span class="child1">团队管理</span>
         </router-link>
         /
-        <router-link to="/teamDetail">
+        <router-link to="/setCenter/teamDetail">
           <span class="child2">团队详情</span>
         </router-link>
       </div>
@@ -69,7 +69,7 @@
            prop="userName"
            label="姓名">
            <template slot-scope="props">
-             <router-link :to="{path:'/userDetail',  query:{id: props.row.userId}}"  >
+             <router-link :to="{path:'/setCenter/userDetail',  query:{id: props.row.userId}}"  >
                <span class="department-name">{{props.row.userName}}</span>
              </router-link>
            </template>
@@ -109,7 +109,7 @@
         </el-table-column>
        </el-table>
        <div class="pagination-depart" v-if="tableData.length>0">
-         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="nowPage" :page-sizes="[10, 15, 50]" :page-size="pageShow"
+         <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="nowPage" :page-sizes="[10, 15, 50]" :page-size="pageShow"
        layout="total, sizes, prev, pager, next, jumper" :total="total">
          </el-pagination>
        </div>
@@ -118,7 +118,7 @@
     <el-dialog
       title="添加团队成员"
       :visible.sync="dialogVisible"
-      size="tiny"
+      width="560px"
       :before-close="handleClose1" top='25%' class="teamDetail">
       <div>
         <h2>选择人员：</h2>
@@ -150,7 +150,7 @@
     <el-dialog
       title="移除团队"
       :visible.sync="dialogVisible1"
-      size="tiny"
+      width="560px"
       :before-close="handleClose" top='25%' class="teamDetail">
       <span class="delete_team">确定移除该团队吗？移除后不可恢复！</span>
       </el-form>
@@ -635,4 +635,24 @@ input[type=checkbox]:focus {
     font-size: 14px;
     color: #333333;
   }
+  
+.disable-button{
+  background-color: #fff !important;
+  border-color: #d1dbe5 !important;
+  color: #bfcbd9 !important;
+}
+.disable-button:hover{
+  background-color: #fff !important;
+  border-color: #d1dbe5 !important;
+  color: #bfcbd9 !important;
+}
+
+.content-task .el-input__inner{
+  float: left !important;
+  width: 190px !important;
+  background: #FFFFFF!important;
+  height: 24px!important;
+  border: 1px solid rgba(0,0,0,0.12) !important;
+  border-radius: 4px !important;
+}
 </style>

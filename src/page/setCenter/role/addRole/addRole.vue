@@ -8,10 +8,10 @@
             系统设置
           </span>
         </router-link>/
-        <router-link to="/role">
+        <router-link to="/setCenter/role">
           <span class="child1">角色管理</span>
         </router-link>/
-        <router-link to="/addRole">
+        <router-link to="/setCenter/addRole">
           <span class="child2">添加角色</span>
         </router-link>
       </div>
@@ -186,7 +186,7 @@
               message: '添加角色成功',
               type: 'success'
             });
-            self.$router.push('/role')
+            self.$router.push('/setCenter/role')
           }else{
             self.$notify.error({
               title: '失败',
@@ -236,7 +236,7 @@
       //如果父级被选中，那么子集循环，全被给checked=true
         var self=this;
         itemChild.hasAuth=!itemChild.hasAuth
-        item.hasAuth=itemChild.hasAuth ? true : item.resourceChilds.some(a => a.hasAuth);
+        //item.hasAuth=itemChild.hasAuth ? true : item.resourceChilds.some(a => a.hasAuth);
         if(itemChild.hasAuth){
           self.roleList[index].hasAuth=true;
           self.roleList[index].resourceChilds[i].hasAuth=true;
@@ -259,8 +259,8 @@
         var self=this;
         itemChild.hasAuth=!itemChild.hasAuth
         itemChildLast.hasAuth=!itemChildLast.hasAuth
-        itemChild.hasAuth=itemChildLast.hasAuth ? true : itemChild.resourceChilds.some(a => a.hasAuth);
-        item.hasAuth=itemChild.hasAuth ? true : item.resourceChilds.some(a => a.hasAuth);
+        //itemChild.hasAuth=itemChildLast.hasAuth ? true : itemChild.resourceChilds.some(a => a.hasAuth);
+        //item.hasAuth=itemChild.hasAuth ? true : item.resourceChilds.some(a => a.hasAuth);
         if(itemChild.hasAuth){
           self.roleList[index].resourceChilds[i].hasAuth=true;
           if(itemChildLast.hasAuth){
@@ -288,7 +288,7 @@
     line-height: 45px;
     font-size: 16px;
     color: #333333;
-    background: rgba(217,53,56,0.10);
+    background: #FBEBEB;
   }
   .role-title h3{
     margin-left: 20px;

@@ -6,10 +6,10 @@
         <router-link to="/setCenter">
           <span class="child1">系统设置</span>
         </router-link>  /
-        <router-link to="/departmentManage">
+        <router-link to="/setCenter/departmentManage">
           <span class="child1">部门管理</span>
         </router-link> /
-        <router-link to="/departmentDetail">
+        <router-link to="/setCenter/departmentDetail">
           <span class="child2">部门详情</span>
         </router-link>
       </div>
@@ -58,7 +58,7 @@
            prop="userName"
            label="姓名" width='120'>
            <template slot-scope="props">
-             <router-link :to="{path:'/userDetail',  query:{id: props.row.userId}}"  >
+             <router-link :to="{path:'/setCenter/userDetail',  query:{id: props.row.userId}}"  >
                 <span class="department-name">{{props.row.userName}}</span>
              </router-link>
            </template>
@@ -91,16 +91,20 @@
           <template slot-scope="props">
             <el-button
               size="small"
-              @click="editorUser(props.row.userId)" v-if='props.row.userId==0' :disabled="true" class='disable-button'>编辑员工信息</el-button>
+              type="primary"
+              plain
+              @click="editorUser(props.row.userId)" v-if='props.row.userId==0' :disabled="true">编辑员工信息</el-button>
               <el-button
                 size="small"
+                type="primary"
+                plain
                 @click="editorUser(props.row.userId)" v-else>编辑员工信息</el-button>
           </template>
         </el-table-column>
        </el-table>
       </div>
       <div class="pagination-depart" v-show='pagination'>
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[10, 15, 50]" :page-size="pageSize"
+        <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[10, 15, 50]" :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper" :total="total">
         </el-pagination>
       </div>
@@ -109,7 +113,7 @@
       <el-dialog
         title="选择角色"
         :visible.sync="dialogVisible1"
-        size="tiny"
+        width="560px"
         :before-close="handleClose1" top='10%' class="">
         <div class="permissions-table" >
           <div class="check-wrapper">
@@ -126,7 +130,7 @@
       </el-dialog>
     </div>
     <div class="">
-      <el-dialog title="选择团队" :visible.sync="dialogVisible6" size="tiny" :before-close="handleClose6" top='10%' class="">
+      <el-dialog title="选择团队" :visible.sync="dialogVisible6" width="560px" :before-close="handleClose6" top='10%' class="">
         <div class="permissions-table">
           <div class="check-wrapper">
             <el-checkbox-group v-model="checkedCities6" @change="handleCheckedCitiesChange6">
@@ -143,7 +147,7 @@
     <el-dialog
       title="部门包含任务组"
       :visible.sync="dialogVisibleS"
-      size="tiny"
+      width="560px"
       :before-close="handleCloseS" top='25%' class="teamDetail">
       <div>
         <div class="dialog-content">
@@ -174,7 +178,7 @@
     <el-dialog
       title="编辑员工"
       :visible.sync="dialogVisible"
-      size="tiny"
+      width="560px"
       :before-close="handleClose" top='10%' class="">
       <el-form :label-position="labelPosition" :rules="rules" ref="formLabelAlign" label-width="100px" :model="formLabelAlign">
         <el-form-item label="角色名：" style="margin-bottom:2px;margin-right:30px;">
@@ -216,8 +220,8 @@
         <el-form-item label="底薪：" required prop="basicPay">
           <el-input v-model.number="formLabelAlign.basicPay"></el-input>
         </el-form-item>
-        <el-form-item label="绩效工资：" prop="money">
-          <el-input  v-model="formLabelAlign.money"></el-input>
+        <el-form-item label="绩效工资：" required prop="money">
+          <el-input  v-model="formLabelAlign.money" @keyup.native="onkeyupPrice($event)"></el-input>
         </el-form-item>
         <el-form-item label="状态：" required>
           <el-radio-group v-model="resource">
@@ -911,6 +915,9 @@
 }
 .role-num:nth-child(2){
   margin: 0 35px;
+}
+.el-select /deep/ .el-input .el-select__caret {
+  line-height: 24px;
 }
 .role-button{
   display: inline-block;

@@ -20,694 +20,334 @@ const routes = [
         path: "",
         redirect: "index",
         component: Layout,
+        meta: {
+            title: "首页",
+            roles: 'INDEX'
+        },
         children: [
             {
                 path: "index",
                 name: "index",
                 meta: {
                     title: "首页",
-                    icon: "el-icon-web-icon_sy",
+                    icon: "el-icon-s-home",
                     noCache: true
                 },
                 component: resolve => require(["../page/home/index"], resolve)
             }
         ]
     },
-    {
-        path: "/dailyManage/index",
-        redirect: "/dailyManage",
-        component: Layout,
-        meta: {
-            title: "日报管理",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/dailyManage",
-                name: "dailyManage",
-                meta: {
-                    title: "日报管理",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/dailyManage/dailyManage"], resolve)
-            }
-        ]
-    },
+    // 任务管理
     {
         path: "/taskManage/index",
         redirect: "/taskManage",
         component: Layout,
         meta: {
             title: "任务管理",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
+            icon: "el-icon-s-opportunity",
+            roles: 'TASK'
         },
-        hidden: true,
+        hidden: false,
         children: [
             {
-                path: "/taskManage",
-                name: "taskManage",
+                path: "/taskManage/taskManage",
+                name: "taskManageList",
                 meta: {
-                    title: "任务管理",
+                    title: "任务列表",
                     noCache: true
                 },
+                hidden: false,
                 component: resolve =>
                     require(["../page/taskManage/taskManage"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/postDepartWeekly/index",
-        redirect: "/postDepartWeekly",
-        component: Layout,
-        meta: {
-            title: "发起周报",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
+            },
             {
-                path: "/postDepartWeekly",
-                name: "postDepartWeekly",
+                path: "/taskManage/taskDetail",
+                name: "taskManageDetail",
                 meta: {
-                    title: "发起周报",
+                    title: "任务详情",
                     noCache: true
                 },
+                hidden: true,
                 component: resolve =>
-                    require([
-                        "../page/weekMange/postDepartWeekly/postDepartWeekly"
-                    ], resolve)
+                    require(["../page/taskManage/taskDetail"], resolve)
             }
         ]
     },
+    
+    //   计划总结管理
     {
-        path: "/postStaffWeekly/index",
-        redirect: "/postStaffWeekly",
+        path: "/planSummaryManage/index",
+        redirect: "/planSummaryManage",
         component: Layout,
         meta: {
-            title: "发起周报",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
+            title: "计划总结管理",
+            roles: 'PLAN',
+            icon: "el-icon-s-order"
         },
-        hidden: true,
+        hidden: false,
         children: [
             {
-                path: "/postStaffWeekly",
-                name: "postStaffWeekly",
+                path: "/planSummaryManage/planManage",
+                name: "planManage",
                 meta: {
-                    title: "发起周报",
+                    title: "计划管理",
                     noCache: true
                 },
+                hidden: false,
                 component: resolve =>
-                    require([
-                        "../page/weekMange/postStaffWeekly/postStaffWeekly"
-                    ], resolve)
-            }
-        ]
-    },
-    {
-        path: "/departmentChild/index",
-        redirect: "/departmentChild",
-        component: Layout,
-        meta: {
-            title: "部门管理",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
+                    require(["../page/planSummaryManage/planManage"], resolve)
+            },
+            
             {
-                path: "/departmentChild",
-                name: "departmentChild",
+                path: "/planSummaryManage/planPersonal",
+                name: "planPersonal",
                 meta: {
-                    title: "部门管理",
+                    title: "个人计划",
                     noCache: true
                 },
+                hidden: true,
                 component: resolve =>
-                    require([
-                        "../page/setCenter/departmentManage/departmentChild"
-                    ], resolve)
-            }
-        ]
-    },
-    {
-        path: "/addAtendence/index",
-        redirect: "/addAtendence",
-        component: Layout,
-        meta: {
-            title: "XXXX",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
+                    require(["../page/planSummaryManage/planPersonal"], resolve)
+            },
             {
-                path: "/addAtendence",
-                name: "addAtendence",
+                path: "/planSummaryManage/planDept",
+                name: "planDept",
                 meta: {
-                    title: "XXXX",
+                    title: "部门计划",
                     noCache: true
                 },
+                hidden: true,
                 component: resolve =>
-                    require(["../page/performanceManage/addAtendence"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/weekDetailStaff/index",
-        redirect: "/weekDetailStaff",
-        component: Layout,
-        meta: {
-            title: "XXXX",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
+                    require(["../page/planSummaryManage/planDept"], resolve)
+            },
             {
-                path: "/weekDetailStaff",
-                name: "weekDetailStaff",
+                path: "/planSummaryManage/planDetail",
+                name: "planDetail",
                 meta: {
-                    title: "XXXX",
+                    title: "计划详情",
                     noCache: true
                 },
+                hidden: true,
                 component: resolve =>
-                    require([
-                        "../page/palyManage/weekDetailStaff/weekDetailStaff"
-                    ], resolve)
-            }
-        ]
-    },
-    {
-        path: "/sureNextPlan/index",
-        redirect: "/sureNextPlan",
-        component: Layout,
-        meta: {
-            title: "XXXX",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
+                    require(["../page/planSummaryManage/planDetail"], resolve)
+            },
             {
-                path: "/sureNextPlan",
-                name: "sureNextPlan",
+                path: "/planSummaryManage/planAudit",
+                name: "planAudit",
                 meta: {
-                    title: "XXXX",
+                    title: "审核计划",
                     noCache: true
                 },
+                hidden: true,
                 component: resolve =>
-                    require(["../page/palyManage/sureNextPlan/sureNextPlan"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/performanceDetail/index",
-        redirect: "/performanceDetail",
-        component: Layout,
-        meta: {
-            title: "XXXX",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
+                    require(["../page/planSummaryManage/planAudit"], resolve)
+            },
             {
-                path: "/performanceDetail",
-                name: "performanceDetail",
+                path: "/planSummaryManage/summaryManage",
+                name: "summaryManage",
                 meta: {
-                    title: "XXXX",
+                    title: "总结管理",
                     noCache: true
                 },
+                hidden: false,
                 component: resolve =>
-                    require(["../page/performanceManage/performanceDetail"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/weekDetailDepart/index",
-        redirect: "/weekDetailDepart",
-        component: Layout,
-        meta: {
-            title: "XXXX",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
+                    require(["../page/planSummaryManage/summaryManage"], resolve)
+            },
             {
-                path: "/weekDetailDepart",
-                name: "weekDetailDepart",
+                path: "/planSummaryManage/summaryPersonal",
+                name: "summaryPersonal",
                 meta: {
-                    title: "XXXX",
+                    title: "个人总结",
                     noCache: true
                 },
+                hidden: true,
                 component: resolve =>
-                    require([
-                        "../page/palyManage/weekDetailDepart/weekDetailDepart"
-                    ], resolve)
-            }
-        ]
-    },
-    {
-        path: "/staffWeekDetail/index",
-        redirect: "/staffWeekDetail",
-        component: Layout,
-        meta: {
-            title: "XXXX",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
+                    require(["../page/planSummaryManage/summaryPersonal"], resolve)
+            },
             {
-                path: "/staffWeekDetail",
-                name: "staffWeekDetail",
+                path: "/planSummaryManage/summaryDept",
+                name: "summaryDept",
                 meta: {
-                    title: "XXXX",
+                    title: "部门总结",
                     noCache: true
                 },
+                hidden: true,
                 component: resolve =>
-                    require([
-                        "../page/weekMange/staffWeekDetail/staffWeekDetail"
-                    ], resolve)
-            }
-        ]
-    },
-    {
-        path: "/staffPersonWeekDetail/index",
-        redirect: "/staffPersonWeekDetail",
-        component: Layout,
-        meta: {
-            title: "XXXX",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
+                    require(["../page/planSummaryManage/summaryDept"], resolve)
+            },
             {
-                path: "/staffPersonWeekDetail",
-                name: "staffPersonWeekDetail",
+                path: "/planSummaryManage/summaryDetail",
+                name: "summaryDetail",
                 meta: {
-                    title: "XXXX",
+                    title: "总结详情",
                     noCache: true
                 },
+                hidden: true,
                 component: resolve =>
-                    require([
-                        "../page/weekMange/staffWeekDetail/staffPersonWeekDetail"
-                    ], resolve)
-            }
-        ]
-    },
-    {
-        path: "/performanceDept/index",
-        redirect: "/performanceDept",
-        component: Layout,
-        meta: {
-            title: "XXXX",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
+                    require(["../page/planSummaryManage/summaryDetail"], resolve)
+            },
             {
-                path: "/performanceDept",
-                name: "performanceDept",
+                path: "/planSummaryManage/summaryAudit",
+                name: "summaryAudit",
                 meta: {
-                    title: "XXXX",
+                    title: "审核总结",
                     noCache: true
                 },
+                hidden: true,
                 component: resolve =>
-                    require(["../page/performanceManage/performanceDept"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/staffPersonEditor/index",
-        redirect: "/staffPersonEditor",
-        component: Layout,
-        meta: {
-            title: "XXXX",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
+                    require(["../page/planSummaryManage/summaryAudit"], resolve)
+            },
             {
-                path: "/staffPersonEditor",
-                name: "staffPersonEditor",
+                path: "/planSummaryManage/summaryHandle",
+                name: "summaryHandle",
                 meta: {
-                    title: "XXXX",
+                    title: "处理申诉",
                     noCache: true
                 },
+                hidden: true,
                 component: resolve =>
-                    require([
-                        "../page/weekMange/staffWeekDetail/staffPersonEditor"
-                    ], resolve)
-            }
-        ]
-    },
-    {
-        path: "/weekManageDepartLeader/index",
-        redirect: "/weekManageDepartLeader",
-        component: Layout,
-        meta: {
-            title: "XXXX",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
+                    require(["../page/planSummaryManage/summaryHandle"], resolve)
+            },
+            
             {
-                path: "/weekManageDepartLeader",
-                name: "weekManageDepartLeader",
+                path: "/planSummaryManage/allPlanSummary",
+                name: "allPlanSummary",
                 meta: {
-                    title: "XXXX",
+                    title: "全部计划总结",
                     noCache: true
                 },
+                hidden: false,
                 component: resolve =>
-                    require(["../page/weekMange/weekManageDepartLeader"], resolve)
-            }
+                    require(["../page/planSummaryManage/allPlanSummary"], resolve)
+            },
+            
         ]
     },
-    {
-        path: "/pastPlanWeek/index",
-        redirect: "/pastPlanWeek",
-        component: Layout,
-        meta: {
-            title: "XXXX",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/pastPlanWeek",
-                name: "pastPlanWeek",
-                meta: {
-                    title: "XXXX",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/palyManage/pastPlanWeek/pastPlanWeek"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/pastDepartWeekly/index",
-        redirect: "/pastDepartWeekly",
-        component: Layout,
-        meta: {
-            title: "XXXX",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/pastDepartWeekly",
-                name: "pastDepartWeekly",
-                meta: {
-                    title: "XXXX",
-                    noCache: true
-                },
-                component: resolve =>
-                    require([
-                        "../page/palyManage/pastDepartWeekly/pastDepartWeekly"
-                    ], resolve)
-            }
-        ]
-    },
-    {
-        path: "/departWeeklyDetail/index",
-        redirect: "/departWeeklyDetail",
-        component: Layout,
-        meta: {
-            title: "XXXX",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/departWeeklyDetail",
-                name: "departWeeklyDetail",
-                meta: {
-                    title: "XXXX",
-                    noCache: true
-                },
-                component: resolve =>
-                    require([
-                        "../page/weekMange/departWeeklyDetail/departWeeklyDetail"
-                    ], resolve)
-            }
-        ]
-    },
-    {
-        path: "/initiateNew/index",
-        redirect: "/initiateNew",
-        component: Layout,
-        meta: {
-            title: "发起日报",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/initiateNew",
-                name: "initiateNew",
-                meta: {
-                    title: "发起日报",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/dailyManage/initiateNew"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/dailyDetail/index",
-        redirect: "/dailyDetail",
-        component: Layout,
-        meta: {
-            title: "日报详情",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/dailyDetail",
-                name: "dailyDetail",
-                meta: {
-                    title: "日报详情",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/dailyManage/dailyDetail"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/RedHeiBang/index",
-        redirect: "/RedHeiBang",
-        component: Layout,
-        meta: {
-            title: "红黑榜",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/RedHeiBang",
-                name: "RedHeiBang",
-                meta: {
-                    title: "红黑榜",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/performanceManage/RedHeiBang"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/weekMange/index",
-        redirect: "/weekMange",
-        component: Layout,
-        meta: {
-            title: "XXXX",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/weekMange",
-                name: "weekMange",
-                meta: {
-                    title: "XXXX",
-                    noCache: true
-                },
-                component: resolve => require(["../page/weekMange/weekMange"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/reviewWeekly/index",
-        redirect: "/reviewWeekly",
-        component: Layout,
-        meta: {
-            title: "审阅个人周报",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/reviewWeekly",
-                name: "reviewWeekly",
-                meta: {
-                    title: "审阅个人周报",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/weekMange/reviewWeekly/reviewWeekly"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/staff/index",
-        redirect: "/staff",
-        component: Layout,
-        meta: {
-            title: "审阅个人周报",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/staff",
-                name: "staff",
-                meta: {
-                    title: "审阅个人周报",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/weekMange/pastWeekly/staff"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/pastWeekly/index",
-        redirect: "/pastWeekly",
-        component: Layout,
-        meta: {
-            title: "过往周报",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/pastWeekly",
-                name: "pastWeekly",
-                meta: {
-                    title: "过往周报",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/weekMange/pastWeekly/pastWeekly"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/palyManage/index",
-        redirect: "/palyManage",
-        component: Layout,
-        meta: {
-            title: "总经理过往周报",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"],
-            keepAlive: true
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/palyManage",
-                name: "palyManage",
-                meta: {
-                    title: "总经理过往周报",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/palyManage/palyManage"], resolve)
-            }
-        ]
-    },
+
+    //   绩效管理
     {
         path: "/performanceManage/index",
         redirect: "/performanceManage",
         component: Layout,
         meta: {
-            title: "XXXX",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
+            title: "绩效管理",
+            roles: 'MERITS',
+            icon: "el-icon-s-order"
         },
-        hidden: true,
+        hidden: false,
         children: [
+            
             {
-                path: "/performanceManage",
+                path: "/performanceManage/performanceManage",
                 name: "performanceManage",
                 meta: {
-                    title: "XXXX",
+                    title: "绩效管理",
                     noCache: true
                 },
+                hidden: false,
                 component: resolve =>
                     require(["../page/performanceManage/performanceManage"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/performanceManageManger/index",
-        redirect: "/performanceManageManger",
-        component: Layout,
-        meta: {
-            title: "XXXX",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
+            },
+            
             {
-                path: "/performanceManageManger",
-                name: "performanceManageManger",
+                path: "/performanceManage/attendanceManage",
+                name: "attendanceManage",
                 meta: {
-                    title: "XXXX",
+                    title: "考勤管理",
                     noCache: true
                 },
+                hidden: false,
                 component: resolve =>
-                    require([
-                        "../page/performanceManage/performanceManageManger"
-                    ], resolve)
-            }
+                    require(["../page/performanceManage/attendanceManage"], resolve)
+            },
+            {
+                path: "/performanceManage/attendanceAdd",
+                name: "attendanceAdd",
+                meta: {
+                    title: "添加考勤",
+                    noCache: true
+                },
+                hidden: true,
+                component: resolve =>
+                    require(["../page/performanceManage/attendanceAdd"], resolve)
+            },
+            {
+                path: "/performanceManage/attendanceCheck",
+                name: "attendanceCheck",
+                meta: {
+                    title: "核对考勤",
+                    noCache: true
+                },
+                hidden: true,
+                component: resolve =>
+                    require(["../page/performanceManage/attendanceCheck"], resolve)
+            },
+            {
+                path: "/performanceManage/attendanceAudit",
+                name: "attendanceAudit",
+                meta: {
+                    title: "审核考勤",
+                    noCache: true
+                },
+                hidden: true,
+                component: resolve =>
+                    require(["../page/performanceManage/attendanceAudit"], resolve)
+            },
+            {
+                path: "/performanceManage/attendanceDetail",
+                name: "attendanceDetail",
+                meta: {
+                    title: "考勤详情",
+                    noCache: true
+                },
+                hidden: true,
+                component: resolve =>
+                    require(["../page/performanceManage/attendanceDetail"], resolve)
+            },
+            
+            {
+                path: "/performanceManage/paySlipManage",
+                name: "paySlipManage",
+                meta: {
+                    title: "工资条管理",
+                    noCache: true
+                },
+                hidden: false,
+                component: resolve =>
+                    require(["../page/performanceManage/paySlipManage"], resolve)
+            },
+            {
+                path: "/performanceManage/paySlipEditor",
+                name: "paySlipEditor",
+                meta: {
+                    title: "工资条编辑",
+                    noCache: true
+                },
+                hidden: true,
+                component: resolve =>
+                    require(["../page/performanceManage/paySlipEditor"], resolve)
+            },
+            {
+                path: "/performanceManage/paySlipDetail",
+                name: "paySlipDetail",
+                meta: {
+                    title: "工资条详情",
+                    noCache: true
+                },
+                hidden: true,
+                component: resolve =>
+                    require(["../page/performanceManage/paySlipDetail"], resolve)
+            },
+            
+            
         ]
     },
+
+    
     {
         path: "/modifyPassword/index",
         redirect: "/modifyPassword",
         component: Layout,
-        meta: {
-            title: "修改密码",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
         hidden: true,
         children: [
             {
@@ -726,11 +366,6 @@ const routes = [
         path: "/personalCenter/index",
         redirect: "/personalCenter",
         component: Layout,
-        meta: {
-            title: "个人中心",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
         hidden: true,
         children: [
             {
@@ -745,97 +380,7 @@ const routes = [
             }
         ]
     },
-    {
-        path: "/role/index",
-        redirect: "/role",
-        component: Layout,
-        meta: {
-            title: "角色",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/role",
-                name: "role",
-                meta: {
-                    title: "角色",
-                    noCache: true
-                },
-                component: resolve => require(["../page/setCenter/role/role"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/addRole/index",
-        redirect: "/addRole",
-        component: Layout,
-        meta: {
-            title: "新增角色",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/addRole",
-                name: "addRole",
-                meta: {
-                    title: "新增角色",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/setCenter/role/addRole/addRole"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/editorRole/index",
-        redirect: "/editorRole",
-        component: Layout,
-        meta: {
-            title: "编辑角色",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/editorRole",
-                name: "editorRole",
-                meta: {
-                    title: "编辑角色",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/setCenter/role/editorRole/editorRole"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/roleDetail/index",
-        redirect: "/roleDetail",
-        component: Layout,
-        meta: {
-            title: "角色详情",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/roleDetail",
-                name: "roleDetail",
-                meta: {
-                    title: "角色详情",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/setCenter/role/roleDetail/roleDetail"], resolve)
-            }
-        ]
-    },
+    
     {
         path: "/remindManage/index",
         redirect: "/remindManage",
@@ -859,524 +404,187 @@ const routes = [
             }
         ]
     },
-    {
-        path: "/departmentManage/index",
-        redirect: "/departmentManage",
-        component: Layout,
-        meta: {
-            title: "部门管理",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/departmentManage",
-                name: "departmentManage",
-                meta: {
-                    title: "部门管理",
-                    noCache: true
-                },
-                component: resolve =>
-                    require([
-                        "../page/setCenter/departmentManage/departmentManage"
-                    ], resolve)
-            }
-        ]
-    },
-    {
-        path: "/noticeManage/index",
-        redirect: "/noticeManage",
-        component: Layout,
-        meta: {
-            title: "公告管理",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/noticeManage",
-                name: "noticeManage",
-                meta: {
-                    title: "公告管理",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/setCenter/noticeManage/noticeManage"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/taskDetail/index",
-        redirect: "/taskDetail",
-        component: Layout,
-        meta: {
-            title: "任务详情",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/taskDetail",
-                name: "taskDetail",
-                meta: {
-                    title: "任务详情",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/taskManage/taskDetail/taskDetail"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/taskDetailHeader/index",
-        redirect: "/taskDetailHeader",
-        component: Layout,
-        meta: {
-            title: "任务详情",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/taskDetailHeader",
-                name: "taskDetailHeader",
-                meta: {
-                    title: "任务详情",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/taskManage/taskDetail/taskDetailHeader"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/taskDetailManage/index",
-        redirect: "/taskDetailManage",
-        component: Layout,
-        meta: {
-            title: "XXXX",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/taskDetailManage",
-                name: "taskDetailManage",
-                meta: {
-                    title: "XXXX",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/taskManage/taskDetail/taskDetailManage"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/noticeDetail/index",
-        redirect: "/noticeDetail",
-        component: Layout,
-        meta: {
-            title: "公告管理",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/noticeDetail",
-                name: "noticeDetail",
-                meta: {
-                    title: "公告管理",
-                    noCache: true
-                },
-                component: resolve =>
-                    require([
-                        "../page/setCenter/noticeManage/noticeDetail/noticeDetail"
-                    ], resolve)
-            }
-        ]
-    },
-    {
-        path: "/wagesDetail/index",
-        redirect: "/wagesDetail",
-        component: Layout,
-        meta: {
-            title: "工资条详情",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/wagesDetail",
-                name: "wagesDetail",
-                meta: {
-                    title: "工资条详情",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/performanceManage/wagesDetail"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/rewardManage/index",
-        redirect: "/rewardManage",
-        component: Layout,
-        meta: {
-            title: "奖惩管理",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/rewardManage",
-                name: "rewardManage",
-                meta: {
-                    title: "奖惩管理",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/setCenter/rewardManage/rewardManage"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/taskGrounpManage/index",
-        redirect: "/taskGrounpManage",
-        component: Layout,
-        meta: {
-            title: "任务组管理",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/taskGrounpManage",
-                name: "taskGrounpManage",
-                meta: {
-                    title: "任务组管理",
-                    noCache: true
-                },
-                component: resolve =>
-                    require([
-                        "../page/setCenter/taskGrounpManage/taskGrounpManage"
-                    ], resolve)
-            }
-        ]
-    },
-    {
-        path: "/projectManage/index",
-        redirect: "/projectManage",
-        component: Layout,
-        meta: {
-            title: "项目管理",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/projectManage",
-                name: "projectManage",
-                meta: {
-                    title: "项目管理",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/setCenter/projectManage/projectManage"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/departmentDetail/index",
-        redirect: "/departmentDetail",
-        component: Layout,
-        meta: {
-            title: "部门详情",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/departmentDetail",
-                name: "departmentDetail",
-                meta: {
-                    title: "部门详情",
-                    noCache: true
-                },
-                component: resolve =>
-                    require([
-                        "../page/setCenter/departmentManage/departmentDetail/departmentDetail"
-                    ], resolve)
-            }
-        ]
-    },
-    {
-        path: "/teamDetail/index",
-        redirect: "/teamDetail",
-        component: Layout,
-        meta: {
-            title: "团队详情",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/teamDetail",
-                name: "teamDetail",
-                meta: {
-                    title: "团队详情",
-                    noCache: true
-                },
-                component: resolve =>
-                    require([
-                        "../page/setCenter/teamManage/teamDetail/teamDetail"
-                    ], resolve)
-            }
-        ]
-    },
-    {
-        path: "/staffDetail/index",
-        redirect: "/staffDetail",
-        component: Layout,
-        meta: {
-            title: "员工详情",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/staffDetail",
-                name: "staffDetail",
-                meta: {
-                    title: "员工详情",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/setCenter/staffDetail/staffDetail"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/userDetail/index",
-        redirect: "/userDetail",
-        component: Layout,
-        meta: {
-            title: "员工详情",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/userDetail",
-                name: "userDetail",
-                meta: {
-                    title: "员工详情",
-                    noCache: true
-                },
-                component: resolve =>
-                    require([
-                        "../page/setCenter/staffDetail/userDetail/userDetail"
-                    ], resolve)
-            }
-        ]
-    },
-    {
-        path: "/myDetail/index",
-        redirect: "/myDetail",
-        component: Layout,
-        meta: {
-            title: "XXXX",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/myDetail",
-                name: "myDetail",
-                meta: {
-                    title: "XXXX",
-                    noCache: true
-                },
-                component: resolve =>
-                    require([
-                        "../page/setCenter/staffDetail/userDetail/myDetail"
-                    ], resolve)
-            }
-        ]
-    },
-    {
-        path: "/weeklyTime/index",
-        redirect: "/weeklyTime",
-        component: Layout,
-        meta: {
-            title: "周报时间",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/weeklyTime",
-                name: "weeklyTime",
-                meta: {
-                    title: "周报时间",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/setCenter/weeklyTime/weeklyTime"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/teamManage/index",
-        redirect: "/teamManage",
-        component: Layout,
-        meta: {
-            title: "XXXX",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/teamManage",
-                name: "teamManage",
-                meta: {
-                    title: "XXXX",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/setCenter/teamManage/teamManage"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/taskManageManager/index",
-        redirect: "/taskManageManager",
-        component: Layout,
-        meta: {
-            title: "XXXX",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"],
-            keepAlive: true
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/taskManageManager",
-                name: "taskManageManager",
-                meta: {
-                    title: "XXXX",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/taskManage/taskManageManager"], resolve)
-            }
-        ]
-    },
-    {
-        path: "/taskDepartHeader/index",
-        redirect: "/taskDepartHeader",
-        component: Layout,
-        meta: {
-            title: "XXXX",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/taskDepartHeader",
-                name: "taskDepartHeader",
-                meta: {
-                    title: "XXXX",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/taskManage/taskDepartHeader"], resolve)
-            }
-        ]
-    },
 
-    //   计划总结管理
+    // 系统设置
     {
-        path: "/planSummaryManage/index",
-        redirect: "/planSummaryManage",
+        path: "",
+        redirect: "setCenter",
         component: Layout,
         meta: {
-            title: "计划总结管理",
-            icon: "el-icon-web-icon_fx"
+            title: "系统设置",
+            roles: 'SYS'
         },
         hidden: false,
         children: [
             {
-                path: "/planSummaryManage/planManage",
-                name: "planManage",
+                path: "setCenter",
+                name: "setCenter",
                 meta: {
-                    title: "计划管理",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/planSummaryManage/planManage"], resolve)
-            },
-            {
-                path: "/planSummaryManage/planAdd",
-                name: "planAdd",
-                meta: {
-                    title: "新增计划",
+                    title: "系统设置",
+                    icon: "el-icon-s-tools",
                     noCache: true
                 },
                 hidden: false,
-                component: resolve =>
-                    require(["../page/planSummaryManage/planAdd"], resolve)
-            },
-            {
-                path: "/planSummaryManage/summaryManage",
-                name: "summaryManage",
-                meta: {
-                    title: "总结管理",
-                    noCache: true
-                },
-                component: resolve =>
-                    require(["../page/planSummaryManage/summaryManage"], resolve)
-            }
-        ]
-    },
-    // 系统设置
-    {
-        path: "/setCenter/index",
-        redirect: "/setCenter",
-        component: Layout,
-        meta: {
-            title: "设置",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
-        },
-        hidden: true,
-        children: [
-            {
-                path: "/setCenter",
-                name: "setCenter",
-                meta: {
-                    title: "设置",
-                    noCache: true
-                },
                 component: resolve => require(["../page/setCenter/setCenter"], resolve)
             },
+            {
+                path: "/setCenter/departmentManage",
+                name: "setCenterDepartmentManage",
+                meta: {
+                    title: "部门管理",
+                    noCache: true
+                },
+                hidden: true,
+                component: resolve => require(["../page/setCenter/departmentManage/departmentManage"], resolve)
+            },
+            {
+                path: "/setCenter/departmentDetail",
+                name: "setCenterDepartmentDetail",
+                meta: {
+                    title: "部门详情",
+                    noCache: true
+                },
+                hidden: true,
+                component: resolve => require(["../page/setCenter/departmentManage/departmentDetail/departmentDetail"], resolve)
+            },
+            {
+                path: "/setCenter/departmentChild",
+                name: "setCenterDepartmentChild",
+                meta: {
+                    title: "部门管理",
+                    noCache: true
+                },
+                hidden: true,
+                component: resolve => require(["../page/setCenter/departmentManage/departmentChild"], resolve)
+            },
+            // 角色
+            {
+                path: "/setCenter/role",
+                name: "setCenterRole",
+                meta: {
+                    title: "角色",
+                    noCache: true
+                },
+                hidden: true,
+                component: resolve => require(["../page/setCenter/role/role"], resolve)
+            },
+            {
+                path: "/setCenter/addRole",
+                name: "setCenterAddRole",
+                meta: {
+                    title: "角色新增",
+                    noCache: true
+                },
+                hidden: true,
+                component: resolve => require(["../page/setCenter/role/addRole/addRole"], resolve)
+            },
+            {
+                path: "/setCenter/editorRole",
+                name: "setCenterEditorRole",
+                meta: {
+                    title: "角色编辑",
+                    noCache: true
+                },
+                hidden: true,
+                component: resolve => require(["../page/setCenter/role/editorRole/editorRole"], resolve)
+            },
+            {
+                path: "/setCenter/roleDetail",
+                name: "setCenterRoleDetail",
+                meta: {
+                    title: "角色详情",
+                    noCache: true
+                },
+                hidden: true,
+                component: resolve => require(["../page/setCenter/role/roleDetail/roleDetail"], resolve)
+            },
+            // 员工
+            {
+                path: "/setCenter/staffDetail",
+                name: "setCenterStaffDetail",
+                meta: {
+                    title: "员工管理",
+                    noCache: true
+                },
+                hidden: true,
+                component: resolve => require(["../page/setCenter/staffDetail/staffDetail"], resolve)
+            },
+            {
+                path: "/setCenter/userDetail",
+                name: "setCenterUserDetail",
+                meta: {
+                    title: "员工详情",
+                    noCache: true
+                },
+                hidden: true,
+                component: resolve => require(["../page/setCenter/staffDetail/userDetail/userDetail"], resolve)
+            },
+            // 团队管理
+            {
+                path: "/setCenter/teamManage",
+                name: "setCenterTeamManage",
+                meta: {
+                    title: "团队管理",
+                    noCache: true
+                },
+                hidden: true,
+                component: resolve => require(["../page/setCenter/teamManage/teamManage"], resolve)
+            },
+            // 项目管理
+            {
+                path: "/setCenter/projectManage",
+                name: "setCenterProjectManage",
+                meta: {
+                    title: "项目管理",
+                    noCache: true
+                },
+                hidden: true,
+                component: resolve => require(["../page/setCenter/projectManage/projectManage"], resolve)
+            },
+            // 任务类别管理
+            {
+                path: "/setCenter/taskGrounpManage",
+                name: "setCenterTaskGrounpManage",
+                meta: {
+                    title: "任务类别管理",
+                    noCache: true
+                },
+                hidden: true,
+                component: resolve => require(["../page/setCenter/taskGrounpManage/taskGrounpManage"], resolve)
+            },
+            // 奖惩管理
+            {
+                path: "/setCenter/rewardManage",
+                name: "setCenterRewardManage",
+                meta: {
+                    title: "奖惩管理",
+                    noCache: true
+                },
+                hidden: true,
+                component: resolve => require(["../page/setCenter/rewardManage/rewardManage"], resolve)
+            },
+            // 公告管理
+            {
+                path: "/setCenter/noticeManage",
+                name: "setCenterNoticeManage",
+                meta: {
+                    title: "公告管理",
+                    noCache: true
+                },
+                hidden: true,
+                component: resolve => require(["../page/setCenter/noticeManage/noticeManage"], resolve)
+            },
+            {
+                path: "/setCenter/noticeDetail",
+                name: "setCenterNoticeDetail",
+                meta: {
+                    title: "公告详情",
+                    noCache: true
+                },
+                hidden: true,
+                component: resolve => require(["../page/setCenter/noticeManage/noticeDetail/noticeDetail"], resolve)
+            },
+
             {
                 path: "/setCenter/planSummaryManage",
                 name: "setCenterPlanSummaryManage",
@@ -1384,6 +592,7 @@ const routes = [
                     title: "计划总结管理",
                     noCache: true
                 },
+                hidden: true,
                 component: resolve => require(["../page/setCenter/planSummaryManage/planSummaryManage"], resolve)
             },
             {
@@ -1393,6 +602,7 @@ const routes = [
                     title: "考核组管理",
                     noCache: true
                 },
+                hidden: true,
                 component: resolve => require(["../page/setCenter/examineGroupsManage/examineGroupsManage"], resolve)
             },
             {
@@ -1402,8 +612,12 @@ const routes = [
                     title: "考勤管理",
                     noCache: true
                 },
+                hidden: true,
                 component: resolve => require(["../page/setCenter/attendancesManage/attendancesManage"], resolve)
             },
+            
+            
+
             
             
             

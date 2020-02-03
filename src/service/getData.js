@@ -1,4 +1,4 @@
-import {fetchGet,fetchPost,fetchPut,fetchDelete} from 'config/fetch'
+import {fetchGet,fetchPost,fetchPut,fetchFilePost,fetchDownloadFileGet} from 'config/fetch'
 function param(params){
   const commonParams = {
     token:localStorage.getItem('token')
@@ -27,9 +27,17 @@ export function listOperFuns(params){
 export function departmentList(params){
   return fetchGet('/sysDept/list',param(params))
 }
+// 获取所有一级部门
+export function getParentDepts(params){
+  return fetchGet('/sysDept/getParentDepts',param(params))
+}
 //二级部门
 export function listChildrenDepts(params){
   return fetchGet('/sysDept/listChildrenDepts',param(params))
+}
+// 获取自身及下级部门
+export function getChildDepts(params){
+  return fetchGet('/sysDept/getChildDepts',param(params))
 }
 //部门负责人列表
 export function listAllUsers(params){
@@ -64,7 +72,7 @@ export function getDepartment(params){
 }
 //编辑部门
 export function editorDepartment(params){
-  return fetchPost('/sysDept/update',param(params))
+  return fetchPost('/sysDept/updateV2',param(params))
 }
 //获取首页必读公告
 export function noticeInfo(params){
@@ -326,7 +334,7 @@ export function deleteTaskGroup(params){
 }
 /**获取任务组列表**/
 export function getTaskGroupList(params){
-  return fetchGet('taskGroup/getAllTaskGroup',param(params))
+  return fetchGet('/taskGroup/getAllTaskGroup',param(params))
 }
 /**编辑任务组信息**/
 export function updateTaskGroup(params){
@@ -342,10 +350,6 @@ export function addEnabled(params){
   return fetchPost('/taskType/addEnabled',param(params))
 }
 
-/**取消任务原因**/
-export function cancelTaskCause(params){
-  return fetchPost('/taskInfos/cancelTask',param(params))
-}
 /**延期任务原因**/
 export function delayTaskCause(params){
   return fetchPost('/taskChange/delayTask',param(params))
@@ -354,41 +358,12 @@ export function delayTaskCause(params){
 export function changeTaskLevel(params){
   return fetchPost('/taskChange/gradeChangeTask',param(params))
 }
-/**完成任务**/
-export function completeTask(params){
-  return fetchPost('/taskInfos/finishTask',param(params))
-}
-/**发布任务**/
-export function publishTask(params){
-  return fetchPost('/taskInfos/publishTask',param(params))
-}
-/**草稿任务**/
-export function saveDraftTask(params){
-  return fetchPost('/taskInfos/saveDraftTask',param(params))
-}
+
 /**获取汇报对象**/
 export function getUsersObj(params){
   return fetchPost('/sysUser/listDeptLeaders',param(params))
 }
 
-/**获取任务详情**/
-export function getTaskGroupDetail(params){
-  return fetchGet('/taskInfos/detail',param(params))
-}
-// 任务操作记录
-export function taskChangeLog(params){
-  return fetchGet('/taskInfos/taskChangeLog',param(params))
-}
-// 任务评价
-
-export function getTaskEvaluate(params){
-  return fetchGet('/taskInfos/getTaskEvaluate',param(params))
-}
-
-// 任务管理列表下拉查看
-export function seeReplyStatus(params){
-  return fetchPost('/taskInfo/changeTaskReplyStatus',param(params))
-}
 
 // 员工详情的任务管理列表
 export function getStaffTask(params){
@@ -404,33 +379,14 @@ export function getStaffNewRecordList(params){
 export function userTaskList(params){
   return fetchGet('/taskInfo/getMyTask',param(params))
 }
-// 获取待处理任务列表
-export function listMyPendingTask(params){
-  return fetchGet('/taskInfos/listMyPendingTask',param(params))
-}
-// 获取我的所有任务列表
-export function listPersonalAllByPage(params){
-  return fetchGet('/taskInfos/listPersonalAllByPage',param(params))
-}
-// 部门负责人-员工任务列表
-export function listPendingTaskByTaskTypeId(params){
-  return fetchGet('/taskInfos/listPendingTaskByTaskTypeId',param(params))
-}
-
-
-
-// 员工任务管理列表
-export function userTaskReply(params){
-  return fetchPost('/taskInfo/replyTask',param(params))
-}
 
 // 获取员工任务类型列表
 export function getTaskType(params){
   return fetchGet('/taskType/listAll',param(params))
 }
-// 任务详情回复
-export function replyTaskReply(params){
-  return fetchPost('/taskInfo/replyTaskReply',param(params))
+// 根据部门获取任务类型列表
+export function getTaskTypeByDeptId(params){
+  return fetchGet('/taskType/listByDeptId',param(params))
 }
 
 //总经理 待处理任务
@@ -469,10 +425,6 @@ export function getTaskComment(params){
 //部门负责人 任务审核（三种状态）
 export function approvalTask(params){
   return fetchPost('/taskManager/approvalTask',param(params))
-}
-//部门负责人 任务评价
-export function assessTask(params){
-  return fetchPost('/taskInfos/evaluateTask',param(params))
 }
 //部门负责人 分配任务
 export function assessTaskDetail(params){
@@ -568,19 +520,6 @@ export function listDepartmental(params){
 //总经理(部门视图)分配任务列表
 export function assignTaskManage(params){
   return fetchPost('/taskManager/assignTask',param(params))
-}
-//总经理(编辑任务)任务详情列表
-export function editorTaskMain(params){
-  return fetchGet('/taskInfos/detail',param(params))
-}
-//总经理(确认编辑任务)任务详情列表
-export function sureEditorTask(params){
-  return fetchPut('/taskInfos/updateTask',param(params))
-}
-
-// 部门负责人-待处理任务
-export function listDeptPendingTasks(params){
-  return fetchGet('/taskInfos/listDeptPendingTasks',param(params))
 }
 //部门负责人(变更任务待审核)任务管理列表
 export function departChangeTaskPending(params){
@@ -730,10 +669,6 @@ export function perfmEmpDepart(params){
 export function outputSalary(params){
   return fetchGet('/perfmSalary/outputSalaryBills',param(params))
 }
-//总经理申诉处理（申诉处理）
-export function handleAppeal(params){
-  return fetchPost('/perfmAppeal/handleAppeal',param(params))
-}
 
 /*总经理查看奖惩记录**/
 export function perfRecordManage(params){
@@ -833,10 +768,6 @@ export function listThisWeekTask(params){
 }
 
 
-//统计部门负责人数据
-export function getDeptStatistics(params){
-  return fetchGet('/taskInfos/deptTaskCountList',param(params))
-}
 
 //个人重点任务超出
 export function morePersonalResults(params){
@@ -900,10 +831,6 @@ export function listRecentDeptWeekly(params){
 }
 
 
-//任务提醒
-export function remindTaskList(params){
-  return fetchGet('/taskInfos/remindTask',param(params))
-}
 //待完善接口
 export function listDraftTask(params){
   return fetchGet('/taskInfo/listDraftTask',param(params))
@@ -937,15 +864,23 @@ export function updateSysPlanSummarys(params){
 export function getSysPlanSummarys(params){
   return fetchPost('/sysPlanSummarys/list',param(params))
 }
+// POST /sysPlanSummarys/list 条件查询计划总结管理设置表集合  === 不需要权限
+export function getSysPlanSummarysNoAuth(params){
+  return fetchPost('/sysPlanSummarys/listNoAuth',param(params))
+}
 
 // 考核组管理
 // PUT /sysExamineGroups 更新考核组设置表
 export function updateSysExamineGroups(params){
   return fetchPut('/sysExamineGroups',param(params))
 }
-// POST /sysExamineGroups/list 条件查询考核组设置表集合
+// POST /sysExamineGroups/list 条件查询考核组设置表集合  === 不需要权限
 export function getSysExamineGroups(params){
   return fetchPost('/sysExamineGroups/list',param(params))
+}
+// POST /sysExamineGroups/list 条件查询考核组设置表集合
+export function getSysExamineGroupsNoAuth(params){
+  return fetchPost('/sysExamineGroups/listNoAuth',param(params))
 }
 // POST /sysUser/listAllUsers 获取考核成员
 export function getSysAllUsers(params){
@@ -970,4 +905,397 @@ export function updateSysAttendances(params){
 // POST /sysAttendances/list 条件查询
 export function getSysAttendances(params){
   return fetchPost('/sysAttendances/list',param(params))
+}
+
+// 获取任务部门列表 - 任务类型视图
+export function getDeptTaskGroupByDeptId(params){
+  return fetchGet('/taskGroup/getDeptTaskGroupByDeptId',param(params))
+}
+// 获取任务部门列表 - 部门视图
+export function getTaskDeptList(params){
+  return fetchGet('/sysDept/getTaskDeptList',param(params))
+}
+// ============任务模块接口
+/**取消任务原因**/
+export function cancelTaskCause(params){
+  return fetchPost('/taskInfos/cancelTask',param(params))
+}
+// 审核任务
+export function approveTask(params){
+  return fetchPost('/taskInfos/approveTask',param(params))
+}
+/**完成任务**/
+export function completeTask(params){
+  return fetchPost('/taskInfos/finishTask',param(params))
+}
+/**发布任务**/
+export function publishTask(params){
+  return fetchPost('/taskInfos/publishTask',param(params))
+}
+/**草稿任务**/
+export function saveDraftTask(params){
+  return fetchPost('/taskInfos/saveDraftTask',param(params))
+}
+// 关联任务组
+export function listGroupTaskListByUserId(params){
+  return fetchGet('/taskInfos/listGroupTaskListByUserId',param(params))
+}
+/**获取任务详情**/
+export function getTaskGroupDetail(params){
+  return fetchGet('/taskInfos/detail',param(params))
+}
+// 任务评价
+export function getTaskEvaluate(params){
+  return fetchGet('/taskInfos/getTaskEvaluate',param(params))
+}
+// 任务管理列表下拉查看
+export function seeReplyStatus(params){
+  return fetchPost('/taskInfos/changeTaskReplyStatus',param(params))
+}
+// 获取待处理任务列表
+export function listMyPendingTask(params){
+  return fetchGet('/taskInfos/listMyPendingTask',param(params))
+}
+// 获取我的所有任务列表
+export function listPersonalAllByPage(params){
+  return fetchGet('/taskInfos/listPersonalAllByPage',param(params))
+}
+// 部门负责人-员工任务列表
+export function listPendingTaskByTaskTypeId(params){
+  return fetchGet('/taskInfos/listPendingTaskByTaskTypeId',param(params))
+}
+// 首页-重点关注任务
+export function listHomeFocusTask(params){
+  return fetchGet('/taskInfos/listHomeFocusTask',param(params))
+}
+// 员工任务管理列表
+export function userTaskReply(params){
+  return fetchPost('/taskInfos/replyTask',param(params))
+}
+// 任务详情回复
+export function replyTaskReply(params){
+  return fetchPost('/taskInfos/replyTaskReply',param(params))
+}
+// 获取回复动态
+export function listTaskReply(params){
+  return fetchGet('/taskInfos/listTaskReply',param(params))
+}
+//部门负责人 任务评价
+export function assessTask(params){
+  return fetchPost('/taskInfos/evaluateTask',param(params))
+}
+//总经理(编辑任务)任务详情列表
+export function editorTaskMain(params){
+  return fetchGet('/taskInfos/detail',param(params))
+}
+//总经理(确认编辑任务)任务详情列表
+export function sureEditorTask(params){
+  return fetchPut('/taskInfos/updateTask',param(params))
+}
+
+// 部门负责人-待处理任务
+export function listDeptPendingTasks(params){
+  return fetchGet('/taskInfos/listDeptPendingTasks',param(params))
+}
+//统计部门负责人数据
+export function getDeptStatistics(params){
+  return fetchGet('/taskInfos/deptTaskCountList',param(params))
+}
+//任务提醒
+export function remindTaskList(params){
+  return fetchGet('/taskInfos/remindTask',param(params))
+}
+// 部门视图任务列表
+export function deptPendingTaskByEntity(params){
+  return fetchPost('/taskInfos/deptPendingTaskByEntity',param(params))
+}
+// 任务类型视图
+export function taskTypePendingTaskByEntity(params){
+  return fetchPost('/taskInfos/taskTypePendingTaskByEntity',param(params))
+}
+// 总经理-待审核任务
+export function listToApproveTaskByPage(params){
+  return fetchGet('/taskInfos/listToApproveTaskByPage',param(params))
+}
+// 总经理-待评价任务
+export function listWaitEvaluateTaskByPage(params){
+  return fetchGet('/taskInfos/listWaitEvaluateTaskByPage',param(params))
+}
+// 根据用户id获取 未完成任务
+export function listPendingTaskByUserId(params){
+  return fetchPost('/taskInfos/listPendingTaskByUserId',param(params))
+}
+// 根据用户id获取 已完成任务
+export function listFinishTaskByUserId(params){
+  return fetchPost('/taskInfos/listFinishTaskByUserId',param(params))
+}
+
+
+
+
+// ============计划表 add 20200107 by vic
+// 操作日志
+export function changeLogLists(params){
+  return fetchPost('/operationLogs/list',param(params))
+}
+// 个人计划列表
+export function getPlanPages(params){
+  return fetchPost('/planInfos/page',param(params))
+}
+// 全部部门计划列表
+export function listAllDeptPlanPage(params){
+  return fetchPost('/planInfos/listAllDeptPlanPage',param(params))
+}
+// 全部个人计划列表
+export function listAllPersonalPlanPage(params){
+  return fetchPost('/planInfos/listAllPersonalPlanPage',param(params))
+}
+
+// 待处理计划列表
+export function listPendingPlanPage(params){
+  return fetchGet('/planInfos/listPendingPlanPage',param(params))
+}
+// 待处理计划列表-总经理
+export function listManagerPendingPlanPage(params){
+  return fetchPost('/planInfos/listManagerPendingPlanPage',param(params))
+}
+
+// 个人 发起计划 基础信息
+export function newPlanTasklist(params){
+  return fetchGet('/planInfos/newPlanTasklist',param(params))
+}
+// // 编辑 个人计划 基础信息详情
+// export function getPlanEditDetail(params){
+//   return fetchGet('/planInfos/editDetail',param(params))
+// }
+// 个人计划详情
+export function personalPlanDetail(params){
+  return fetchGet('/planInfos/personalPlanDetail',param(params))
+}
+// 更新计划 
+export function updatePlan(params){
+  return fetchPost('/planInfos/updatePlan',param(params))
+}
+// 部门计划详情
+export function deptPlanDetail(params){
+  return fetchGet('/planInfos/deptPlanDetail',param(params))
+}
+// 发布计划
+export function publishPlan(params){
+  return fetchPost('/planInfos/publishPlan',param(params))
+}
+// 保存草稿计划
+export function saveDraftPlan(params){
+  return fetchPost('/planInfos/saveDraftPlan',param(params))
+}
+// 审核计划
+export function approvePlan(params){
+  return fetchPost('/planInfos/approvePlan',param(params))
+}
+// 变更计划审核中
+export function updateToApproving(params){
+  return fetchPost('/planInfos/updateToApproving',param(params))
+}
+// 是否已发起总结
+export function hasPublishPlan(params){
+  return fetchGet('/planInfos/hasPublishPlan',param(params))
+}
+
+
+// 计算离计划/总结开始提交还剩多少时间
+export function getRestTime(params){
+  return fetchGet('/sysPlanSummarys/getRestTime',param(params))
+}
+// 判断计划总结是否在提交时间范围之内
+export function judgeCanSubmit(params){
+  return fetchGet('/sysPlanSummarys/judgeCanSubmit',param(params))
+}
+
+
+// 个人总结列表
+export function getSummaryPages(params){
+  return fetchPost('/summaryInfos/page',param(params))
+}
+// 全部部门总结列表
+export function listDeptSummaryByPage(params){
+  return fetchGet('/summaryInfos/listDeptSummaryByPage',param(params))
+}
+// 全部个人总结列表
+export function listAllPersonalSummaryPage(params){
+  return fetchGet('/summaryInfos/listAllPersonalSummaryPage',param(params))
+}
+// 待处理总结列表
+export function listPendingSummaryPage(params){
+  return fetchGet('/summaryInfos/listPendingSummaryPage',param(params))
+}
+// 待处理总结列表 - 总经理
+export function listManagerPendingSummaryPage(params){
+  return fetchGet('/summaryInfos/listManagerPendingSummaryPage',param(params))
+}
+// 个人 发起总结 基础信息
+export function newSummaryTasklist(params){
+  return fetchGet('/summaryInfos/newSummaryTasklist',param(params))
+}
+// // 编辑 个人总结 基础信息详情
+// export function getSummaryEditDetail(params){
+//   return fetchGet('/summaryInfos/draftDetail',param(params))
+// }
+// 个人总结详情
+export function personalSummaryDetail(params){
+  return fetchGet('/summaryInfos/personalSummaryDetail',param(params))
+}
+// 更新总结 
+export function updateSummary(params){
+  return fetchPost('/summaryInfos/updateSummary',param(params))
+}
+// 部门总结详情
+export function deptSummaryDetail(params){
+  return fetchGet('/summaryInfos/deptSummaryDetail',param(params))
+}
+// 发布总结
+export function publishSummary(params){
+  return fetchPost('/summaryInfos/publishSummary',param(params))
+}
+// 保存草稿总结
+export function saveDraftSummary(params){
+  return fetchPost('/summaryInfos/saveDraftSummary',param(params))
+}
+// 审核总结
+export function approveSummary(params){
+  return fetchPost('/summaryInfos/approveSummary',param(params))
+}
+// 变更总结审核中
+export function updateToApprovingSummary(params){
+  return fetchPost('/summaryInfos/updateToApproving',param(params))
+}
+// 是否已发起总结
+export function hasPublishSummary(params){
+  return fetchGet('/summaryInfos/hasPublishSummary',param(params))
+}
+// 提出申诉
+export function appealSummary(params){
+  return fetchPost('/summaryInfos/appealSummary',param(params))
+}
+// 确认打分
+export function conformScore(params){
+  return fetchPost('/summaryInfos/conformScore',param(params))
+}
+// 驳回申诉
+export function rejectAppeal(params){
+  return fetchPost('/summaryInfos/rejectAppeal',param(params))
+}
+// 驳回申诉
+export function handleAppeal(params){
+  return fetchPost('/summaryInfos/handleAppeal',param(params))
+}
+// 导出
+export function exportSummary(params){
+  return fetchDownloadFileGet('/summaryInfos/exportSummary',params)
+}
+
+
+// ========================= 绩效管理模块
+
+// 分页获取绩效
+export function meritssPage(params){
+  return fetchGet('/meritss/page',param(params))
+}
+// 分页获取考勤
+export function attendanceRecordsPage(params){
+  return fetchPost('/attendanceRecords/page',param(params))
+}
+// 上传考勤
+export function uploadAttendance(params){
+  return fetchFilePost('/attendanceRecords/uploadAttendance',params)
+}
+// 发送考勤
+export function sendAttendance(params){
+  return fetchGet('/attendanceRecords/sendAttendance',param(params))
+}
+// 更新考勤信息
+export function updateAttendance(params){
+  return fetchPut('/attendanceRecords',param(params))
+}
+// 删除扣款
+export function deleteAttendanceCut(params){
+  return fetchGet('/attendanceRecords/deleteCut',param(params))
+}
+// 获取详情
+export function getAttendance(params){
+  return fetchGet('/attendanceRecords',param(params))
+}
+// 确认考勤
+export function confirmAttendanceRecord(params){
+  return fetchPost('/attendanceRecords/confirmAttendanceRecord',param(params))
+}
+// 审核考勤
+export function examineAttendanceRecord(params){
+  return fetchPost('/attendanceRecords/examineAttendanceRecord',param(params))
+}
+// 考勤操作记录
+export function getAttendanceLogs(params){
+  return fetchPost('/attendanceLogs/list',param(params))
+}
+// 分页获取工资条 - 员工
+export function listSalaryPage(params){
+  return fetchPost('/salarys/listPage',param(params))
+}
+// 分页获取工资条 - 管理员
+export function listSalaryCountPage(params){
+  return fetchPost('/salarys/listSalaryCountPage',param(params))
+}
+// 导出工资条
+export function exportSalary(params){
+  return fetchDownloadFileGet('/salarys/exportSalary',param(params))
+}
+// 工资条详情
+export function listSalaryDetailPage(params){
+  return fetchPost('/salarys/listSalaryDetailPage',param(params))
+}
+// 发送工资条
+export function sendSalary(params){
+  return fetchGet('/salarys/sendSalary',param(params))
+}
+// 是否可发送工资条
+export function canSendSalary(params){
+  return fetchGet('/salarys/canSendSalary',param(params))
+}
+
+
+
+
+
+
+
+// 首页 - 待处理数量
+export function getStatisticCount(params){
+  return fetchGet('/home/getStatisticCount',param(params))
+}
+// 全部计划总结
+export function getAllPlanSummaryInfo(params){
+  return fetchPost('/home/getAllPlanSummaryInfo',param(params))
+}
+
+
+// 获取重点关注定制信息
+export function getTaskFocusSet(params){
+  return fetchGet('/taskFocusSets/getTaskFocusSet',param(params))
+}
+// 设置重点关注定制信息
+export function saveTaskFocusSet(params){
+  return fetchPost('/taskFocusSets/saveTaskFocusSet',param(params))
+}
+// 获取部门+员工列表
+export function listDeptsAndUsers(params){
+  return fetchGet('/sysUser/listDeptsAndUsers',param(params))
+}
+
+
+// 附件上传下载
+export function uploadFile(params){
+  return fetchFilePost('/fileInfos/uploadFile',params)
+}
+// 下载
+export function downloadFile(params){
+  return fetchDownloadFileGet('/fileInfos/downloadFile',params)
 }

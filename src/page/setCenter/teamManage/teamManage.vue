@@ -7,7 +7,7 @@
           <span class="child1">系统设置</span>
         </router-link>
         /
-        <router-link to="/teamManage">
+        <router-link to="/setCenter/teamManage">
           <span class="child2">团队管理</span>
         </router-link>
       </div>
@@ -32,7 +32,7 @@
                 <i class="el-icon-delete" @click="_deletes(item.teamId)"></i>
               </div>
             </div>
-            <router-link :to="{ path: 'teamDetail',query:{teamId:item.teamId}}">
+            <router-link :to="{ path: '/setCenter/teamDetail',query:{teamId:item.teamId}}">
               <div class="role-content">
                 <div class="populations-status">
                   <div class="populations-left">
@@ -53,7 +53,7 @@
     <el-dialog
       title="删除团队"
       :visible.sync="dialogVisible"
-      size="tiny"
+      width="560px"
       :before-close="handleClose" top='25%' class="teamDetail">
       <span class="delete_team">确定删除该团队吗？删除后不可恢复！</span>
       </el-form>
@@ -65,7 +65,7 @@
     <el-dialog
       title="编辑团队"
       :visible.sync="dialogVisible1"
-      size="tiny"
+      width="560px"
       :before-close="handleClose1" top='25%' class="teamDetail">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
         <el-form-item label="团队名称" prop="name">
@@ -114,7 +114,7 @@
     <el-dialog
       title="添加团队"
       :visible.sync="dialogVisible2"
-      size="tiny"
+      width="560px"
       :before-close="handleClose2" top='25%' class="teamDetail ">
       <el-form :model="ruleForm1" :rules="rules1" ref="ruleForm1" label-width="100px" class="demo-ruleForm">
         <el-form-item label="团队名称" prop="name">

@@ -1,3 +1,4 @@
+$--color-primary: #D93437;
 .task-manage .el-table th{
   background-color: inherit !important;
 }
@@ -33,7 +34,7 @@
   height: 20px !important;
   border-radius: 50% !important;
   background: #DBDBDB !important;
-  margin-left: 24px;
+  margin-left: 14px;
 }
 .el-table tr{
   will-change:auto !important;
@@ -74,12 +75,6 @@ font-weight: 500 !important;
 .roles-temp .el-form-item__content{
   margin-left:95px !important;
 }
-.dialog-footer button{
-  margin-right: 0px !important;
-}
-.dialog-footer button:last-child{
-  margin-left: 10px !important;
-}
 .special-width .el-form-item__label{
   width: 95px !important;
   color: #333333 !important;
@@ -111,31 +106,6 @@ font-weight: 500 !important;
   background-color: #D93437 !important;
 }
 
-.el-dialog__header{
-  padding: 13px 25px 13px 15px !important;
-  background: #F1F1F1 !important;
-  border-bottom: 1px solid rgba(0,0,0,0.12) !important;
-}
-.el-dialog__title{
-  font-weight: normal !important;
-  font-size: 14px !important;
-}
-.el-dialog__headerbtn .el-icon-close{
-  font-size: 12px !important;
-}
-.department .el-dialog__body{
-  padding: 30px 20px !important;
-  padding-bottom: 0 !important
-}
-.department .el-dialog__body{
-  text-align: center !important;
-}
-.role .el-dialog__body{
-  text-align: center !important;
-}
-.el-dialog__footer{
-  text-align: center !important;
-}
 .department .el-select{
   width: 100% !important;
 }
@@ -186,11 +156,6 @@ font-weight: 500 !important;
   color: #333333 !important;
   border: 1px solid #bfcbd9 !important;
 }
-
-// .role-special .el-input__inner{width: 75px !important;}
-.el-select .el-input .el-input__icon {
-  color: #434245 !important;
-}
 .pagination-depart .el-pagination{
   text-align: center !important;
   padding: 30px 5px !important;
@@ -207,32 +172,8 @@ font-weight: 500 !important;
 .departmentDetail .el-select{
   width: 100% !important;
 }
-.el-dialog--tiny{
-  width: 555px !important;
-}
 .el-icon-caret-top:before {
   content: "\E603" !important;
-}
-.dialog-footer button{
-  border: 1px solid #838383;
-  border-radius: 4px;
-  width: 90px;
-  height: 30px;
-  text-align: center;
-  background: #fff;
-  color: #838383;
-  cursor: pointer;
-  margin-right: 20px;
-}
-.dialog-footer button:last-child{
-  color: #D93437;
-  border: 1px solid #D83436;
-}
-.dialog-footer .saveDrafts{
-  margin-left: 10px !important;
-}
-.performanceManage .el-input__inner{
-  border: 1px solid rgba(0,0,0,0.12) !important;
 }
 .noticeManage .el-table .cell{
   overflow: hidden !important;
@@ -276,23 +217,8 @@ border: none !important;
 .ql-snow.ql-toolbar button, .ql-snow .ql-toolbar button{
   width: 26px !important;
 }
-.el-pager li.active{
-  background: #D93437 !important;
-  border-color: #D93437 !important;
-}
-.el-select-dropdown__item.selected {
-  background: #D93437 !important;
-}
 .pagination-depart .el-icon-caret-top:before {
   content: "\E607" !important;
-}
-.complete{
-  border: 1px solid #D83436 !important;
-  font-size: 14px !important;
-}
-.complete:hover{
-  background: #D93437 !important;
-  color: #FFFFFF !important;
 }
 .get-reward .el-table th,.get-reward .el-table td, .get-reward .el-table__header-wrapper thead div{
   background-color: #fff !important;
@@ -330,20 +256,8 @@ color: red !important
 .time_template .el-date-editor{
  margin-left: 20px !important;
 }
-.el-dialog__body{
-  padding-bottom: 0px !important;
-}
-.el-dialog__footer{
-  padding-top: 20px !important;
-}
-.deleteDepartment .el-dialog__footer{
-  padding-top: 40px !important;
-}
 .el-form-item.is-error .el-input__inner{
   border-color: #ff4949 !important;
-}
-.teamDetail .el-dialog__body{
-padding-top: 15px !important;
 }
 .el-checkbox__label{
   font-size: 14px !important;
@@ -356,9 +270,6 @@ padding-top: 15px !important;
 .teamDetail .el-checkbox__input.is-indeterminate .el-checkbox__inner{
   background: #D93437 !important;
   border: 1px solid #D93437 !important;
-}
-.projectManage .el-dialog__footer{
-margin-top: 30px !important;
 }
 .el-form-item{
   margin-bottom: 18px !important;
@@ -384,9 +295,6 @@ margin-right: 30px !important;
 .wagesDetail .el-form-item__content{
   margin-right: 40px !important;
 }
-.assignTaskModel .el-dialog--tiny{
-  width: 619px !important;
-}
 .dailyManage .el-date-editor.el-input{
   width: 115px !important;
 }
@@ -399,149 +307,11 @@ margin-right: 30px !important;
   height: 35px !important;
   font-size: 14px !important;
 }
-.el-collapse-item__header{
-  height: 66px !important;
-  line-height: 66px !important;
-}
-.initiateNew .el-input__inner{
-  height: 35px !important;
-}
-.initiateNew .el-textarea__inner{
-  font-size: 12px !important;
-}
-.replaySum .el-select{
-margin-left: 10px !important;
-}
-.initiateNew .el-textarea{
-  width: 365px !important;
-  height: 90px !important;
-}
-.evaluate .el-textarea{
-  min-height: 140px !important;
-}
-.evaluate .el-textarea__inner{
-  min-height: 140px !important;
-}
-.initiateNew .el-textarea__inner{
-  height: 90px !important;
-}
-.content-task .el-input__inner{
-  float: left !important;
-  width: 190px !important;
-  background: #FFFFFF!important;
-  height: 24px!important;
-  border: 1px solid rgba(0,0,0,0.12) !important;
-  border-radius: 4px !important;
-}
-.disable-button{
-  background-color: #fff !important;
-  border-color: #d1dbe5 !important;
-  color: #bfcbd9 !important;
-}
-.disable-button:hover{
-  background-color: #fff !important;
-  border-color: #d1dbe5 !important;
-  color: #bfcbd9 !important;
-}
-//.el-table .cell{
-//  padding-left: 18px !important;
-//}
-.performanceManage .el-date-editor.el-input{
-  width: 104px !important;
-}
-.performanceManage .el-input__inner{
-  height: 24px !important;
-}
-.performance .cell{
-  font-size: 12px !important;
-  color: #434343 !important;
-}
-.performanceDept .el-select{
-  width: 100px !important;
-}
-.monthList .el-select{
-  width: 104px !important;
-}
-.el-table tr{
-  background-color: #fff !important;
-}
-.staffName .el-table .cell{
-  //padding-left: 8px !important;
-  //padding-right: 8px !important;
-}
-.rewards .userName{
-  width: 365px !important;
-}
-.clearType{
-  width: 463px !important;
-  height: 40px !important;
-}
-.rewards .cause .el-textarea__inner{
-  width: 365px !important;
-  height: 90px !important;
-}
-.check-wrapper-special .el-checkbox-group{
-  text-align: center !important;
-}
-.check-wrapper-special .el-checkbox+.el-checkbox{
-  margin-left: 0px !important;
-}
-.check-wrapper-special .el-checkbox{
-  margin-bottom: 8px !important;
-  display: block !important;
-}
 
-.quill-wrapper .ql-formats{
-  line-height: 37px !important;
-}
-.searchLevelSpecial .el-input__icon{
-  right:-16px !important;
-}
-.time_template1 .el-input__inner{
-  text-align: center !important;
-}
-.captcha .user_captcha .el-input__inner{
-  border:0 !important;
-  height:42px !important;
-  width: 202px !important;
-  padding-left: 50px !important;
-}
-.el-select-dropdown.is-multiple .el-select-dropdown__item.selected{
-  color: #D93437 !important;
-}
-.el-select-dropdown.is-multiple .el-select-dropdown__item.selected{
-  background: #fff !important;
-}
 // 2019 12 26
-.el-button--primary {
-  background: #D93437;
-  border-color: #D93437;
-  color: #ffffff;
-  &:hover {
-    background: #ec3d41;
-    border-color: #ec3d41;
-  }
-  &:active,&.active,&:focus {
-    background: #D93437;
-    border-color: #D93437;
-    color: #ffffff;
-  }
-}
-.el-button--default.el-button--small{
-  font-size:14px;
-  border: 1px solid #D83436;
-  border-radius: 4px;
-  color: #D93437;
-  &:hover{
-    background: #D93437;
-    border-color: #D93437;
-    color: #FFFFFF;
-  }
-  &:active,&.active,&:focus {
-    border-color: #D93437;
-    color: #D93437;
-    background: none;
-  }
+.el-button--primary.is-plain {
+  background: #ffffff;
+  border-color: $--color-primary;
 }
 .el-input >>> input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
   color:rgba(0,0,0,0.45);
@@ -554,4 +324,16 @@ margin-left: 10px !important;
 }
 .el-input >>> input:-ms-input-placeholder { /* Internet Explorer 10-11 */
   color:rgba(0,0,0,0.45);
+}
+.el-dialog__header {
+  background: #F5F4F4;
+  padding: 15px;
+}
+.el-dialog__footer {
+  text-align: center;
+}
+.el-button--primary.is-plain:focus {
+  background: #FFFFFF;
+  border-color: #D93437;
+  color: #D93437;
 }

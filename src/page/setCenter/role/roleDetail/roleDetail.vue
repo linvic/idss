@@ -4,7 +4,7 @@
   <div class="wrapper">
     <div class="router-wrapper">
       <router-link to="/setCenter"><span class="child1">系统设置</span></router-link><span>/</span>
-      <router-link to="/role"> <span class="child1">角色管理</span></router-link>
+      <router-link to="/setCenter/role"> <span class="child1">角色管理</span></router-link>
        <span>/</span><span class="child2">角色详情</span>
     </div>
     <div class="role-title">
@@ -44,7 +44,7 @@
       <el-table :data="result" style="width: 100%">
         <el-table-column prop="userName" label="姓名">
           <template slot-scope="props">
-             <router-link to="/userDetail">
+             <router-link to="/setCenter/userDetail">
                <span class="department-name">{{props.row.userName}}</span>
              </router-link>
            </template>
@@ -83,11 +83,11 @@
       </el-table>
     </div>
     <div class="pagination-depart" v-show='pagination'>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[10, 15, 50]" :page-size=pageSize layout="total, sizes, prev, pager, next, jumper" :total=total>
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[10, 15, 50]" :page-size=pageSize layout="total, sizes, prev, pager, next, jumper" :total=total>
       </el-pagination>
     </div>
     <div class="">
-      <el-dialog title="选择角色" :visible.sync="dialogVisible2" size="tiny" :before-close="handleClose2" top='10%' class="">
+      <el-dialog title="选择角色" :visible.sync="dialogVisible2" width="560px" :before-close="handleClose2" top='10%' class="">
         <div class="permissions-table">
           <div class="check-wrapper">
             <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
@@ -103,7 +103,7 @@
       </el-dialog>
     </div>
     <div class="">
-      <el-dialog title="选择角色" :visible.sync="dialogVisible4" size="tiny" :before-close="handleClose4" top='10%' class="">
+      <el-dialog title="选择角色" :visible.sync="dialogVisible4" width="560px" :before-close="handleClose4" top='10%' class="">
         <div class="permissions-table">
           <div class="check-wrapper">
             <el-checkbox-group v-model="checkedCities4" @change="handleCheckedCitiesChange4">
@@ -118,7 +118,7 @@
       </el-dialog>
     </div>
     <div class="">
-      <el-dialog title="选择团队" :visible.sync="dialogVisible6" size="tiny" :before-close="handleClose6" top='10%' class="">
+      <el-dialog title="选择团队" :visible.sync="dialogVisible6" width="560px" :before-close="handleClose6" top='10%' class="">
         <div class="permissions-table">
           <div class="check-wrapper">
             <el-checkbox-group v-model="checkedCities6" @change="handleCheckedCitiesChange6">
@@ -133,7 +133,7 @@
       </el-dialog>
     </div>
     <div class="">
-      <el-dialog title="编辑员工" :visible.sync="dialogVisible" size="tiny" :before-close="handleClose" top='10%' class="">
+      <el-dialog title="编辑员工" :visible.sync="dialogVisible" width="560px" :before-close="handleClose" top='10%' class="">
         <el-form :label-position="labelPosition" :rules="rules" ref="formLabelAlign" label-width="100px" :model="formLabelAlign">
           <el-form-item label="用户名：" style="margin-bottom:2px;margin-right:30px;">
             <span>{{formLabelAlign.role}}</span>
@@ -170,8 +170,8 @@
           <el-form-item label="底薪：" required prop="basicPay">
             <el-input v-model.number="formLabelAlign.basicPay"></el-input>
           </el-form-item>
-          <el-form-item label="绩效工资："  prop="money">
-            <el-input v-model.number.trim="formLabelAlign.money"></el-input>
+          <el-form-item label="绩效工资：" required prop="money">
+            <el-input v-model.trim="formLabelAlign.money" @keyup.native="onkeyupPrice($event)"></el-input>
           </el-form-item>
           <el-form-item label="状态：" required>
             <el-radio-group v-model="resource">
@@ -1026,7 +1026,11 @@ export default {
     margin-top: 8px;
     text-align: center;
     cursor: pointer;
+    /deep/ .el-input__icon {
+      line-height: 24px;
+    }
 }
+
 .role-button1 {
     float: right;
     width: 86px;
@@ -1090,5 +1094,16 @@ export default {
     margin-left: 100px;
     width: 230px;
     margin-bottom: 15px;
+}
+
+.disable-button{
+  background-color: #fff !important;
+  border-color: #d1dbe5 !important;
+  color: #bfcbd9 !important;
+}
+.disable-button:hover{
+  background-color: #fff !important;
+  border-color: #d1dbe5 !important;
+  color: #bfcbd9 !important;
 }
 </style>

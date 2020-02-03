@@ -29,7 +29,7 @@
               class="title"
             >
               <template slot-scope="props">
-                <div @click="messageSkip(props.row.messageSiteInfoId,props.row.sourceType,props.row.sourceId)" style="cursor: pointer">
+                <div @click="messageSkip(props.row)" style="cursor: pointer">
                   {{props.row.messageTitle}}
                 </div>
               </template>
@@ -55,7 +55,7 @@
           </el-table>
         </div>
         <div class="pagination-depart" v-show='pagination'>
-          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[10, 15, 50]" :page-size=pageSize layout="total, sizes, prev, pager, next, jumper" :total=total>
+          <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[10, 15, 50]" :page-size=pageSize layout="total, sizes, prev, pager, next, jumper" :total=total>
           </el-pagination>
         </div>
       </div>
@@ -118,73 +118,74 @@
           }
         })
       },
-      messageSkip(id,sourceType,sourceId){
+      messageSkip(row){
         viewMessage({
-          id:id
+          id: row.messageSiteInfoId
         }).then((res) =>{
           if(res.code==ERR_OK){
             this.reload()
             console.log(this.userView);
-            if(sourceType=='TASK'){
-              if(this.userView=='MANAGER'){
+            if(row.sourceType=='TASK'){
+              
                 this.$router.push({
-                  path:'/taskDetailManage',
-                  query:{id:sourceId}
+                  path:'/taskManage/taskDetail',
+                  query:{id:row.sourceId}
                 })
-              }
-              if(this.userView=='DEPT'){
-                this.$router.push({
-                  path:'/taskDetailHeader',
-                  query:{id:sourceId}
-                })
-              }
-              if(this.userView=='STAFF'){
-                this.$router.push({
-                  path:'/taskDetail',
-                  query:{id:sourceId}
-                })
-              }
             }
-            if(sourceType=='NOTICE'){
+            if(row.sourceType=='NOTICE'){
               this.$router.push({
-                path:'/noticeDetail',
-                query:{id:sourceId}
+                path:'/setCenter/noticeDetail',
+                query:{id:row.sourceId}
               })
             }
-            if(sourceType=='DAILY'){
+            if(row.sourceType=='SUMMARY'){
+              let _message = JSON.parse(row.messageContent);
               this.$router.push({
-                path:'/dailyDetail',
-                query:{id:sourceId}
+                  path: "/planSummaryManage/summaryDetail",
+                  query: {
+                      id: row.sourceId,
+                      type: _message.summaryType
+                  }
               })
             }
-            if(sourceType=='WEEKLY'){
+            if(row.sourceType=='PLAN'){
+              let _message = JSON.parse(row.messageContent);
               this.$router.push({
-                path:'/staffPersonWeekDetail',
-                query:{id:sourceId}
+                  path: "/planSummaryManage/planDetail",
+                  query: {
+                      id: row.sourceId,
+                      type: _message.planType
+                  }
               })
             }
-            if(sourceType=='DEPTWEEKLY'){
-              this.$router.push({
-                path:'/departWeeklyDetail',
-                query:{id:sourceId}
-              })
-            }
-            if(this.userView=='MANAGER'){
-              if(sourceType=='PERFM'){
+            if(row.sourceType=='MERITS'){
+              let _message = JSON.parse(row.messageContent);
+              if (_message.msgType == 'confirmAttendance') {
+                // 待核对考勤
                 this.$router.push({
-                  path:'/performanceManageManger',
-//                   query:{id:sourceId}
+                    path: "/performanceManage/attendanceDetail",
+                    query: {
+                        id: row.sourceId
+                    }
                 })
+              } else if (_message.msgType == 'appealAttendance') {
+                // 考勤申诉待处理
+                this.$router.push({
+                    path: "/performanceManage/attendanceDetail",
+                    query: {
+                        id: row.sourceId
+                    }
+                })
+              } else if (_message.msgType == 'sendSalary') {
+                // 工资条发送提醒
+                this.$router.push({
+                    path: "/performanceManage/paySlipManage"
+                })
+                
               }
             }
-            if(this.userView=='DEPT'){
-              if(sourceType=='PERFM'){
-                this.$router.push({
-                  path:'/performanceDept',
-//                  query:{id:sourceId}
-                })
-              }
-            }
+            
+            
           }else{
             this.$notify.error({
               title: '提示',

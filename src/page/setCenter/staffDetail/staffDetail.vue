@@ -53,7 +53,7 @@
       <el-table :data="result" style="width: 100%">
         <el-table-column prop="userName" label="姓名">
           <template slot-scope="props">
-            <router-link :to="{ path: 'userDetail',query: {id:props.row.userId}}">
+            <router-link :to="{ path: '/setCenter/userDetail',query: {id:props.row.userId}}">
                <span class="department-name">{{props.row.userName}}</span>
              </router-link>
            </template>
@@ -96,10 +96,10 @@
       </el-table>
     </div>
     <div class="pagination-depart" v-show='pagination'>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[10, 15, 50]" :page-size=pageSize layout="total, sizes, prev, pager, next, jumper" :total=total>
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[10, 15, 50]" :page-size=pageSize layout="total, sizes, prev, pager, next, jumper" :total=total>
       </el-pagination>
     </div>
-    <el-dialog title="删除员工" :visible.sync="dialogVisible1" size="tiny" :before-close="handleClose1" top='25%' class="department deleteDepartment">
+    <el-dialog title="删除员工" :visible.sync="dialogVisible1" width="560px" :before-close="handleClose1" top='25%' class="department deleteDepartment">
       <span>确定删除该员工吗？</span>
       <span slot="footer" class="dialog-footer">
           <button @click="dialogVisible1 = false">取 消</button>
@@ -107,7 +107,7 @@
         </span>
     </el-dialog>
     <div class="">
-      <el-dialog title="选择角色" :visible.sync="dialogVisible2" size="tiny" :before-close="handleClose2" top='10%' class="">
+      <el-dialog title="选择角色" :visible.sync="dialogVisible2" width="560px" :before-close="handleClose2" top='10%' class="">
         <div class="permissions-table">
           <div class="check-wrapper">
             <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
@@ -123,7 +123,7 @@
       </el-dialog>
     </div>
     <div class="">
-      <el-dialog title="选择角色" :visible.sync="dialogVisible4" size="tiny" :before-close="handleClose4" top='10%' class="">
+      <el-dialog title="选择角色" :visible.sync="dialogVisible4" width="560px" :before-close="handleClose4" top='10%' class="">
         <div class="permissions-table">
           <div class="check-wrapper">
             <el-checkbox-group v-model="checkedCities4" @change="handleCheckedCitiesChange4">
@@ -139,7 +139,7 @@
     </div>
 
     <div class="">
-      <el-dialog title="选择团队" :visible.sync="dialogVisible5" size="tiny" :before-close="handleClose5" top='10%' class="">
+      <el-dialog title="选择团队" :visible.sync="dialogVisible5" width="560px" :before-close="handleClose5" top='10%' class="">
         <div class="permissions-table">
           <div class="check-wrapper">
             <el-checkbox-group v-model="checkedCities5" @change="handleCheckedCitiesChange5">
@@ -155,7 +155,7 @@
     </div>
 
     <div class="">
-      <el-dialog title="选择团队" :visible.sync="dialogVisible6" size="tiny" :before-close="handleClose6" top='10%' class="">
+      <el-dialog title="选择团队" :visible.sync="dialogVisible6" width="560px" :before-close="handleClose6" top='10%' class="">
         <div class="permissions-table">
           <div class="check-wrapper">
             <el-checkbox-group v-model="checkedCities6" @change="handleCheckedCitiesChange6">
@@ -171,7 +171,7 @@
     </div>
 
     <div class="">
-      <el-dialog title="添加员工" :visible.sync="dialogVisible3" size="tiny" :before-close="handleClose3" top='10%' class="">
+      <el-dialog title="添加员工" :visible.sync="dialogVisible3" width="560px" :before-close="handleClose3" top='10%' class="">
         <el-form :label-position="labelPosition" :rules="rules" ref="formLabelAlign3" label-width="100px" :model="formLabelAlign3">
           <el-form-item label="用户名：" required prop="role3">
             <el-input v-model.trim="formLabelAlign3.role3"></el-input>
@@ -213,10 +213,10 @@
             <el-input type="password" v-model.trim="formLabelAlign3.pass" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="底薪：" required prop="basicPay3">
-            <el-input v-model.number.trim="formLabelAlign3.basicPay3"></el-input>
+            <el-input v-model.trim="formLabelAlign3.basicPay3" @keyup.native="onkeyupPrice($event)"></el-input>
           </el-form-item>
-          <el-form-item label="绩效工资：" prop="money3">
-            <el-input v-model.number.trim="formLabelAlign3.money3"></el-input>
+          <el-form-item label="绩效工资：" required prop="money3">
+            <el-input v-model.trim="formLabelAlign3.money3" @keyup.native="onkeyupPrice($event)"></el-input>
           </el-form-item>
           <el-form-item label="状态：" required>
             <el-radio-group v-model="resource3">
@@ -232,7 +232,7 @@
       </el-dialog>
     </div>
     <div class="">
-      <el-dialog title="编辑员工" :visible.sync="dialogVisible" size="tiny" :before-close="handleClose" top='10%' class="">
+      <el-dialog title="编辑员工" :visible.sync="dialogVisible" width="560px" :before-close="handleClose" top='10%' class="">
         <el-form :label-position="labelPosition" :rules="rules" ref="formLabelAlign" label-width="100px" :model="formLabelAlign">
           <el-form-item label="用户名：" style="margin-bottom:2px;margin-right:30px;">
             <span>{{formLabelAlign.role}}</span>
@@ -289,7 +289,7 @@
   <!--修改密码-->
   <el-dialog title="修改密码"
              :visible.sync="dialogPsw"
-             size="tiny"
+             width="560px"
              :before-close="handleClosePsw"
              top='25%' class="">
     <el-form :model="numberValidateForm" status-icon :rules="rulesNumber" ref="numberValidateForm" label-width="100px" class="demo-ruleForm">
@@ -372,7 +372,7 @@ export default {
     //    绩效正则
     var checkAges = (rule, value, callback) => {
       if (!value) {
-        return callback();
+        return callback('请输入绩效工资');
       }else{
         var reg = /(^(([1-9][0-9]*)|((([1-9][0-9]*)|0)\.[0-9]{1,2}))$)/;
         if (!reg.test(value)) {
@@ -498,6 +498,10 @@ export default {
         basicPay3:[
           { validator: checkbasicPay }
         ],
+        money: [{
+          required: true,
+          message: '请输入',
+        }],
         money: [ { validator: checkAges }],
         region: [{
           required: true,
@@ -1503,5 +1507,19 @@ export default {
     margin-left: 100px;
     width: 230px;
     margin-bottom: 15px;
+}
+.el-select /deep/ .el-input .el-select__caret {
+  line-height: 24px;
+}
+
+.disable-button{
+  background-color: #fff !important;
+  border-color: #d1dbe5 !important;
+  color: #bfcbd9 !important;
+}
+.disable-button:hover{
+  background-color: #fff !important;
+  border-color: #d1dbe5 !important;
+  color: #bfcbd9 !important;
 }
 </style>

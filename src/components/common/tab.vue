@@ -2,59 +2,14 @@
     <div class="header">
         <div class="tab">
             <!-- tag=""默认渲染成什么标签 -->
-            <div class="tab_left left">
+            <div class="tab_left">
                 <router-link to="/index">
                     <div class="company_logo">
                         <img src="../../images/company_logo.png" alt="" />
                     </div>
                 </router-link>
             </div>
-            <div class="tab_center left" v-if="!1">
-                <router-link
-                    tag="div"
-                    class="tab-item left"
-                    :to="plan"
-                    v-if="planPermission"
-                >
-                    <span class="tab-link">计划管理</span>
-                </router-link>
-                <router-link
-                    tag="div"
-                    class="tab-item left"
-                    :to="{ path: task }"
-                    v-if="taskPermission"
-                >
-                    <!--<div class="tab-item left" @click="taskSkip" v-if="taskPermission">-->
-                    <span class="tab-link">任务管理</span>
-                    <!--</div>-->
-                </router-link>
-                <router-link
-                    tag="div"
-                    class="tab-item left"
-                    to="/dailyManage"
-                    v-if="dailyPermission"
-                >
-                    <span class="tab-link">日报管理</span>
-                </router-link>
-                <router-link
-                    tag="div"
-                    class="tab-item left"
-                    to="/weekMange"
-                    v-if="weekPermission"
-                >
-                    <span class="tab-link">周报管理</span>
-                </router-link>
-                <!-- :to="{path:perfor}" -->
-                <router-link
-                    tag="div"
-                    class="tab-item left"
-                    :to="{ path: perfor }"
-                    v-if="performancePermission"
-                >
-                    <span class="tab-link">绩效管理</span>
-                </router-link>
-            </div>
-            <div class="tab_right left">
+            <div class="tab_right">
                 <div class="noti">
                     <el-dropdown trigger="click" @visible-change="handle">
                         <el-badge :value="totalCount" class="item">
@@ -63,30 +18,20 @@
                         <el-dropdown-menu
                             slot="dropdown"
                             id="dropdown"
-                            class="notice_list"
-                        >
+                            class="notice_list">
                             <el-dropdown-item class="notices">
-                                消息通知</el-dropdown-item
-                            >
+                                消息通知</el-dropdown-item>
                             <el-dropdown-item
                                 v-if="noTi"
                                 class="notice_not"
                                 disabled
-                                >没有新消息</el-dropdown-item
-                            >
+                                >没有新消息</el-dropdown-item>
                             <el-dropdown-item
                                 v-for="item in list"
-                                :key="item.messageSiteInfoId"
-                            >
+                                :key="item.messageSiteInfoId">
                                 <div
                                     @click="
-                                        skip(
-                                            item.messageSiteInfoId,
-                                            item.sourceType,
-                                            item.sourceId
-                                        )
-                                    "
-                                >
+                                        skip(item)">
                                     <span class="ellipsis notice_title">{{
                                         item.messageTitle
                                     }}</span>
@@ -109,30 +54,18 @@
                     <el-dropdown
                         trigger="click"
                         @visible-change="handLeft"
-                        @command="handleCommand"
-                    >
+                        @command="handleCommand">
                         <span class="el-dropdown-link">
                             <img src="../../images/personal.png" alt="" />
                         </span>
                         <el-dropdown-menu
                             slot="dropdown"
                             style="top:50px"
-                            id="dowm"
-                        >
-                            <el-dropdown-item
-                                command="setCenter"
-                                v-if="setCenterPermission"
-                                >系统设置</el-dropdown-item
-                            >
-                            <el-dropdown-item command="personalCenter"
-                                >个人信息</el-dropdown-item
-                            >
-                            <el-dropdown-item command="modifyPassword"
-                                >修改密码</el-dropdown-item
-                            >
-                            <el-dropdown-item command="loginOut"
-                                >退出</el-dropdown-item
-                            >
+                            id="dowm">
+                            <el-dropdown-item command="setCenter" v-if="setCenterPermission">系统设置</el-dropdown-item>
+                            <el-dropdown-item command="personalCenter">个人信息</el-dropdown-item>
+                            <el-dropdown-item command="modifyPassword">修改密码</el-dropdown-item>
+                            <el-dropdown-item command="loginOut">退出</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </div>
@@ -144,15 +77,16 @@
         <el-dialog
             title="退出登录"
             :visible.sync="dialogVisible"
-            size="tiny"
+            width="560px"
             :before-close="handleClose"
             top="25%"
             class="department"
         >
             <span class="delete_team">确定要退出登录吗？</span>
             <span slot="footer" class="dialog-footer">
-                <button @click="dialogVisible = false">取 消</button>
-                <button @click="sureLoginOut">确 定</button>
+                
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="sureLoginOut">确 定</el-button>
             </span>
         </el-dialog>
         <!--个人信息-->
@@ -160,7 +94,7 @@
             <el-dialog
                 title="个人信息"
                 :visible.sync="dialogVisible3"
-                size="tiny"
+                width="560px"
                 :before-close="handleClose3"
                 top="10%"
             >
@@ -208,7 +142,7 @@
             <el-dialog
                 title="修改密码"
                 :visible.sync="dialogVisible4"
-                size="tiny"
+                width="560px"
                 :before-close="handleClose4"
                 top="10%"
             >
@@ -255,7 +189,6 @@ import bus from "../../assets/eventBus";
 import { setStore, getStore } from "../../config/mUtils";
 import {
     MessageSiteInfo,
-    loadMenuResources,
     getUserName,
     getUserInfo,
     editorUserInfo,
@@ -304,23 +237,15 @@ export default {
             noTi: false,
             totalCount: 0,
             userId: "",
-            planPermission: false,
-            taskPermission: false,
-            dailyPermission: false,
-            weekPermission: false,
             dialogVisible4: false,
-            performancePermission: false,
             setCenterPermission: false,
             personalPermission: false,
             labelPosition: "right",
             userId: "",
             dialogVisible: false,
             dialogVisible3: false,
-            task: "",
             UserInfo: "",
-            plan: "",
             name: "",
-            perfor: "",
             userView: "",
             role: [],
             rolename: "",
@@ -383,7 +308,6 @@ export default {
     created() {
         if (getStore("token")) {
             this._MessageSiteInfo();
-            this._loadMenuResources();
             this._getUserName();
         }
     },
@@ -396,70 +320,72 @@ export default {
         });
     },
     methods: {
-        skip(id, sourceType, sourceId) {
+        skip(row) {
             viewMessage({
-                id: id
+                id: row.messageSiteInfoId
             }).then(res => {
                 if (res.code == ERR_OK) {
                     this._MessageSiteInfo();
-                    if (sourceType == "TASK") {
-                        if (this.userView == "MANAGER") {
-                            this.$router.push({
-                                path: "/taskDetailManage",
-                                query: { id: sourceId }
-                            });
-                        }
-                        if (this.userView == "DEPT") {
-                            this.$router.push({
-                                path: "/taskDetailHeader",
-                                query: { id: sourceId }
-                            });
-                        }
-                        if (this.userView == "STAFF") {
-                            this.$router.push({
-                                path: "/taskDetail",
-                                query: { id: sourceId }
-                            });
-                        }
-                    }
-                    if (sourceType == "NOTICE") {
+                    
+                    if(row.sourceType=='TASK'){
+                    
                         this.$router.push({
-                            path: "/noticeDetail",
-                            query: { id: sourceId }
-                        });
+                        path:'/taskManage/taskDetail',
+                        query:{id:row.sourceId}
+                        })
                     }
-                    if (sourceType == "DAILY") {
+                    if(row.sourceType=='NOTICE'){
                         this.$router.push({
-                            path: "/dailyDetail",
-                            query: { id: sourceId }
-                        });
+                            path:'/setCenter/noticeDetail',
+                            query:{id:row.sourceId}
+                        })
                     }
-                    if (sourceType == "WEEKLY") {
+                    if(row.sourceType=='SUMMARY'){
+                        let _message = JSON.parse(row.messageContent);
+                        console.log(row,_message)
                         this.$router.push({
-                            path: "/staffPersonWeekDetail",
-                            query: { id: sourceId }
-                        });
+                            path: "/planSummaryManage/summaryDetail",
+                            query: {
+                                id: row.sourceId,
+                                type: _message.summaryType
+                            }
+                        })
                     }
-                    if (sourceType == "DEPTWEEKLY") {
+                    if(row.sourceType=='PLAN'){
+                        let _message = JSON.parse(row.messageContent);
+                        console.log(row,_message)
                         this.$router.push({
-                            path: "/departWeeklyDetail",
-                            query: { id: sourceId }
-                        });
+                            path: "/planSummaryManage/planDetail",
+                            query: {
+                                id: row.sourceId,
+                                type: _message.planType
+                            }
+                        })
                     }
-                    if (this.userView == "MANAGER") {
-                        if (sourceType == "PERFM") {
+                    if(row.sourceType=='MERITS'){
+                        let _message = JSON.parse(row.messageContent);
+                        if (_message.msgType == 'confirmAttendance') {
+                            // 待核对考勤
                             this.$router.push({
-                                path: "/performanceManageManger"
-                                //                   query:{id:sourceId}
-                            });
-                        }
-                    }
-                    if (this.userView == "DEPT") {
-                        if (sourceType == "PERFM") {
+                                path: "/performanceManage/attendanceDetail",
+                                query: {
+                                    id: row.sourceId
+                                }
+                            })
+                        } else if (_message.msgType == 'appealAttendance') {
+                            // 考勤申诉待处理
                             this.$router.push({
-                                path: "/performanceDept"
-                                //                  query:{id:sourceId}
-                            });
+                                path: "/performanceManage/attendanceDetail",
+                                query: {
+                                    id: row.sourceId
+                                }
+                            })
+                        } else if (_message.msgType == 'sendSalary') {
+                            // 工资条发送提醒
+                            this.$router.push({
+                                path: "/performanceManage/paySlipManage"
+                            })
+                            
                         }
                     }
                 } else {
@@ -549,7 +475,7 @@ export default {
         //      个人信息
         openPersonInfo() {
             this.$router.push({
-                path: "/myDetail",
+                path: "/setCenter/userDetail",
                 query: { id: this.userId }
             });
         },
@@ -560,23 +486,6 @@ export default {
         handleClose4() {
             this.dialogVisible4 = false;
             this.$refs["ruleForm"].resetFields();
-        },
-        taskSkip() {
-            if (this.userView == "MANAGER") {
-                this.task = "/taskManageManager";
-                this.perfor = "/performanceManageManger";
-                this.plan = "/palyManage";
-            }
-            if (this.userView == "DEPT") {
-                this.task = "/taskDepartHeader";
-                this.plan = "/weekManageDepartLeader";
-                this.perfor = "/performanceDept";
-            }
-            if (this.userView == "STAFF") {
-                this.task = "/taskManage";
-                this.plan = "/weekMange";
-                this.perfor = "/performanceManage";
-            }
         },
         //      修改密码
         submitForm4(formName) {
@@ -606,39 +515,6 @@ export default {
                 }
             });
         },
-        //      获取用户菜单权限
-        _loadMenuResources() {
-            var self = this;
-            loadMenuResources().then(function(res) {
-                if (res.code == ERR_OK) {
-                    for (var key in res.data) {
-                        if (res.data[key].resourceNo == "SYS") {
-                            self.setCenterPermission = true;
-                        }
-                        if (res.data[key].resourceNo == "WEEKLY") {
-                            self.weekPermission = true;
-                        }
-                        if (res.data[key].resourceNo == "DAILY") {
-                            self.dailyPermission = true;
-                        }
-                        if (res.data[key].resourceNo == "PLAN") {
-                            self.planPermission = true;
-                        }
-                        if (res.data[key].resourceNo == "TASK") {
-                            self.taskPermission = true;
-                        }
-                        if (res.data[key].resourceNo == "PERFM") {
-                            self.performancePermission = true;
-                        }
-                    }
-                } else {
-                    this.$notify.error({
-                        title: "失败",
-                        message: res.msg
-                    });
-                }
-            });
-        },
         //      获取姓名
         _getUserName() {
             var self = this;
@@ -648,11 +524,16 @@ export default {
                     self.name = res.data.userName;
                     self.userId = res.data.userId;
                     self.userView = res.data.userView;
+                    self.deptLevel = res.data.deptLevel;
+                    
                     setStore("userId", res.data.userId);
                     setStore("userName", res.data.userName);
                     setStore("deptId", res.data.deptId);
                     setStore("userView", res.data.userView);
-                    self.taskSkip();
+                    setStore("deptLevel", res.data.deptLevel);
+                    setStore("isAttendanceAdmin", res.data.isAttendanceAdmin);
+                    setStore("isSalaryAdmin", res.data.isSalaryAdmin);
+                    setStore("canAddTaskGroup", res.data.canAddTaskGroup);
                 }
             });
         },
@@ -663,13 +544,14 @@ export default {
             this.$router.push("/login");
             this.dialogVisible = false;
             store.commit(types.LOGIN, { token: null });
+            location.reload();
         },
         handleCommand(command) {
             if (command == "setCenter") {
                 this.$router.push("/setCenter");
             } else if (command == "personalCenter") {
                 this.$router.push({
-                    path: "/myDetail",
+                    path: "/setCenter/userDetail",
                     query: { id: this.userId }
                 });
                 //this.openPersonInfo()
@@ -715,6 +597,7 @@ export default {
         
         .tab_left {
             @include wh(360px, 50px);
+            float: left;
             .company_logo {
                 padding-top: 6px;
                 padding-left: 50px;
@@ -743,33 +626,48 @@ export default {
         .tab_right {
             float: right;
             position: relative;
-            @include wh(280px, 50px);
+            @include wh(50%, 50px);
+            text-align: right;
+            
+            .noti {
+                display: inline-block;
+                padding-left: 120px;
+                cursor: pointer;
+                vertical-align: middle;
+                .el-dropdown {
+                    display: block;
+                    img {
+                        display: block;
+                    }
+                }
+            }
+            .icon_personal {
+                display: inline-block;
+                padding-left: 30px;
+                cursor: pointer;
+                vertical-align: middle;
+                .el-dropdown {
+                    display: block;
+                    img {
+                        display: block;
+                    }
+                }
+            }
+            .personal {
+                display: inline-block;
+                left: 200px;
+                cursor: pointer;
+                height: 50px;
+                line-height: 50px;
+                text-align: center;
+                font-size: 16px;
+                color: #ffffff;
+                padding-left: 20px;
+                padding-right: 40px;
+                vertical-align: middle;
+            }
         }
     }
-}
-.noti {
-    float: left;
-    padding-top: 14px;
-    padding-left: 120px;
-    cursor: pointer;
-}
-.icon_personal {
-    float: left;
-    padding-top: 14px;
-    padding-left: 30px;
-    cursor: pointer;
-}
-.personal {
-    float: left;
-    position: absolute;
-    /*width: 85px;*/
-    left: 200px;
-    cursor: pointer;
-    height: 50px;
-    line-height: 50px;
-    text-align: center;
-    font-size: 16px;
-    color: #ffffff;
 }
 .roleName {
     margin-bottom: 10px !important;
@@ -795,7 +693,6 @@ export default {
     line-height: 30px;
     font-size: 12px;
     color: #434343;
-    padding-left: 9px;
 }
 .notice_list li:first-child {
     background: #f1f1f1;

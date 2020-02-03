@@ -270,6 +270,12 @@
     .user_captcha{
       display: block;
       float: left;
+      /deep/ .el-input__inner{
+        border:0 !important;
+        height:42px !important;
+        width: 202px !important;
+        padding-left: 50px !important;
+      }
     }
     .captcha_img{
       display: inline-block;
@@ -380,4 +386,6 @@
       margin-top: 17px;
     }
   }
+
+
 </style>

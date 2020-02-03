@@ -6,7 +6,7 @@
         <router-link to="/setCenter">
           <span class="child1">系统设置</span>
         </router-link> /
-        <router-link to="/departmentManage">
+        <router-link to="/setCenter/departmentManage">
          <span class="child2">部门管理</span>
         </router-link>
       </div>
@@ -15,29 +15,35 @@
         <div class="role-num">
           {{parentDeptName}}-部门数：{{roleNum}}
         </div>
-        <div class="role-button"  @click="addButton('ruleForm')">
-          添加部门
+        <div class="role-button"  @click="iconChildAdd(id)">
+          添加下辖部门
         </div>
       </div>
       <div class="">
         <!--发布任务模态窗-->
         <el-dialog
-          title="添加部门"
+          :title="addTitle"
           :visible.sync="dialogVisible"
-          size="tiny"
+          width="560px"
           :before-close="handleClose" top='25%' class=" noticeManageModel">
           <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="112px" class="demo-ruleForm">
             <el-form-item label="部门名称:" prop="name" required style="margin-right: 40px !important;">
               <el-input v-model="ruleForm.name"></el-input>
             </el-form-item>
             <el-form-item label="部门负责人:"  style="margin-right: 40px !important;">
-              <el-select v-model="userId" placeholder="请选择任务类型" style="width:100%;" @change='changeRole'>
+              <el-select v-model="userId" placeholder="请选择部门负责人" style="width:100%;" @change='changeRole'>
                 <el-option
                   v-for="item in options"
                   :key="item.userId"
                   :label="item.userName"
                   :value="item.userId">
                 </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="上级部门:"  style="margin-right: 40px !important;">
+              <el-select v-model="deptPid" placeholder="请选择任务类型" style="width:100%;">
+                <el-option label="无" :value="-1"></el-option>
+                <el-option v-for="item in parentDepts" :key="item.deptId" :label="item.deptName" :value="item.deptId"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="部门描述：" prop="desc" style="margin-right: 40px !important;">
@@ -64,7 +70,6 @@
                   <i class="el-icon-delete"  @click="iconDelete(item.deptName,item.deptId)"></i>
                 </div>
               </div>
-              <!-- <router-link :to="{ path: 'departmentDetail',query: {id:item.deptId}}"> -->
               <div class="role-content" @click='routerDepart($event,item.deptId)'>
                 <div class="populations-status">
                   <div class="populations-left">
@@ -88,20 +93,26 @@
     <el-dialog
       title="部门编辑"
       :visible.sync="dialogVisible2"
-      size="tiny"
+      width="560px"
       :before-close="handleClose2" top='25%' class="">
       <el-form :model="ruleForm1" :rules="rules" ref="ruleForm1" label-width="112px" class="demo-ruleForm">
         <el-form-item label="部门名称:" prop="name1" required style="margin-right: 40px !important;">
           <el-input v-model="ruleForm1.name1"></el-input>
         </el-form-item>
         <el-form-item label="部门负责人:"  style="margin-right: 40px !important;">
-          <el-select v-model="userId1" placeholder="请选择任务类型" style="width:100%;" @change='changeRole1'>
+          <el-select v-model="userId1" placeholder="请选择部门负责人" style="width:100%;" @change='changeRole1'>
             <el-option
               v-for="item in options"
               :key="item.userId"
               :label="item.userName"
               :value="item.userId">
             </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="上级部门:"  style="margin-right: 40px !important;">
+          <el-select v-model="deptPid1" placeholder="请选择任务类型" style="width:100%;">
+            <el-option label="无" :value="-1"></el-option>
+            <el-option v-for="item in parentDepts" :key="item.deptId" :label="item.deptName" :value="item.deptId" v-if="item.deptId != deptId"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="部门描述："  prop="desc1" style="margin-right: 40px !important;">
@@ -117,7 +128,7 @@
       <el-dialog
         title="删除部门"
         :visible.sync="dialogVisible1"
-        size="tiny"
+        width="560px"
         :before-close="handleClose1" top='25%' class="department">
         <span>确定删除次部门吗？</span>
         <span slot="footer" class="dialog-footer">
@@ -129,7 +140,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import { departmentList, addDepartment,listDeptUsers, listAllUsers, deleteDepartment, getDepartment, editorDepartment } from 'service/getData'
+  import { departmentList, addDepartment,listDeptUsers, listAllUsers, deleteDepartment, getDepartment, editorDepartment,getParentDepts } from 'service/getData'
 //  import Tab from 'components/common/tab'
   import {ERR_OK} from 'service/config'
   export default {
@@ -140,16 +151,19 @@
         dialogVisible1: false,
         dialogVisible2:false,
         roleName:'总经理',
+        
+        parentDepts:[],
         options:[],
+        addTitle:'添加部门',
         id:'',
         deptId:'',
         parentDeptName:'',
-        chilId:'',
-        childOr:true,
         roleNum:'',
         keys:'',
         userId:'',
         userId1:'',
+        deptPid: -1,
+        deptPid1: -1,
         labelPosition: 'right',
         ruleForm: {
           name: '',
@@ -208,6 +222,7 @@
       this.ruleForm.desc=''
       this.getDate()
       this.getlistAllUsers('')
+      this.getParentDeptList(); //获取所有一级部门
     },
     created () {
       this.id =this.$route.query.id
@@ -218,7 +233,7 @@
       },
       routerDepart(event,val){
         event.stopImmediatePropagation();
-        this.$router.push({path: '/departmentDetail', query: {id: val}})
+        this.$router.push({path: '/setCenter/departmentDetail', query: {id: val}})
       },
       // listDepart(event,val){
       //   var e = event;
@@ -237,10 +252,18 @@
         listDeptUsers(params).then((res) => {
           if(res.code == ERR_OK) {
             self.options = res.data
-            self.options.unshift({
-             userId:'',
-             userName: '请选择部门负责人'
-           })
+          }
+       })
+      },
+      getParentDeptList() {
+        getParentDepts().then((res) => {
+          if(res.code == ERR_OK) {
+            this.parentDepts = res.data
+          } else {
+            this.$notify.error({
+              title: '失败',
+              message:res.msg
+            });
           }
        })
       },
@@ -288,9 +311,9 @@
        })
      },
      iconChildAdd(val) {
-       this.chilId = val
-       this.childOr = false
+       this.deptPid = parseInt(val)
        this.dialogVisible = true
+       this.addTitle = '添加下辖部门'
      },
      iconDelete (val,keys){
        this.roleName =val
@@ -316,6 +339,7 @@
            }else{
              self.userId1 = data.data.deptHeaderId
            }
+           self.deptPid1 = data.data.deptPid
          }else{
            this.$notify.error({
              title: '提示',
@@ -335,16 +359,12 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            let self = this
-            const params = {
-              deptName:this.ruleForm.name,
-              deptHeaderId:this.userId,
-              deptDesc:this.ruleForm.desc,
-              deptPid:this.id,
-            }
-
-            console.log(params)
-            addDepartment(params).then((res) => {
+            addDepartment({
+                deptName:this.ruleForm.name,
+                deptHeaderId:this.userId,
+                deptDesc:this.ruleForm.desc,
+                deptPid:this.deptPid
+            }).then((res) => {
               if(res.code == ERR_OK) {
                 let data = res
                 this.$notify({
@@ -352,7 +372,8 @@
                   message: '新增部门成功',
                   type: 'success'
                 });
-                self.getDate()
+                this.getDate()
+                this.getParentDeptList(); //获取所有一级部门
                 this.$refs[formName].resetFields()
                 this.dialogVisible = false
               }else{
@@ -374,24 +395,22 @@
         this.$refs['ruleForm1'].resetFields();
       },
       submitForm2(formName) {
-        let self = this
-        const params = {
-          deptName:this.ruleForm1.name1,
-          deptHeaderId:this.userId1,
-          deptDesc:this.ruleForm1.desc1,
-          deptId:this.deptId
-        }
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            editorDepartment(params).then((res) => {
+            editorDepartment({
+              deptId:this.deptId,
+              deptName:this.ruleForm1.name1,
+              deptHeaderId:this.userId1,
+              deptDesc:this.ruleForm1.desc1,
+              deptPid: this.deptPid1
+            }).then((res) => {
               if(res.code == ERR_OK) {
                 this.$notify({
                   title: '成功',
                   message: '编辑部门成功',
                   type: 'success'
                 });
-                let data = res
-                self.getDate()
+                this.getDate()
                 this.dialogVisible2 = false
               }else{
                 this.$notify.error({
@@ -408,7 +427,7 @@
       },
       addButton(formName){
         this.dialogVisible = true
-        this.childOr = true
+        this.addTitle = '添加部门'
         this.getlistAllUsers('')
         if(this.$refs[formName]){
           this.$refs[formName].resetFields()
@@ -469,7 +488,6 @@
   }
   .role-button{
     float: right;
-    width: 84px;
     height: 30px;
     line-height:30px;
     background: #D93538;
@@ -480,6 +498,7 @@
     margin-top: 8px;
     text-align: center;
     cursor: pointer;
+    padding: 0 5px;
   }
   .role-name{
     height: 42px;

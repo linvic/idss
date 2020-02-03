@@ -52,28 +52,28 @@
         </div>
         
         
-        <el-dialog title="核对时间设置" :visible.sync="dialogChangeCheckTimes" v-if="dialogChangeCheckTimes" size="tiny">
+        <el-dialog title="核对时间设置" :visible.sync="dialogChangeCheckTimes" v-if="dialogChangeCheckTimes" width="560px">
             <el-form :model="checkTimes" ref="checkTimes" :rules="changeCheckTimesRules" label-position="top" label-suffix="：" label-width="60px">
                 
                 <el-form-item label="" prop="checkDuration">
                     0 小时 -
-                    <el-input v-model="checkTimes.checkDuration" placeholder="" style="width:50px;" size="small"></el-input> 小时
-                </el-form-item>
-                <el-form-item class="text-right">
-                    <el-button type="primary" @click="changeCheckTimesSubmit">确 定</el-button>
-                    <el-button @click="dialogChangeCheckTimes = false">取 消</el-button>
+                    <el-input @keyup.native="onkeyupPlusInt($event)" v-model="checkTimes.checkDuration" placeholder="" style="width:100px;" size="small"></el-input> 小时
                 </el-form-item>
             </el-form>
+            <div slot="footer" class="text-right">
+                    <el-button type="primary" @click="changeCheckTimesSubmit">确 定</el-button>
+                    <el-button @click="dialogChangeCheckTimes = false">取 消</el-button>
+            </div>
         </el-dialog>
 
         
-        <el-dialog title="延迟提交扣款金额设置" :visible.sync="dialogChangeCutValue" v-if="dialogChangeCutValue" size="tiny">
+        <el-dialog title="金额设置" :visible.sync="dialogChangeCutValue" v-if="dialogChangeCutValue" width="560px">
             <el-form :model="changeCutValueForm" ref="changeCutValueForm" :rules="changeCutValueFormRules" label-position="left" label-suffix="：" label-width="160px">
                 
                 <el-form-item prop="value1">
                     <div slot="label">
                         <el-radio class="radio" v-model="changeCutValueForm.chargeType" :label="1">
-                            <el-input v-model="changeCutValueForm.chargeValue" placeholder="" style="width:50px;" size="small"></el-input> 元
+                            <el-input  @keyup.native="onkeyupPrice($event)" v-model="changeCutValueForm.chargeValue" placeholder="" style="width:50px;" size="small"></el-input> 元
                             <span v-if="changeCutValueForm.attendanceFailCode == 'LEAVE_ABSENCE'"> / 小时</span>
                         </el-radio>
                     </div>
@@ -95,11 +95,11 @@
                         </el-radio>
                     </div>
                 </el-form-item>
-                <el-form-item class="text-right">
+            </el-form>
+            <div slot="footer" class="text-right">
                     <el-button type="primary" @click="changeCutValueSubmit">确 定</el-button>
                     <el-button @click="dialogChangeCutValue = false">取 消</el-button>
-                </el-form-item>
-            </el-form>
+            </div>
         </el-dialog>
 
 
@@ -196,7 +196,7 @@ export default {
             checkDuration: '',
             changeCheckTimesRules: {
                 checkDuration: [
-                    { required: true, message: '请输入', trigger: 'blue' }
+                    { required: true, message: '请输入' }
                 ],
             },
             dialogChangeCheckTimes: false

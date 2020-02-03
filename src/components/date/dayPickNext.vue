@@ -246,18 +246,29 @@ export default {
         display: inline-block;
         font-size: inherit;
         height: 36px;
-        line-height: 28px;
+        line-height: 36px;
         outline: none;
-        padding: 3px 10px;
+        padding: 0 10px;
         transition: border-color .2s cubic-bezier(.645,.045,.355,1);
-        width: 200px;
+        width: 180px;
+        .el-input__icon {
+            line-height: 0;
+        }
     }
     .day-picks-panel {
         position: absolute;
         top: 36px;
         left: 0;
         z-index: 99999;
-        width: 400px;
+        td {
+            &.in-range {
+                background-color: #f2f6fc;
+            }
+            &.current {
+                background-color: #409eff;
+                color: #fff;
+            }
+        }
         .el-icon-close {
             position: absolute;
             right: 0;

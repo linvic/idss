@@ -6,8 +6,8 @@
             </div>
             <div class="setCenter-list">
                 <el-row :gutter="30">
-                    <el-col :span="8" v-if="departmentPermission">
-                        <router-link class="list-item" :to="{ path: 'departmentManage' }">
+                    <el-col :span="8" v-if="permissions.indexOf('dept') > -1">
+                        <router-link class="list-item" :to="{ path: '/setCenter/departmentManage' }">
                             <div class="icon-left">
                                 <img
                                     src="../../images/icon_department.png"
@@ -20,8 +20,8 @@
                             </div>
                         </router-link>
                     </el-col>
-                    <el-col :span="8" v-if="rolePermission">
-                        <router-link class="list-item" to="/role">
+                    <el-col :span="8" v-if="permissions.indexOf('role') > -1">
+                        <router-link class="list-item" to="/setCenter/role">
                             <div class="icon-left">
                                 <img
                                     src="../../images/icon_role.png"
@@ -34,8 +34,8 @@
                             </div>
                         </router-link>
                     </el-col>
-                    <el-col :span="8" v-if="userPermission">
-                        <router-link class="list-item" :to="{ path: 'staffDetail' }">
+                    <el-col :span="8" v-if="permissions.indexOf('user') > -1">
+                        <router-link class="list-item" :to="{ path: '/setCenter/staffDetail' }">
                             <div class="icon-left">
                                 <img
                                     src="../../images/icon_user.png"
@@ -49,7 +49,7 @@
                         </router-link>
                     </el-col>
                     
-                    <el-col :span="8">
+                    <el-col :span="8" v-if="permissions.indexOf('planSummary') > -1">
                         <router-link class="list-item" to="/setCenter/planSummaryManage">
                             <div class="icon-left">
                                 <img
@@ -63,7 +63,7 @@
                             </div>
                         </router-link>
                     </el-col>
-                    <el-col :span="8">
+                    <el-col :span="8" v-if="permissions.indexOf('examineGroup') > -1">
                         <router-link class="list-item" to="/setCenter/examineGroupsManage">
                             <div class="icon-left">
                                 <img
@@ -77,7 +77,7 @@
                             </div>
                         </router-link>
                     </el-col>
-                    <el-col :span="8">
+                    <el-col :span="8" v-if="permissions.indexOf('attendance') > -1">
                         <router-link class="list-item" to="/setCenter/attendancesManage">
                             <div class="icon-left">
                                 <img
@@ -91,8 +91,8 @@
                             </div>
                         </router-link>
                     </el-col>
-                    <el-col :span="8" v-if="teamPermission">
-                        <router-link class="list-item" :to="{ path: 'teamManage' }">
+                    <el-col :span="8" v-if="permissions.indexOf('team') > -1">
+                        <router-link class="list-item" :to="{ path: '/setCenter/teamManage' }">
                             <div class="icon-left">
                                 <img
                                     src="../../images/icon_team.png"
@@ -105,8 +105,8 @@
                             </div>
                         </router-link>
                     </el-col>
-                    <el-col :span="8" v-if="projectPermission">
-                        <router-link class="list-item" :to="{ path: 'projectManage' }">
+                    <el-col :span="8" v-if="permissions.indexOf('project') > -1">
+                        <router-link class="list-item" :to="{ path: '/setCenter/projectManage' }">
                             <div class="icon-left">
                                 <img
                                     src="../../images/icon_project.png"
@@ -119,8 +119,8 @@
                             </div>
                         </router-link>
                     </el-col>
-                    <el-col :span="8" v-if="missionPermission">
-                        <router-link class="list-item" :to="{ path: 'taskGrounpManage' }">
+                    <el-col :span="8" v-if="permissions.indexOf('taskGroup') > -1">
+                        <router-link class="list-item" :to="{ path: '/setCenter/taskGrounpManage' }">
                             <div class="icon-left">
                                 <img
                                     src="../../images/icon_task.png"
@@ -133,8 +133,8 @@
                             </div>
                         </router-link>
                     </el-col>
-                    <el-col :span="8" v-if="rewardsPermission">
-                        <router-link class="list-item" :to="{ path: 'rewardManage' }">
+                    <el-col :span="8" v-if="permissions.indexOf('rp') > -1">
+                        <router-link class="list-item" :to="{ path: '/setCenter/rewardManage' }">
                             <div class="icon-left">
                                 <img
                                     src="../../images/icon_reward.png"
@@ -147,8 +147,8 @@
                             </div>
                         </router-link>
                     </el-col>
-                    <el-col :span="8" v-if="noticePermission">
-                        <router-link class="list-item" to="/noticeManage">
+                    <el-col :span="8" v-if="permissions.indexOf('notice') > -1">
+                        <router-link class="list-item" to="/setCenter/noticeManage">
                             <div class="icon-left">
                                 <img
                                     src="../../images/icon_notice.png"
@@ -158,20 +158,6 @@
                             <div class="content-right">
                                 <h3>公告管理</h3>
                                 <p>设置公司公告信息</p>
-                            </div>
-                        </router-link>
-                    </el-col>
-                    <el-col :span="8" v-if="reportPermission">
-                        <router-link class="list-item" to="/weeklyTime">
-                            <div class="icon-left">
-                                <img
-                                    src="../../images/icon_weekly.png"
-                                    alt="周报时间"
-                                />
-                            </div>
-                            <div class="content-right">
-                                <h3>周报时间</h3>
-                                <p>设置公司提交周报的截止时间</p>
                             </div>
                         </router-link>
                     </el-col>
@@ -187,15 +173,7 @@ import store from "../../store";
 export default {
     data() {
         return {
-            rolePermission: false,
-            departmentPermission: false,
-            teamPermission: false,
-            userPermission: false,
-            projectPermission: false,
-            missionPermission: false,
-            rewardsPermission: false,
-            noticePermission: false,
-            reportPermission: false
+            permissions: [],
         };
     },
     created() {
@@ -207,37 +185,13 @@ export default {
     methods: {
         _listOperFuns() {
             var self = this;
-            listOperFuns({ resourceNo: "SYS" }).then(function(res) {
+            listOperFuns({ resourceNo: "SYS" }).then((res)=> {
                 if (res.code == ERR_OK) {
-                    for (var key in res.data) {
-                        if (res.data[key].resourceNo == "dept") {
-                            self.departmentPermission = true;
-                        }
-                        if (res.data[key].resourceNo == "role") {
-                            self.rolePermission = true;
-                        }
-                        if (res.data[key].resourceNo == "user") {
-                            self.userPermission = true;
-                        }
-                        if (res.data[key].resourceNo == "team") {
-                            self.teamPermission = true;
-                        }
-                        if (res.data[key].resourceNo == "project") {
-                            self.projectPermission = true;
-                        }
-                        if (res.data[key].resourceNo == "taskGroup") {
-                            self.missionPermission = true;
-                        }
-                        if (res.data[key].resourceNo == "rp") {
-                            self.rewardsPermission = true;
-                        }
-                        if (res.data[key].resourceNo == "notice") {
-                            self.noticePermission = true;
-                        }
-                        if (res.data[key].resourceNo == "weeklyCycle") {
-                            self.reportPermission = true;
-                        }
+                    let _permissions = []
+                    for (var item of res.data) {
+                        _permissions.push(item.resourceNo);
                     }
+                    this.permissions = [..._permissions];
                 } else {
                     self.$notify.error({
                         title: "错误",
@@ -304,5 +258,17 @@ export default {
     color: #505363;
     line-height: 22px;
     margin-top: 16px;
+}
+
+.rewards .userName{
+  width: 365px !important;
+}
+.clearType{
+  width: 463px !important;
+  height: 40px !important;
+}
+.rewards .cause .el-textarea__inner{
+  width: 365px !important;
+  height: 90px !important;
 }
 </style>

@@ -47,7 +47,7 @@
           <div class="news" v-for='item in result'>
             <div class="" style="min-width:960px;max-width:960px;float:left;">
               <div class="news-left">
-                <!-- <router-link :to="{ path: 'userDetail',query: {id:item.snsUser.userId}}" style="color:#333333"> -->
+                <!-- <router-link :to="{ path: '/setCenter/userDetail',query: {id:item.snsUser.userId}}" style="color:#333333"> -->
                   <span>{{item.snsUser.userName}}：</span>
                 <!-- </router-link> -->
 
@@ -187,7 +187,7 @@
     }
   };
 </script>
-<style type="text/ecmascript-6">
+<style  scoped lang="scss">
   .wrapper1{
     height: 100%;
     margin: 0 auto;
@@ -280,4 +280,8 @@
   font-size: 12px;
   color: #999999;
   }
+  
+.quill-wrapper .ql-formats{
+  line-height: 37px !important;
+}
 </style>

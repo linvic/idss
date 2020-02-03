@@ -6,7 +6,7 @@
         <router-link to="/setCenter">
           <span class="child1">系统设置</span>
         </router-link> /
-        <router-link to="/rewardManage">
+        <router-link to="/setCenter/rewardManage">
          <span class="child2">奖惩管理</span>
         </router-link>
       </div>
@@ -51,7 +51,7 @@
     <el-dialog
       title="奖惩组编辑"
       :visible.sync="dialogVisible"
-      size="tiny"
+      width="560px"
       :before-close="handleClose" top='25%' class="department department1">
       <el-form :label-position="labelPosition" ref="formLabelAlign" :rules="rules" label-width="120px" :model="formLabelAlign">
         <el-form-item label="奖惩名称：" required prop="name">
@@ -81,7 +81,7 @@
       <el-dialog
         title="添加金额"
         :visible.sync="dialogVisible3"
-        size="tiny"
+        width="560px"
         :before-close="handleClose3" top='25%' class="department department1">
         <el-form :label-position="labelPosition" ref="formLabelAlign3" :rules="rules" label-width="120px" :model="formLabelAlign3">
           <el-form-item label="名称：" required prop="name3">
@@ -101,7 +101,7 @@
       <el-dialog
         title="添加金额"
         :visible.sync="dialogVisible4"
-        size="tiny"
+        width="560px"
         :before-close="handleClose4" top='25%' class="department department1">
         <el-form :label-position="labelPosition" ref="formLabelAlign4" :rules="rules" label-width="120px" :model="formLabelAlign4">
           <el-form-item label="名称：" required prop="name4">
@@ -122,7 +122,7 @@
       <el-dialog
         title="编辑金额"
         :visible.sync="dialogVisible5"
-        size="tiny"
+        width="560px"
         :before-close="handleClose5" top='25%' class="department department1">
         <el-form :label-position="labelPosition" ref="formLabelAlign5" :rules="rules" label-width="120px" :model="formLabelAlign5">
           <el-form-item label="名称：" required prop="name5">
@@ -143,7 +143,7 @@
       <el-dialog
         title="编辑金额"
         :visible.sync="dialogVisible6"
-        size="tiny"
+        width="560px"
         :before-close="handleClose6" top='25%' class="department department1">
         <el-form :label-position="labelPosition" ref="formLabelAlign6" :rules="rules" label-width="120px" :model="formLabelAlign6">
           <el-form-item label="名称：" required prop="name6">
@@ -162,7 +162,7 @@
     <el-dialog
       title="添加奖惩组"
       :visible.sync="dialogVisible2"
-      size="tiny"
+      width="560px"
       :before-close="handleClose2" top='25%' class="department department1">
       <el-form :label-position="labelPosition" ref="formLabelAlign2" :rules="rules" label-width="120px" :model="formLabelAlign2">
         <el-form-item label="奖惩名称：" required prop="name2">
@@ -191,7 +191,7 @@
     <el-dialog
       title="删除奖赏类型"
       :visible.sync="dialogVisible1"
-      size="tiny"
+      width="560px"
       :before-close="handleClose1" top='25%' class="department deleteDepartment">
       <span>确定删除该奖赏类型吗？删除后不可恢复</span>
       <span slot="footer" class="dialog-footer">

@@ -48,7 +48,7 @@
     data() {
       return {
        data:[],
-       pendingTask:"",
+       pendingTask:"/taskManage/taskManage",
        weekManage:"",
         deal:""
       }
@@ -57,14 +57,13 @@
 
     },
     created(){
+      
          if(this.userView=='DEPT'){
-           this.pendingTask="/taskDepartHeader"
            this.weekManage="/weekManageDepartLeader"
            this.deal='/performanceDept?userView=DEPT'
            this._myPending()
          }
         if(this.userView=='MANAGER'){
-          this.pendingTask="/taskManageManager"
           this.weekManage="/palyManage"
           this.deal='/performanceManageManger?userView=MANAGER'
           this._myPending()
@@ -75,13 +74,11 @@
       bus.$on('task', function (msg) {
         if(msg=='SUCCESS'){
           if(self.userView=='MANAGER'){
-            self.pendingTask="/taskManageManager"
             self.weekManage="/palyManage"
             self.deal='/performanceManageManger?userView=MANAGER'
             self._myPending()
           }
             if(self.userView=='DEPT'){
-              self.pendingTask="/taskDepartHeader"
               self.weekManage="/weekManageDepartLeader"
               self.deal='/performanceDept?userView=DEPT'
               self._myPending()

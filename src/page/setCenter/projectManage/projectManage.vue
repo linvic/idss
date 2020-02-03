@@ -6,7 +6,7 @@
         <router-link to="/setCenter">
           <span class="child1">系统设置</span>
         </router-link> /
-        <router-link to="/departmentManage">
+        <router-link to="/setCenter/departmentManage">
          <span class="child2">项目管理</span>
         </router-link>
       </div>
@@ -60,7 +60,7 @@
     <el-dialog
       title="项目编辑"
       :visible.sync="dialogVisible"
-      size="tiny"
+      width="560px"
       :before-close="handleClose" top='25%' class="department department1 projectManage">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
         <el-form-item label="项目名称" prop="name">
@@ -75,7 +75,7 @@
     <el-dialog
       title="添加项目"
       :visible.sync="dialogVisible2"
-      size="tiny"
+      width="560px"
       :before-close="handleClose2" top='25%' class="department department1 projectManage">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
         <el-form-item label="项目名称" prop="name">
@@ -90,7 +90,7 @@
     <el-dialog
       title="删除项目"
       :visible.sync="dialogVisible1"
-      size="tiny"
+      width="560px"
       :before-close="handleClose1" top='25%' class="department projectManage">
       <span>确定删除该项目吗？删除后不可恢复</span>
       <span slot="footer" class="dialog-footer">

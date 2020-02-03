@@ -64,7 +64,7 @@
             <tbody>
             <tr class="el-table__row" v-for="item in tableData">
               <td class="table__body_taskName">
-                <router-link :to="{ path: 'taskDetail',query: {id:item.taskId}}" style="color:#505363;">
+                <router-link :to="{ path: '/taskManage/taskDetail',query: {id:item.taskId}}" style="color:#505363;">
                  <span class="span-content">{{item.title}}</span>
                </router-link>
                 <!--部门重点-->
@@ -120,7 +120,7 @@
 
   <div class="">
     <!--发布任务模态窗-->
-    <el-dialog title="发起任务" :visible.sync="dialogVisible" size="tiny" :before-close="handleClose" top='10%' class=" noticeManageModel">
+    <el-dialog title="发起任务" :visible.sync="dialogVisible" width="560px" :before-close="handleClose" top='10%' class=" noticeManageModel">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="112px" class="demo-ruleForm">
         <div style="margin-left:32px;margin-bottom:18px;overflow:hidden;">
           <span style="float:left;line-height:36px;"><label style="color:#ff4949">* </label>任务标题:</span>
@@ -167,7 +167,7 @@
               <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
-            <i class="el-icon-information" style="float:left;margin-right: 40px !important;" @mouseenter="iconEnter" @mouseleave="iconLeave"></i>
+            <i class="el-icon-warning" style="float:left;margin-right: 40px !important;" @mouseenter="iconEnter" @mouseleave="iconLeave"></i>
             <div class="tip-information" ref="displayShow">
               <p>任务重要程度：</p>
               <p>公司重点任务，重要系数：4</p>
@@ -219,7 +219,7 @@
             <el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
-          <i class="el-icon-information" style="float:left;margin-right: 40px !important;" @mouseenter="iconEnter" @mouseleave="iconLeave"></i>
+          <i class="el-icon-warning" style="float:left;margin-right: 40px !important;" @mouseenter="iconEnter" @mouseleave="iconLeave"></i>
           <div class="tip-information" ref="displayShow">
             <p>任务重要程度：</p>
             <p>公司重点任务，重要系数：4</p>
@@ -262,11 +262,13 @@
           </el-form-item>
           <el-form-item label="任务可见范围:" style="margin-right: 40px !important;">
             <el-select  multiple v-model="ruleForm.value71" placeholder="请选择部门"  style="width:100%;">
+              
+              <el-option label="公司" value="-1"></el-option>
               <el-option
-                v-for="item in depet"
-                :key="item.deptId"
-                :label="item.deptName"
-                :value="item.deptId">
+                  v-for="item in depet"
+                  :key="item.deptId"
+                  :label="item.deptName"
+                  :value="item.deptId + ''" >
               </el-option>
             </el-select>
           </el-form-item>
@@ -289,7 +291,7 @@
     <el-dialog
       title="个人重点任务超出提醒"
       :visible.sync="dialogVisible11"
-      size="tiny"
+      width="560px"
       :before-close="handleClose11" top='25%' class="department">
       <p>您/他当前的个人重点任务数量为：{{taskNumber}}</p>
       <p>您可将已有个人重点任务改为个人普通任务</p>
@@ -302,7 +304,7 @@
     </el-dialog>
   </div>
   <div class="">
-    <el-dialog title="重设任务等级" :visible.sync="dialogVisible22" size="tiny" :before-close="handleClose22" top='10%' class="">
+    <el-dialog title="重设任务等级" :visible.sync="dialogVisible22" width="560px" :before-close="handleClose22" top='10%' class="">
       <div class="permissions-table">
         <div class="check-wrapper-special">
           <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
@@ -320,7 +322,7 @@
   <!--添加协助人-->
   <el-dialog title="添加协助人"
              :visible.sync="dialogVisible15"
-             size="tiny"
+             width="560px"
              :before-close="handleClose15"
              top='25%'
              class=" noticeManageModel">
@@ -805,9 +807,9 @@
         this.ruleForm.date1 = ''
         this.ruleForm.content = ''
         //this.getTaskType1()
-        this.listAllUsers1()
-        //this.getUsersObj1()
-        this.getProjectList1()
+        this.getTaskExecutors()
+        //this.getReportUsers()
+        this.getProjectLists()
         this.listAllUsersT()
         this.dialogVisible = true
         this.addUsers = []
@@ -823,7 +825,7 @@
         this.dialogVisible15 = false
         this.$refs[formName1].resetFields();
       },
-      getUsersObj1(userId) {
+      getReportUsers(userId) {
         const params = {
           userId:userId
         }
@@ -840,8 +842,8 @@
         })
       },
       goLink(val){
-        this.getUsersObj1(val)
-        this._listByExecutor(val)
+        this.getReportUsers(val)
+        this.getTaskTypesByExecutor(val)
       },
       submitForm15(formName1) {
         let self = this
@@ -915,7 +917,7 @@
         this.$refs[formName].resetFields();
       },
 //      关联项目
-      getProjectList1() {
+      getProjectLists() {
         getProjectList().then((res) => {
           if (res.code == ERR_OK) {
             this.projects = res.data.result
@@ -939,7 +941,7 @@
       //   })
       // },
 //      任务执行人
-      listAllUsers1() {
+      getTaskExecutors() {
         listTaskExecutors().then((res) => {
           if (res.code == ERR_OK) {
             this.users = res.data
@@ -948,13 +950,13 @@
                 this.ruleForm.value5 = this.users[i].userId
               }
             }
-            this.getUsersObj1(this.ruleForm.value5)
-            this._listByExecutor(this.ruleForm.value5)
+            this.getReportUsers(this.ruleForm.value5)
+            this.getTaskTypesByExecutor(this.ruleForm.value5)
           }
         })
       },
       //获取任务组
-      _listByExecutor(userId){
+      getTaskTypesByExecutor(userId){
         let self = this
         const params = {
           userId:userId
@@ -1331,7 +1333,7 @@
   margin-right: 15px;
   margin-bottom: 10px;
 }
-.el-icon-information {
+.el-icon-warning {
   position: absolute;
   right: -61px;
   top: 11px;
@@ -1611,5 +1613,30 @@ tr{
   height: 46px;
   background: rgba(217,52,55,0.07);
   border-bottom: 3px solid #D93437;
+}
+
+.check-wrapper-special .el-checkbox-group{
+  text-align: center !important;
+}
+.check-wrapper-special .el-checkbox+.el-checkbox{
+  margin-left: 0px !important;
+}
+.check-wrapper-special .el-checkbox{
+  margin-bottom: 8px !important;
+  display: block !important;
+}
+
+.initiateNew .el-input__inner{
+  height: 35px !important;
+}
+.initiateNew .el-textarea__inner{
+  font-size: 12px !important;
+}
+.initiateNew .el-textarea{
+  width: 365px !important;
+  height: 90px !important;
+}
+.initiateNew .el-textarea__inner{
+  height: 90px !important;
 }
 </style>

@@ -47,7 +47,7 @@
     <el-dialog
       title="添加任务类型"
       :visible.sync="dialogVisible3"
-      size="tiny"
+      width="560px"
       :before-close="handleClose3" top='25%' class="department department1">
       <el-form :label-position="labelPosition" ref="formLabelAlign3" :rules="rules" label-width="120px" :model="formLabelAlign3">
         <el-form-item label="类型名称：" required prop="name3">
@@ -72,7 +72,7 @@
     <el-dialog
       title="添加任务类别"
       :visible.sync="dialogVisible2"
-      size="tiny"
+      width="560px"
       :before-close="handleClose2" top='25%' class="department department1">
       <el-form :label-position="labelPosition" ref="ruleForm" :rules="rules" label-width="130px" :model="ruleForm">
         <el-form-item label="任务类别名称：" required  prop="name">
@@ -101,9 +101,9 @@
     <el-dialog
       title="编辑任务类别"
       :visible.sync="dialogVisible"
-      size="tiny"
+      width="560px"
       :before-close="handleClose" top='25%' class="department department1">
-      <el-form :label-position="labelPosition" ref="ruleForm" :rules="rules" label-width="120px" :model="ruleForm">
+      <el-form :label-position="labelPosition" ref="ruleForm" :rules="rules" label-width="130px" :model="ruleForm">
         <el-form-item label="任务类别名称：" required  prop="name">
           <el-input v-model.trim="ruleForm.name"></el-input>
         </el-form-item>
@@ -131,7 +131,7 @@
     <el-dialog
       title="添加子任务类型"
       :visible.sync="dialogVisible4"
-      size="tiny"
+      width="560px"
       :before-close="handleClose4" top='25%' class="department department1">
       <el-form :label-position="labelPosition" ref="formLabelAlign4" :rules="rules" label-width="120px" :model="formLabelAlign4">
         <el-form-item label="子类型名称：" required prop="name4">
@@ -156,7 +156,7 @@
     <el-dialog
       title="删除任务类别"
       :visible.sync="dialogVisible1"
-      size="tiny"
+      width="560px"
       :before-close="handleClose1" top='25%' class="department">
       <span class="delete_team">确定删除该任务类别吗？删除后不可恢复</span>
       <span slot="footer" class="dialog-footer">

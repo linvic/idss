@@ -170,6 +170,7 @@
                             <div class="idss-set-item__bd">
                                 <p>个人计划：</p>
                                 <span>{{submitTimeLater1.submitTimeLater | filterTimeLater}}</span>
+                                
                             </div>
                             <div class="idss-set-item__ft">
                                 <el-button size="small" @click="setLaterTime(1, 1, submitTimeLater1.submitTimeLater)">设置</el-button>
@@ -238,7 +239,7 @@
                                 <p>个人计划-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 1, 1, item - 1] | filterCutValue}}</span></p>
                             </div>
                             <div class="idss-set-item__ft">
-                                <el-button size="small" @click="setCutValue(1, 1, item - 1)">设置</el-button>
+                                <el-button size="small" :disabled="filterCutDisable(1,submitTimeLater1.submitTimeLater,item)" @click="setCutValue(1, 1, item - 1)">设置</el-button>
                             </div>
                         </div>
                         <div class="idss-set-item">
@@ -246,7 +247,7 @@
                                 <p>个人总结-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 1, 2, item - 1] | filterCutValue}}</span></p>
                             </div>
                             <div class="idss-set-item__ft">
-                                <el-button size="small" @click="setCutValue(1, 2, item - 1)">设置</el-button>
+                                <el-button size="small" :disabled="filterCutDisable(2,submitTimeLater4.submitTimeLater,item)" @click="setCutValue(1, 2, item - 1)">设置</el-button>
                             </div>
                         </div>
                     </el-col>
@@ -257,18 +258,18 @@
                     <el-col :span="8" :lg="7" v-for="item in 3" :key="item">
                         <div class="idss-set-item">
                             <div class="idss-set-item__bd">
-                                <p>二级计划-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 2, 1, item - 1] | filterCutValue}}</span></p>
+                                <p>二级部门计划-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 2, 1, item - 1] | filterCutValue}}</span></p>
                             </div>
                             <div class="idss-set-item__ft">
-                                <el-button size="small" @click="setCutValue(2, 1, item - 1)">设置</el-button>
+                                <el-button size="small" :disabled="filterCutDisable(3,submitTimeLater2.submitTimeLater,item)" @click="setCutValue(2, 1, item - 1)">设置</el-button>
                             </div>
                         </div>
                         <div class="idss-set-item">
                             <div class="idss-set-item__bd">
-                                <p>二级总结-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 2, 2, item - 1] | filterCutValue}}</span></p>
+                                <p>二级部门总结-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 2, 2, item - 1] | filterCutValue}}</span></p>
                             </div>
                             <div class="idss-set-item__ft">
-                                <el-button size="small" @click="setCutValue(2, 2, item - 1)">设置</el-button>
+                                <el-button size="small" :disabled="filterCutDisable(4,submitTimeLater5.submitTimeLater,item)" @click="setCutValue(2, 2, item - 1)">设置</el-button>
                             </div>
                         </div>
                     </el-col>
@@ -279,18 +280,18 @@
                     <el-col :span="8" :lg="7" v-for="item in 3" :key="item">
                         <div class="idss-set-item">
                             <div class="idss-set-item__bd">
-                                <p>二级计划-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 3, 1, item - 1] | filterCutValue}}</span></p>
+                                <p>一级部门计划-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 3, 1, item - 1] | filterCutValue}}</span></p>
                             </div>
                             <div class="idss-set-item__ft">
-                                <el-button size="small" @click="setCutValue(3, 1, item - 1)">设置</el-button>
+                                <el-button size="small" :disabled="filterCutDisable(5,submitTimeLater3.submitTimeLater,item)" @click="setCutValue(3, 1, item - 1)">设置</el-button>
                             </div>
                         </div>
                         <div class="idss-set-item">
                             <div class="idss-set-item__bd">
-                                <p>二级总结-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 3, 2, item - 1] | filterCutValue}}</span></p>
+                                <p>一级部门总结-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 3, 2, item - 1] | filterCutValue}}</span></p>
                             </div>
                             <div class="idss-set-item__ft">
-                                <el-button size="small" @click="setCutValue(3, 2, item - 1)">设置</el-button>
+                                <el-button size="small" :disabled="filterCutDisable(6,submitTimeLater6.submitTimeLater,item)" @click="setCutValue(3, 2, item - 1)">设置</el-button>
                             </div>
                         </div>
                     </el-col>
@@ -328,7 +329,7 @@
         <!-- 
             计划：上月-本月 -1/28， 0/28
             总结：本月-下月 0/28， 1/28 -->
-        <el-dialog title="提交时间设置" :visible.sync="dialogChangeSubmitTime" v-if="dialogChangeSubmitTime" size="tiny">
+        <el-dialog title="提交时间设置" :visible.sync="dialogChangeSubmitTime" v-if="dialogChangeSubmitTime" width="560px">
             <el-form :model="changeSubmitTimeForm" ref="changeSubmitTimeForm" :rules="changeSubmitTimeFormRules" label-position="top" label-suffix="：" label-width="60px">
                 <el-form-item label="提交时间范围" prop="date">
                     <dayPickNext v-model="changeSubmitTimeForm.date" :titles="changeSubmitTimeForm.monthsType"></dayPickNext>
@@ -341,95 +342,95 @@
                         </el-checkbox-group>
                     </div>
                 </el-form-item>
-                <el-form-item class="text-right">
+            </el-form>
+                <div slot="footer" class="text-right">
                     <el-button type="primary" @click="changeSubmitTimeSubmit">确 定</el-button>
                     <el-button @click="dialogChangeSubmitTime = false">取 消</el-button>
-                </el-form-item>
-            </el-form>
+                </div>
         </el-dialog>
         
         
-        <el-dialog title="核对时间设置" :visible.sync="dialogChangeCheckTimes" v-if="dialogChangeCheckTimes" size="tiny">
+        <el-dialog title="核对时间设置" :visible.sync="dialogChangeCheckTimes" v-if="dialogChangeCheckTimes" width="560px">
             <el-form :model="checkTimes" ref="checkTimes" :rules="changeCheckTimesRules" label-position="top" label-suffix="：" label-width="60px">
                 
                 <el-form-item label="" prop="checkDuration">
                     0 小时 -
-                    <el-input v-model="checkTimes.checkDuration" placeholder="" style="width:50px;" size="small"></el-input> 小时
-                </el-form-item>
-                <el-form-item class="text-right">
-                    <el-button type="primary" @click="changeCheckTimesSubmit">确 定</el-button>
-                    <el-button @click="dialogChangeCheckTimes = false">取 消</el-button>
+                    <el-input v-model="checkTimes.checkDuration" @keyup.native="onkeyupPlusInt($event)" style="width:100px;" size="small"></el-input> 小时
                 </el-form-item>
             </el-form>
+            <div slot="footer" class="text-right">
+                <el-button type="primary" @click="changeCheckTimesSubmit">确 定</el-button>
+                <el-button @click="dialogChangeCheckTimes = false">取 消</el-button>
+            </div>
         </el-dialog>
-        <el-dialog title="总结打分区间设置" :visible.sync="dialogChangeScore" v-if="dialogChangeScore" size="tiny">
+        <el-dialog title="总结打分区间设置" :visible.sync="dialogChangeScore" v-if="dialogChangeScore" width="560px">
             <el-form :model="changeScoreForm" ref="changeScoreForm" :rules="changeScoreFormRules" label-position="top" label-suffix="：" label-width="60px">
                 
                 <el-form-item label="" prop="date">
-                    <el-input v-model="changeScoreForm.summaryScoreScopeMin" placeholder="" style="width:50px;" size="small"></el-input> 分
+                    <el-input @keyup.native="onkeyupPlusInt($event)" v-model="changeScoreForm.summaryScoreScopeMin" placeholder="" style="width:100px;" size="small"></el-input> 分
                     -
-                    <el-input v-model="changeScoreForm.summaryScoreScopeMax" placeholder="" style="width:50px;" size="small"></el-input> 分
-                </el-form-item>
-                <el-form-item class="text-right">
-                    <el-button type="primary" @click="changeScoreSubmit">确 定</el-button>
-                    <el-button @click="dialogChangeScore = false">取 消</el-button>
+                    <el-input @keyup.native="onkeyupPlusInt($event)" v-model="changeScoreForm.summaryScoreScopeMax" placeholder="" style="width:100px;" size="small"></el-input> 分
                 </el-form-item>
             </el-form>
+            <div slot="footer" class="text-right">
+                <el-button type="primary" @click="changeScoreSubmit">确 定</el-button>
+                <el-button @click="dialogChangeScore = false">取 消</el-button>
+            </div>
         </el-dialog>
 
-        <el-dialog title="打分比例设置" :visible.sync="dialogChangeScale" v-if="dialogChangeScale" size="tiny">
-            <el-form :model="changeScaleForm" ref="changeScaleForm" :rules="changeScaleFormRules" label-position="left" label-suffix="：" label-width="160px">
+        <el-dialog title="打分比例设置" :visible.sync="dialogChangeScale" v-if="dialogChangeScale" width="560px">
+            <el-form :model="changeScaleForm" ref="changeScaleForm" :rules="changeScaleFormRules" label-position="left" label-suffix="：" label-width="200px">
                 
                 <el-form-item prop="">
                     <div slot="label">
-                        <el-checkbox v-model="changeScaleForm.checked1">自评打分占比：</el-checkbox>
+                        <el-checkbox disabled v-model="changeScaleForm.checked1">自评打分占比：</el-checkbox>
                     </div>
-                    <el-input v-model="changeScaleForm.value1" placeholder="" style="width:50px;" size="small"></el-input> %
+                    <el-input v-model="changeScaleForm.value1" placeholder="" style="width:100px;" size="small"></el-input> %
                 </el-form-item>
-                <el-form-item prop="">
+                <el-form-item prop="" v-if="summaryScoreType == 2">
                     <div slot="label">
-                        <el-checkbox v-model="changeScaleForm.checked2">一级负责人打分占比：</el-checkbox>
+                        <el-checkbox v-model="changeScaleForm.checked2">二级部门负责人打分占比：</el-checkbox>
                     </div>
-                    <el-input v-model="changeScaleForm.value2" placeholder="" style="width:50px;" size="small"></el-input> %
+                    <el-input v-model="changeScaleForm.value2" placeholder="" style="width:100px;" size="small"></el-input> %
                 </el-form-item>
-                <el-form-item prop="">
+                <el-form-item prop="" v-if="summaryScoreType == 1 || summaryScoreType == 2 || summaryScoreType == 4">
                     <div slot="label">
-                        <el-checkbox v-model="changeScaleForm.checked3">总经理打分占比：</el-checkbox>
+                        <el-checkbox v-model="changeScaleForm.checked3">一级部门负责人打分占比：</el-checkbox>
                     </div>
-                    <el-input v-model="changeScaleForm.value3" placeholder="" style="width:50px;" size="small"></el-input> %
+                    <el-input v-model="changeScaleForm.value3" placeholder="" style="width:100px;" size="small"></el-input> %
                 </el-form-item>
                 <el-form-item prop="value">
                     <div slot="label">
-                        <el-checkbox v-model="changeScaleForm.checked4">自评打分占比：</el-checkbox>
+                        <el-checkbox disabled v-model="changeScaleForm.checked4">总经理打分占比：</el-checkbox>
                     </div>
-                    <el-input v-model="changeScaleForm.value4" placeholder="" style="width:50px;" size="small"></el-input> %
-                </el-form-item>
-                <el-form-item class="text-right">
-                    <el-button type="primary" @click="changeScaleSubmit">确 定</el-button>
-                    <el-button @click="dialogChangeScale = false">取 消</el-button>
+                    <el-input v-model="changeScaleForm.value4" placeholder="" style="width:100px;" size="small"></el-input> %
                 </el-form-item>
             </el-form>
+                <div slot="footer" class="text-right">
+                    <el-button type="primary" @click="changeScaleSubmit">确 定</el-button>
+                    <el-button @click="dialogChangeScale = false">取 消</el-button>
+                </div>
         </el-dialog>
 
         
-        <el-dialog title="延迟提交时间设置" :visible.sync="dialogChangeLaterTime" v-if="dialogChangeLaterTime" size="tiny">
+        <el-dialog title="延迟提交时间设置" :visible.sync="dialogChangeLaterTime" v-if="dialogChangeLaterTime" width="560px">
             <el-form :model="changeLaterTimeForm" ref="changeLaterTimeForm" :rules="changeLaterTimeFormRules" label-position="left" label-suffix="：" label-width="160px">
                 
                 <el-form-item prop="value1">
                     <div slot="label">
                         <el-checkbox v-model="changeLaterTimeForm.checked1" disabled>第一档：</el-checkbox>
                     </div>
-                    <el-input v-model="changeLaterTimeForm.min1" placeholder="" style="width:50px;" size="small"></el-input>小时
+                    <el-input @keyup.native="onkeyupPlusInt($event)" disabled v-model="changeLaterTimeForm.min1" placeholder="" style="width:50px;" size="small"></el-input>小时
                     -
-                    <el-input v-model="changeLaterTimeForm.max1" placeholder="" style="width:50px;" size="small"></el-input>小时
+                    <el-input @keyup.native="onkeyupPlusInt($event)" v-model="changeLaterTimeForm.max1" @change="changeLaterTimeForm.min2 = changeLaterTimeForm.max1" placeholder="" style="width:50px;" size="small"></el-input>小时
                 </el-form-item>
                 <el-form-item prop="">
                     <div slot="label">
-                        <el-checkbox v-model="changeLaterTimeForm.checked2">第二档：</el-checkbox>
+                        <el-checkbox v-model="changeLaterTimeForm.checked2" @change="changeLaterTimeForm.min2 = changeLaterTimeForm.max1">第二档：</el-checkbox>
                     </div>
-                    <el-input v-model="changeLaterTimeForm.min2" placeholder="" style="width:50px;" size="small"></el-input>小时
+                    <el-input @keyup.native="onkeyupPlusInt($event)" v-model="changeLaterTimeForm.min2" disabled placeholder="" style="width:50px;" size="small"></el-input>小时
                     -
-                    <el-input v-model="changeLaterTimeForm.max2" placeholder="" style="width:50px;" size="small"></el-input>小时
+                    <el-input @keyup.native="onkeyupPlusInt($event)" v-model="changeLaterTimeForm.max2" placeholder="" style="width:50px;" size="small"></el-input>小时
                 </el-form-item>
                 <el-form-item prop="">
                     <div slot="label">
@@ -437,21 +438,21 @@
                     </div>
                     未提交
                 </el-form-item>
-                <el-form-item class="text-right">
+            </el-form>
+                <div slot="footer" class="text-right">
                     <el-button type="primary" @click="changeLaterTimeSubmit">确 定</el-button>
                     <el-button @click="dialogChangeLaterTime = false">取 消</el-button>
-                </el-form-item>
-            </el-form>
+                </div>
         </el-dialog>
 
         
-        <el-dialog title="延迟提交扣款金额设置" :visible.sync="dialogChangeCutValue" v-if="dialogChangeCutValue" size="tiny">
+        <el-dialog title="延迟提交扣款金额设置" :visible.sync="dialogChangeCutValue" v-if="dialogChangeCutValue" width="560px">
             <el-form :model="changeCutValueForm" ref="changeCutValueForm" :rules="changeCutValueFormRules" label-position="left" label-suffix="：" label-width="160px">
                 
                 <el-form-item prop="value1">
                     <div slot="label">
                         <el-radio class="radio" v-model="changeCutValueForm.type" label="1">
-                            <el-input v-model="changeCutValueForm.value" placeholder="" style="width:50px;" size="small"></el-input> 元
+                            <el-input  @keyup.native="onkeyupPrice($event)" v-model="changeCutValueForm.value" placeholder="" style="width:50px;" size="small"></el-input> 元
                         </el-radio>
                     </div>
                 </el-form-item>
@@ -466,22 +467,23 @@
                     </div>
                     
                 </el-form-item>
-                <el-form-item class="text-right">
+            </el-form>
+            
+                <div slot="footer" class="text-right">
                     <el-button type="primary" @click="changeCutValueSubmit">确 定</el-button>
                     <el-button @click="dialogChangeCutValue = false">取 消</el-button>
-                </el-form-item>
-            </el-form>
+                </div>
         </el-dialog>
-        <el-dialog title="快捷设置文案设置" :visible.sync="dialogChangeQuickTip" v-if="dialogChangeQuickTip" size="tiny">
+        <el-dialog title="快捷设置文案设置" :visible.sync="dialogChangeQuickTip" v-if="dialogChangeQuickTip" width="560px">
             <el-form :model="changeQuickTipForm" ref="changeQuickTipForm" :rules="changeQuickTipFormRules" label-position="left" label-suffix="：" label-width="0">
                 <el-form-item prop="value1">
                     <el-input v-model="changeQuickTipForm.quickTipContent" type="textarea" :rows="6" placeholder="多个文案用英文逗号隔开" size="small"></el-input>
                 </el-form-item>
-                <el-form-item class="text-right">
+            </el-form>
+                <div slot="footer" class="text-right">
                     <el-button type="primary" @click="changeQuickTipSubmit">确 定</el-button>
                     <el-button @click="dialogChangeQuickTip = false">取 消</el-button>
-                </el-form-item>
-            </el-form>
+                </div>
         </el-dialog>
 
         
@@ -489,6 +491,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import dayPickNext from '../../../components/date/dayPickNext'
 import { getSysPlanSummarys,updateSysPlanSummarys,getSysCheckTimes,updateSysCheckTimes } from 'service/getData'
 import {  ERR_OK } from 'service/config'
@@ -542,8 +545,15 @@ export default {
                 text: maxDayMonth > 12 ? 1 : maxDayMonth,
                 value: maxDayObj[1]
             }
+            let minDate = moment().subtract(-minDayObj[0], 'months');
+            let maxDate = moment().subtract(-maxDayObj[0], 'months');
+            let startDateDay = moment(minDate).endOf('month').format('DD'); // 获取开始月最后一天日期
+            let endDateDay = moment(maxDate).endOf('month').format('DD'); // 获取结束月最后一天日期
+            let minDateDay = minDay.value > startDateDay ? startDateDay : minDay.value;
+            let maxDateDay = maxDay.value > endDateDay ? endDateDay : maxDay.value;
             
-            return minDay.text + '月' + minDay.value + '日 00:00 - ' + maxDay.text + '月' + maxDay.value + '日 23:59';
+            return minDate.format('MM') + '月' + minDateDay + '日 00:00 - ' + maxDate.format('MM') + '月'+ maxDateDay + '日 23:59';
+            // return minDay.text + '月' + minDay.value + '日 00:00 - ' + maxDay.text + '月' + maxDay.value + '日 23:59';
         },
         filterSummaryScore: function(val) {
             if (!val || val.split(',').length !== 4) {
@@ -556,10 +566,10 @@ export default {
                     str += '自评' + scopes[0] + '%    ';
                 }
                 if (!!scopes[1]) {
-                    str += '一级部门负责人' + scopes[1] + '%    ';
+                    str += '二级部门负责人' + scopes[1] + '%    ';
                 }
                 if (!!scopes[2]) {
-                    str += '二级部门负责人' + scopes[2] + '%    ';
+                    str += '一级部门负责人' + scopes[2] + '%    ';
                 }
                 if (!!scopes[3]) {
                     str += '总经理' + scopes[3] + '%    ';
@@ -620,16 +630,25 @@ export default {
             var sum = 0;
             if (!!this.changeScaleForm.checked1 && !!this.changeScaleForm.value1) {
                 sum += parseInt(this.changeScaleForm.value1);
+            } else if (!!this.changeScaleForm.checked1 && !this.changeScaleForm.value1) {
+                callback(new Error('请填写勾选项'));
             }
             if (!!this.changeScaleForm.checked2 && !!this.changeScaleForm.value2) {
                 sum += parseInt(this.changeScaleForm.value2);
+            } else if (!!this.changeScaleForm.checked2 && !this.changeScaleForm.value2) {
+                callback(new Error('请填写勾选项'));
             }
             if (!!this.changeScaleForm.checked3 && !!this.changeScaleForm.value3) {
                 sum += parseInt(this.changeScaleForm.value3);
+            } else if (!!this.changeScaleForm.checked3 && !this.changeScaleForm.value3) {
+                callback(new Error('请填写勾选项'));
             }
             if (!!this.changeScaleForm.checked4 && !!this.changeScaleForm.value4) {
                 sum += parseInt(this.changeScaleForm.value4);
+            } else if (!!this.changeScaleForm.checked4 && !this.changeScaleForm.value4) {
+                callback(new Error('请填写勾选项'));
             }
+            console.log(sum,this.changeScaleForm)
             if (sum !== 100) {
                 callback(new Error('所设置比例和应当为100%'));
             } else {
@@ -638,7 +657,7 @@ export default {
         };
         var validateLaterTime = (rule, value, callback) => {
 
-            if (!this.changeLaterTimeForm.min1 || !this.changeLaterTimeForm.max1) {
+            if (!this.changeLaterTimeForm.max1) {
                 callback(new Error('请输入第一档延迟提交时间'));
             } else {
                 callback();
@@ -662,7 +681,7 @@ export default {
                     { required: true, message: '请选择时间范围', trigger: 'blue' }
                 ],
                 months: [
-                    { required: true, message: '请选择重复月份', trigger: 'blue' }
+                    { type: 'array', required: true, message: '请选择重复月份', trigger: 'blue' }
                 ], //重复月份
             },
             checkAll: true,
@@ -687,7 +706,7 @@ export default {
                     { required: true, message: '请输入', trigger: 'blue' }
                 ],
                 summaryScoreScopeMax: [
-                    { required: true, message: '请输入', trigger: 'blue' }
+                    { type: 'array', required: true, message: '请输入', trigger: 'blue' }
                 ], //重复月份
             },
 
@@ -695,13 +714,13 @@ export default {
             dialogChangeScale: false,
             changeScaleForm: {
                 summaryScoreType: 1,
-                checked1: false,
+                checked1: true,
                 value1:'',
                 checked2: false,
                 value2:'',
                 checked3: false,
                 value3:'',
-                checked4: false,
+                checked4: true,
                 value4:'',
             },
             changeScaleFormRules: {
@@ -720,7 +739,7 @@ export default {
                 submitType: '',
                 submitLevel: '',
                 checked1: true,
-                min1:'',
+                min1:0,
                 max1:'',
                 checked2: false,
                 min2:'',
@@ -767,7 +786,7 @@ export default {
             },
             changeQuickTipFormRules: {
                 quickTipContent: [
-                    { required: true, message: '请输入', trigger: 'blue' }
+                    { required: true, message: '请输入' }
                 ],
             },
             quickTipContent1: '',
@@ -777,7 +796,7 @@ export default {
             checkDuration: '',
             changeCheckTimesRules: {
                 checkDuration: [
-                    { required: true, message: '请输入', trigger: 'blue' }
+                    { required: true, message: '请输入' }
                 ],
             },
             dialogChangeCheckTimes: false
@@ -792,8 +811,8 @@ export default {
     },
     methods: {
         // 全选
-        handleCheckAllChange(event) {
-            this.changeSubmitTimeForm.months = event.target.checked ? [1,2,3,4,5,6,7,8,9,10,11,12] : [];
+        handleCheckAllChange(val) {
+            this.changeSubmitTimeForm.months = val ? [1,2,3,4,5,6,7,8,9,10,11,12] : [];
             this.isIndeterminate = false;
         },
         handleCheckedCitiesChange(value) {
@@ -803,11 +822,7 @@ export default {
         },
 
         getBaseData() {
-            let params = {
-                nowPage: this.pageIndex,
-                pageShow: this.pageSize
-            }
-            getSysPlanSummarys(params).then((res) => {
+            getSysPlanSummarys({}).then((res) => {
                 if (res.code == ERR_OK) {
                     this.baseData = res.data;
                     for(let item of res.data) {
@@ -903,7 +918,6 @@ export default {
                         this.checkTimes = {};
                         this.checkDuration = '';
                     }
-                    console.log(this.checkTimes);
                 } else {
                     this.$notify({
 						type: 'warning',
@@ -919,6 +933,7 @@ export default {
         // submitRepeatMonth 重复月份，以“,”隔开
         setSubmitTimeParams(submitType,submitLevel,submitTimeScope,submitRepeatMonth) {
             this.dialogChangeSubmitTime = true;
+            this.isIndeterminate = true;
             this.changeSubmitTimeForm.date = submitTimeScope ? submitTimeScope : '';
             this.changeSubmitTimeForm.months = submitRepeatMonth ? submitRepeatMonth.split(',').map(Number) : [];
             this.changeSubmitTimeForm.submitType = submitType;
@@ -948,6 +963,21 @@ export default {
             }
         },
         changeSubmitTimeSubmit() {
+            if(this.changeSubmitTimeForm.months.length != 12) {
+
+                this.$confirm('重复月份未全部勾选，确认要保存设置吗?', '提示', {
+                    confirmButtonText: '确认',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.changeSubmitTimeSubmitSubmit();
+                }).catch(() => {
+                });
+            } else {
+                this.changeSubmitTimeSubmitSubmit();
+            }
+        },
+        changeSubmitTimeSubmitSubmit() {
             this.$refs.changeSubmitTimeForm.validate(valid => {
                 if (valid) {
 
@@ -1009,6 +1039,15 @@ export default {
         },
 
         setScale(summaryScoreType) {
+            this.changeScaleForm.value1 = '';
+            this.changeScaleForm.value2 = '';
+            this.changeScaleForm.value3 = '';
+            this.changeScaleForm.value4 = '';
+            this.changeScaleForm.checked1 = true;
+            this.changeScaleForm.checked2 = false;
+            this.changeScaleForm.checked3 = false;
+            this.changeScaleForm.checked4 = true;
+
             let _summaryScoreValue = '';
             // summaryScoreType 总结打分人员类型（1:一级部门员工，2:二级部门员工，3:一级部门负责人，4:二级部门负责人）
             if (summaryScoreType == 1) {
@@ -1029,11 +1068,6 @@ export default {
                         this.changeScaleForm['checked' + (j + 1)] = true;
                         this.changeScaleForm['value' + (j + 1)] = scopes[j];
                     }
-                }
-            } else {
-                for (let j = 0; j < 4; j ++) {
-                    this.changeScaleForm['checked' + (j + 1)] = false;
-                    this.changeScaleForm['value' + (j + 1)] = '';
                 }
             }
             this.dialogChangeScale = true;
@@ -1091,6 +1125,17 @@ export default {
         // submitType 类型：1:计划，2:总结
         // submitLevel 类型：1:个人，2:二级部门，3：一级部门
         setLaterTime(submitType,submitLevel,submitTimeLater) {
+            
+            this.changeLaterTimeForm.min1 = 0;
+            this.changeLaterTimeForm.max1 = '';
+            this.changeLaterTimeForm.min2 = '';
+            this.changeLaterTimeForm.max2 = '';
+            this.changeLaterTimeForm.min3 = '';
+            this.changeLaterTimeForm.max3 = '';
+            this.changeLaterTimeForm.checked1 = true;
+            this.changeLaterTimeForm.checked2 = false;
+            this.changeLaterTimeForm.checked3 = true;
+
             if(!!submitTimeLater) {
                 // 打分比例设置
                 let scopes = submitTimeLater.split(',');
@@ -1202,7 +1247,6 @@ export default {
             this.changeCutValueForm.submitLevel = submitLevel;
             this.changeCutValueForm.level = level;
             this.dialogChangeCutValue = true;
-            console.log('levelCutValue', levelCutValue);
             
             
         },
@@ -1217,7 +1261,6 @@ export default {
                     _val = this.changeCutValueForm.submitLaterCutValue;
                 }
                 let newVals = _val.split(',');
-                console.log(newVals,this.changeCutValueForm.level);
                 if (this.changeCutValueForm.type == 1 ) {
                     newVals[this.changeCutValueForm.level] = '1:' + this.changeCutValueForm.value;
                 } else if (this.changeCutValueForm.type == 2 ) {
@@ -1320,7 +1363,21 @@ export default {
             })
 
             
-        }
+        },
+        
+        filterCutDisable: function(num,val,level) {
+            let scopes = (val && val.split(',').length) ? val.split(',') : [];
+            
+            if (level == 2 ){
+                if ( !scopes || (scopes && !scopes[1]) ){
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        },
         
     }
 }
