@@ -10,7 +10,11 @@
                 <el-table-column prop="userName" label="姓名"></el-table-column>
                 <el-table-column prop="createTime" label="时间"></el-table-column>
                 <el-table-column prop="typeName" label="操作名称"></el-table-column>
-                <el-table-column prop="handleDec" label="操作描述" ></el-table-column>
+                <el-table-column label="操作描述" >
+                    <template slot-scope="scope">
+                        <span v-html="scope.row.handleDec.replace(/\\n/gm, '<br>')"></span>
+                    </template>
+                </el-table-column>
             </el-table>
         </div>
     </div>

@@ -445,6 +445,7 @@ export default {
                 if (valid) {
                     let txt = this.handQuickDialogInfo.name + '：' + this.setGroupForm.num + this.handQuickDialogInfo.unit
                     this.listData[this.handQuickDialogIndex].taskGoal = txt;
+                    this.setGroupForm.num = '';
                     this.dialogSetGroup = false;
                 }
             })

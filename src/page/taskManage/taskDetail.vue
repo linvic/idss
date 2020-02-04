@@ -70,7 +70,7 @@
                     </el-col>
                     <el-col :span="6">
                     任务状态：
-                    <img class="icon_type" v-if="detailInfo.taskStatus === 'APPROVEPASS'" src="../../images/lateTime2.png" alt=""  />
+                    <img class="icon_type" v-if="detailInfo.taskStatus === 'APPROVEPASS'" src="../../images/timeLate.png" alt=""  />
                     {{detailInfo.taskStatusName}}
                     </el-col>
                     <el-col :span="6">
@@ -263,7 +263,7 @@
                         min-width="50">
                         <template slot-scope="props">
                             <div>
-                                <img class="icon_type" v-if="props.row.taskStatus === 'APPROVEPASS'" src="../../images/lateTime2.png" alt=""  />
+                                <img class="icon_type" v-if="props.row.taskStatus === 'APPROVEPASS'" src="../../images/timeLate.png" alt=""  />
                                 <span v-if="props.row.taskStatus === 'CANCELED' || props.row.taskStatus === 'COMPLETION'">{{props.row.taskStatusName}}</span>
                                 <span v-else style="color:#D93437;">{{props.row.taskStatusName}}</span>
                             </div>

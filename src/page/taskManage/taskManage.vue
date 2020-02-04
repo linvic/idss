@@ -101,7 +101,7 @@
                         min-width="50">
                         <template slot-scope="props">
                             <div>
-                                <img class="icon_type" v-if="props.row.taskStatus === 'APPROVEPASS'" src="../../images/lateTime2.png" alt=""  />
+                                <img class="icon_type" v-if="props.row.taskStatus === 'APPROVEPASS'" src="../../images/timeLate.png" alt=""  />
                                 <span v-if="props.row.taskStatus === 'CANCELED' || props.row.taskStatus === 'COMPLETION'">{{props.row.taskStatusName}}</span>
                                 <span v-else style="color:#D93437;">{{props.row.taskStatusName}}</span>
                             </div>
@@ -233,7 +233,7 @@
                         min-width="50">
                         <template slot-scope="props">
                             <div>
-                                <img class="icon_type" v-if="props.row.taskStatus === 'APPROVEPASS'" src="../../images/lateTime2.png" alt=""  />
+                                <img class="icon_type" v-if="props.row.taskStatus === 'APPROVEPASS'" src="../../images/timeLate.png" alt=""  />
                                 
                                 <span v-if="props.row.taskStatus === 'CANCELED' || props.row.taskStatus === 'COMPLETION'">{{props.row.taskStatusName}}</span>
                                 <span v-else style="color:#D93437;">{{props.row.taskStatusName}}</span>
@@ -366,7 +366,7 @@
                     min-width="50">
                     <template slot-scope="props">
                         <div>
-                            <img class="icon_type" v-if="props.row.taskStatus === 'APPROVEPASS'" src="../../images/lateTime2.png" alt=""  />
+                            <img class="icon_type" v-if="props.row.taskStatus === 'APPROVEPASS'" src="../../images/timeLate.png" alt=""  />
                             
                             <span v-if="props.row.taskStatus === 'CANCELED' || props.row.taskStatus === 'COMPLETION'">{{props.row.taskStatusName}}</span>
                             <span v-else style="color:#D93437;">{{props.row.taskStatusName}}</span>

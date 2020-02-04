@@ -6,7 +6,7 @@
         </div>
         <div class="idss-list">
             <div class="idss-list-top">
-                <div class="idss-list-top-title">总结管理<span class="tip">{{timeTips}}</span></div>
+                <div class="idss-list-top-title">总结管理<span class="tip">{{timeTips}}</span><span class="tip">{{timeTips2}}</span></div>
                 <div class="idss-list-top-btn-groups">
                     <el-button size="small" type="primary" @click="linkSummaryStaff" v-if="pageType == 2">个人总结列表</el-button>
                     
@@ -171,6 +171,7 @@ export default {
             userView: 'STAFF', // MANAGER   DEPT   STAFF
 
             timeTips: '',
+            timeTips2: '',
             isAllDeptList: '0', // 0 待处理
             pendingTotal: 0, // 待处理总数
             tableKey: 0,
@@ -226,20 +227,40 @@ export default {
         },
         // 获取剩余时间提示
         getLeftTimeToPublish() {
-            getRestTime({
-                userType: 1, // 1个人 2 部门
-                submitType: 2, // 1计划  2总结
-            }).then((res) => {
-                if (res.code == ERR_OK) {
-                    this.timeTips = res.data;
-                } else {
-                    this.$notify({
-                        type: 'warning',
-                        title: "提示",
-                        message: res.msg
-                    });
-                }
-            })
+
+            if(this.userView == 'STAFF' || this.userView == 'DEPT') {
+                getRestTime({
+                    userType: 1, // 1个人 2 部门
+                    submitType: 2, // 1计划  2总结
+                }).then((res) => {
+                    if (res.code == ERR_OK) {
+                        this.timeTips = res.data;
+                    } else {
+                        this.$notify({
+                            type: 'warning',
+                            title: "提示",
+                            message: res.msg
+                        });
+                    }
+                })
+            }
+
+            if(this.userView == 'DEPT') {
+                getRestTime({
+                    userType: 2, // 1个人 2 部门
+                    submitType: 2, // 1计划  2总结
+                }).then((res) => {
+                    if (res.code == ERR_OK) {
+                        this.timeTips2 = res.data;
+                    } else {
+                        this.$notify({
+                            type: 'warning',
+                            title: "提示",
+                            message: res.msg
+                        });
+                    }
+                })
+            }
         },
         getDataList() {
             this.tableKey ++;
