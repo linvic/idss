@@ -242,32 +242,32 @@
             <div class="info">
                 <div class="info-title">
                     计划提交情况
-                    <span>共1次异常</span>
+                    <span>共{{detailInfo.planExceptionTimes}}次异常</span>
                 </div>
                 <div class="info-flex">
                     <div class="info-flex-item">
                         <div class="info-flex-item-title">个人计划提交时间</div>
                         <div class="info-flex-item-center">
-                            <span>{{detailInfo.xxx || '-'}}</span>
+                            <span>{{detailInfo.personalPlanTime || '-'}}</span>
                         </div>
                     </div>
                     <div class="info-flex-item">
                         <div class="info-flex-item-title">个人计划提交情况</div>
                         <div class="info-flex-item-center">
-                            <span>{{detailInfo.xxx || '-'}}</span>
+                            <span>{{detailInfo.personalPlanSituation || '-'}}</span>
                         </div>
                     </div>
                     <div class="info-flex-item" v-if="userView != 'STAFF'">
                         <div class="info-flex-item-title">部门计划提交时间</div>
                         <div class="info-flex-item-center">
-                            <span>{{detailInfo.xxx || '-'}}</span>
+                            <span>{{detailInfo.deptPlanTime || '-'}}</span>
                         </div>
                     </div>
                     <div class="info-flex-item" v-else></div>
                     <div class="info-flex-item" v-if="userView != 'STAFF'">
                         <div class="info-flex-item-title">部门计划提交情况</div>
                         <div class="info-flex-item-center">
-                            <span>{{detailInfo.xxx || '-'}}</span>
+                            <span>{{detailInfo.deptPlanSituation || '-'}}</span>
                         </div>
                     </div>
                     <div class="info-flex-item" v-else></div>
@@ -282,31 +282,31 @@
             <div class="info">
                 <div class="info-title">
                     总结提交情况
-                    <span>共1次异常</span>
+                    <span>共{{detailInfo.summaryExceptionTimes}}次异常</span>
                 </div>
                 <div class="info-flex">
                     <div class="info-flex-item">
                         <div class="info-flex-item-title">个人总结提交时间</div>
                         <div class="info-flex-item-center">
-                            <span>{{detailInfo.xxx || '-'}}</span>
+                            <span>{{detailInfo.personalSummaryTime || '-'}}</span>
                         </div>
                     </div>
                     <div class="info-flex-item">
                         <div class="info-flex-item-title">个人总结提交情况</div>
                         <div class="info-flex-item-center">
-                            <span>{{detailInfo.xxx || '-'}}</span>
+                            <span>{{detailInfo.personalSummarySituation || '-'}}</span>
                         </div>
                     </div>
                     <div class="info-flex-item">
                         <div class="info-flex-item-title">部门总结提交时间</div>
                         <div class="info-flex-item-center">
-                            <span>{{detailInfo.xxx || '-'}}</span>
+                            <span>{{detailInfo.deptSummaryTime || '-'}}</span>
                         </div>
                     </div>
                     <div class="info-flex-item">
                         <div class="info-flex-item-title">部门总结提交情况</div>
                         <div class="info-flex-item-center">
-                            <span>{{detailInfo.xxx || '-'}}</span>
+                            <span>{{detailInfo.deptSummarySituation || '-'}}</span>
                         </div>
                     </div>
                     <div class="info-flex-item"></div>
