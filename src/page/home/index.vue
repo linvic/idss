@@ -40,11 +40,11 @@
                     </div>
                     <div class="index-card-btn" @click="addPlan" v-if="(userView == 'STAFF' && !isAddPlanPersonal) || (userView == 'DEPT')">
                         <img class="index-card-btn-icon" src="../../images/icon_index_jh.png" alt="">
-                        <p class="index-card-btn-txt">发起计划</p>
+                        <p class="index-card-btn-txt">发起个人计划</p>
                     </div>
                     <div class="index-card-btn" @click="addSummary" v-if="(userView == 'STAFF' && !isAddSummaryPersonal) || (userView == 'DEPT')">
                         <img class="index-card-btn-icon" src="../../images/icon_index_zj.png" alt="">
-                        <p class="index-card-btn-txt">发起总结</p>
+                        <p class="index-card-btn-txt">发起个人总结</p>
                     </div>
                 </div>
             </el-col>
@@ -288,7 +288,7 @@
                     <el-form-item label="任务组成员:" v-if="taskForm.taskCategory == 1" :class="{'is-change': handTaskType === 3 && (auditOldData.taskGropUsers != taskGropUsers)}">
                         <div class="user-right" @click="adduser">添加任务组成员</div>
                         
-                        <div class="user-item ellipsis" v-for="(item, index) in taskGropUsers">
+                        <div class="user-item ellipsis" v-for="(item, index) in taskGropUsers" :key="index">
                             <span class="ellipsis" style="display: inline-block;width: 100%;">{{ item.userName }}</span>
                             <i class="el-icon-circle-close"  @click="removeTodo(index)"></i>
                         </div>
@@ -499,7 +499,9 @@ import {
     canPublishSummary,
     getTaskFocusSet,
     saveTaskFocusSet,
-    listDeptsAndUsers
+    listDeptsAndUsers,
+    canPublishPlanOnTap,
+    canPublishSummaryOnTap
 } from 'service/getData'
 import {  ERR_OK } from 'service/config'
 import Sortable from 'sortablejs'
@@ -785,7 +787,7 @@ export default {
         },
         getIsCanAddPersonal(){
             
-            // 验证个人是否发布过计划
+            // 验证个人可否发布计划
             canPublishPlan({
                 planSummaryType: 1
             }).then((res) => {
@@ -799,7 +801,7 @@ export default {
                     });
                 }
             })
-            // 验证个人是否发布过总结
+            // 验证个人可否发布总结
             canPublishSummary({
                 planSummaryType: 1
             }).then((res) => {
@@ -1501,73 +1503,57 @@ export default {
 
         // 发起计划
         addPlan() {
-            // 1判断是否发了个人计划
-            if (this.isAddPlanPersonal) {
-                // 2判断是否发了部门计划
-                canPublishPlan({
-                    planSummaryType: 2
-                }).then((res) => {
-                    if (res.code == ERR_OK) {
-                        if(!res.data) {
-                            this.$notify({
-                                type: 'warning',
-                                title: "提示",
-                                message: '已发起过个人计划及部门计划'
-                            });
-                        } else {
-                            this.$router.push({
-                                path: "/planSummaryManage/planDept"
-                            })
-                        }
+            // 点击判断能否发布
+            canPublishPlanOnTap({
+                planSummaryType: 1
+            }).then((res) => {
+                if (res.code == ERR_OK) {
+                    if(res.data) {
+                        this.$router.push({
+                            path: "/planSummaryManage/planPersonal"
+                        })
                     } else {
-                        this.$notify({
-                            type: 'warning',
-                            title: "提示",
-                            message: res.msg
+                        this.$alert(res.msg, '提示', {
+                            confirmButtonText: '确定',
+                            callback: action => {}
                         });
                     }
-                })
-            } else {
-
-                this.$router.push({
-                    path: "/planSummaryManage/planPersonal"
-                })
-            }
+                } else {
+                    this.$notify({
+                        type: 'warning',
+                        title: "提示",
+                        message: res.msg
+                    });
+                }
+            })
 
         },
         // 发起总结
         addSummary() {
-            // 1判断是否发了个人总结
-            if (this.isAddSummaryPersonal) {
-                // 2判断是否发可以发部门总结
-                canPublishSummary({
-                    planSummaryType: 2
-                }).then((res) => {
-                    if (res.code == ERR_OK) {
-                        if(!res.data) {
-                            this.$notify({
-                                type: 'warning',
-                                title: "提示",
-                                message: '已发起过个人总结及部门总结'
-                            });
-                        } else {
-                            this.$router.push({
-                                path: "/planSummaryManage/planDept"
-                            })
-                        }
+            
+            // 点击判断是否可以发布
+            canPublishSummaryOnTap({
+                planSummaryType: 1
+            }).then((res) => {
+                if (res.code == ERR_OK) {
+                    if(res.data) {
+                        this.$router.push({
+                            path: "/planSummaryManage/summaryPersonal"
+                        })
                     } else {
-                        this.$notify({
-                            type: 'warning',
-                            title: "提示",
-                            message: res.msg
+                        this.$alert(res.msg, '提示', {
+                            confirmButtonText: '确定',
+                            callback: action => {}
                         });
                     }
-                })
-            } else {
-                this.$router.push({
-                    path: "/planSummaryManage/planPersonal"
-                })
-            }
+                } else {
+                    this.$notify({
+                        type: 'warning',
+                        title: "提示",
+                        message: res.msg
+                    });
+                }
+            })
 
         },
 

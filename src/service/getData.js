@@ -1100,6 +1100,10 @@ export function updateToApproving(params){
 export function canPublishPlan(params){
   return fetchGet('/planInfos/canPublishPlan',param(params))
 }
+//点击判断
+export function canPublishPlanOnTap(params){
+  return fetchGet('/planInfos/canPublishPlanOnTap',param(params))
+}
 
 
 
@@ -1168,6 +1172,10 @@ export function updateToApprovingSummary(params){
 // 能否发起总结
 export function canPublishSummary(params){
   return fetchGet('/summaryInfos/canPublishSummary',param(params))
+}
+//点击判断
+export function canPublishSummaryOnTap(params){
+  return fetchGet('/summaryInfos/canPublishSummaryOnTap',param(params))
 }
 // 提出申诉
 export function appealSummary(params){

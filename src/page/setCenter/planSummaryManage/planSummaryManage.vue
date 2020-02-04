@@ -458,12 +458,12 @@
                 </el-form-item>
                 <el-form-item prop="">
                     <div slot="label">
-                        <el-radio class="radio" v-model="changeCutValueForm.type" label="2">当日工资</el-radio>
+                        <el-radio class="radio" v-model="changeCutValueForm.type" label="2">1天基本工资</el-radio>
                     </div>
                 </el-form-item>
                 <el-form-item prop="">
                     <div slot="label">
-                        <el-radio class="radio" v-model="changeCutValueForm.type" label="3">2倍日工资</el-radio>
+                        <el-radio class="radio" v-model="changeCutValueForm.type" label="3">2天基本工资</el-radio>
                     </div>
                     
                 </el-form-item>
@@ -611,9 +611,9 @@ export default {
             if (obj && obj.submitLaterCutValue && obj.submitLaterCutValue.split(',').length === 3) {
                 let val = obj.submitLaterCutValue.split(',')[level];
                 if (val == 2) {
-                    return '当日工资'
+                    return '1天基本工资'
                 } else if (val == 3) {
-                    return '2倍日工资'
+                    return '2天基本工资'
                 } else if (val && val.length > 2 && val.split(':').length === 2){
                     return '-' + val.split(':')[1] + '元'
                 } else {

@@ -80,17 +80,17 @@
                 </el-form-item>
                 <el-form-item prop="" v-if="changeCutValueForm.attendanceFailCode != 'LEAVE_ABSENCE'">
                     <div slot="label">
-                        <el-radio class="radio" v-model="changeCutValueForm.chargeType" :label="2">当日工资</el-radio>
+                        <el-radio class="radio" v-model="changeCutValueForm.chargeType" :label="2">1天基本工资</el-radio>
                     </div>
                 </el-form-item>
                 <el-form-item prop="" v-if="changeCutValueForm.attendanceFailCode != 'LEAVE_ABSENCE'">
                     <div slot="label">
-                        <el-radio class="radio" v-model="changeCutValueForm.chargeType" :label="3">2倍日工资</el-radio>
+                        <el-radio class="radio" v-model="changeCutValueForm.chargeType" :label="3">2天基本工资</el-radio>
                     </div>
                 </el-form-item>
                 <el-form-item prop="" v-if="changeCutValueForm.attendanceFailCode == 'LEAVE_ABSENCE'">
                     <div slot="label">
-                        <el-radio class="radio" v-model="changeCutValueForm.chargeType" :label="4">当日工资的8分之1
+                        <el-radio class="radio" v-model="changeCutValueForm.chargeType" :label="4">1天基本工资的8分之1
                             <span v-if="changeCutValueForm.attendanceFailCode == 'LEAVE_ABSENCE'"> / 小时</span>
                         </el-radio>
                     </div>
@@ -122,15 +122,15 @@ export default {
         // level: 档次 0，1，2
         filterCutValue:([chargeType, chargeValue, attendanceFailCode])=> {
             if (chargeType == 2 ) {
-                let text = '当日工资';
+                let text = '1天基本工资';
                 if (attendanceFailCode == 'LEAVE_ABSENCE') {
                     text += ' / 小时'
                 }
                 return text;
             } else if (chargeType == 3 ) {
-                return '2倍日工资'
+                return '2天基本工资'
             } else if (chargeType == 4 ) {
-                let text = '当日工资的8分之1';
+                let text = '1天基本工资的8分之1';
                 if (attendanceFailCode == 'LEAVE_ABSENCE') {
                     text += ' / 小时'
                 }

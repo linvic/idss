@@ -160,7 +160,7 @@
 </template>
 
 <script>
-import { getRestTime, getSummaryPages, listDeptSummaryByPage,listAllPersonalSummaryPage, listPendingSummaryPage,listManagerPendingSummaryPage ,canPublishSummary} from 'service/getData'
+import { getRestTime, getSummaryPages, listDeptSummaryByPage,listAllPersonalSummaryPage, listPendingSummaryPage,listManagerPendingSummaryPage,canPublishSummaryOnTap ,canPublishSummary} from 'service/getData'
 import {  ERR_OK } from 'service/config'
 export default {
     data () {
@@ -407,13 +407,55 @@ export default {
             })
         },
         linkSummaryDeptAdd() { // 发起部门总结
-            this.$router.push({
-                path: "/planSummaryManage/summaryDept"
+            
+            // 点击判断是否可以发布
+            canPublishSummaryOnTap({
+                planSummaryType: 2
+            }).then((res) => {
+                if (res.code == ERR_OK) {
+                    if(res.data) {
+                        this.$router.push({
+                            path: "/planSummaryManage/summaryDept"
+                        })
+                    } else {
+                        this.$alert(res.msg, '提示', {
+                            confirmButtonText: '确定',
+                            callback: action => {}
+                        });
+                    }
+                } else {
+                    this.$notify({
+                        type: 'warning',
+                        title: "提示",
+                        message: res.msg
+                    });
+                }
             })
         },
         linkSummaryAdd() { // 发起个人计划
-            this.$router.push({
-                path: "/planSummaryManage/summaryPersonal"
+            
+            // 点击判断是否可以发布
+            canPublishSummaryOnTap({
+                planSummaryType: 1
+            }).then((res) => {
+                if (res.code == ERR_OK) {
+                    if(res.data) {
+                        this.$router.push({
+                            path: "/planSummaryManage/summaryPersonal"
+                        })
+                    } else {
+                        this.$alert(res.msg, '提示', {
+                            confirmButtonText: '确定',
+                            callback: action => {}
+                        });
+                    }
+                } else {
+                    this.$notify({
+                        type: 'warning',
+                        title: "提示",
+                        message: res.msg
+                    });
+                }
             })
         },
         // 总结详情页面

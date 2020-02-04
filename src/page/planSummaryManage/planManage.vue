@@ -137,7 +137,7 @@
 </template>
 
 <script>
-import { getRestTime, getPlanPages, listAllDeptPlanPage,listAllPersonalPlanPage, listPendingPlanPage,listManagerPendingPlanPage ,canPublishPlan} from 'service/getData'
+import { getRestTime, getPlanPages, listAllDeptPlanPage,listAllPersonalPlanPage, listPendingPlanPage,listManagerPendingPlanPage,canPublishPlanOnTap ,canPublishPlan} from 'service/getData'
 import {  ERR_OK } from 'service/config'
 export default {
     data () {
@@ -378,13 +378,53 @@ export default {
             })
         },
         linkPlanDeptAdd() { // 发起部门计划
-            this.$router.push({
-                path: "/planSummaryManage/planDept"
+            // 点击判断能否发布
+            canPublishPlanOnTap({
+                planSummaryType: 2
+            }).then((res) => {
+                if (res.code == ERR_OK) {
+                    if(res.data) {
+                        this.$router.push({
+                            path: "/planSummaryManage/planDept"
+                        })
+                    } else {
+                        this.$alert(res.msg, '提示', {
+                            confirmButtonText: '确定',
+                            callback: action => {}
+                        });
+                    }
+                } else {
+                    this.$notify({
+                        type: 'warning',
+                        title: "提示",
+                        message: res.msg
+                    });
+                }
             })
         },
         linkPlanAdd() { // 发起个人计划
-            this.$router.push({
-                path: "/planSummaryManage/planPersonal"
+            // 点击判断能否发布
+            canPublishPlanOnTap({
+                planSummaryType: 1
+            }).then((res) => {
+                if (res.code == ERR_OK) {
+                    if(res.data) {
+                        this.$router.push({
+                            path: "/planSummaryManage/planPersonal"
+                        })
+                    } else {
+                        this.$alert(res.msg, '提示', {
+                            confirmButtonText: '确定',
+                            callback: action => {}
+                        });
+                    }
+                } else {
+                    this.$notify({
+                        type: 'warning',
+                        title: "提示",
+                        message: res.msg
+                    });
+                }
             })
         },
         // 计划详情页面
