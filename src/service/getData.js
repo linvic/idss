@@ -1097,18 +1097,15 @@ export function updateToApproving(params){
   return fetchPost('/planInfos/updateToApproving',param(params))
 }
 // 是否已发起总结
-export function hasPublishPlan(params){
-  return fetchGet('/planInfos/hasPublishPlan',param(params))
+export function canPublishPlan(params){
+  return fetchGet('/planInfos/canPublishPlan',param(params))
 }
+
 
 
 // 计算离计划/总结开始提交还剩多少时间
 export function getRestTime(params){
   return fetchGet('/sysPlanSummarys/getRestTime',param(params))
-}
-// 判断计划总结是否在提交时间范围之内
-export function judgeCanSubmit(params){
-  return fetchGet('/sysPlanSummarys/judgeCanSubmit',param(params))
 }
 
 
@@ -1168,9 +1165,9 @@ export function approveSummary(params){
 export function updateToApprovingSummary(params){
   return fetchPost('/summaryInfos/updateToApproving',param(params))
 }
-// 是否已发起总结
-export function hasPublishSummary(params){
-  return fetchGet('/summaryInfos/hasPublishSummary',param(params))
+// 能否发起总结
+export function canPublishSummary(params){
+  return fetchGet('/summaryInfos/canPublishSummary',param(params))
 }
 // 提出申诉
 export function appealSummary(params){

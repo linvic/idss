@@ -13,13 +13,13 @@
             </div>
             <div class="idss-list-filter" v-if="userView != 'STAFF'">
                 
-                <el-select v-model="filterForm.deptId" filterable clearable placeholder="请选择" size="small" @change="deptChange">
+                <el-select v-model="filterForm.deptId" filterable clearable placeholder="请选择" size="small" @change="deptChange" v-if="isAttendanceAdmin || userView == 'MANAGER'">
                     <el-option value="" label="全部部门"></el-option>
                     <el-option
                         v-for="item in deptList"
                         :key="item.deptId"
                         :label="item.deptName"
-                        :value="item.deptId">
+                        :value="item.deptTreeIds">
                     </el-option>
                 </el-select>
                 <el-select v-model="filterForm.userId" filterable clearable placeholder="请选择" size="small">

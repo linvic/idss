@@ -119,27 +119,27 @@
                                         size="small"
                                         type="primary"
                                         plain
-                                        v-if="validateLevel(props.row.approveLevel) && props.row.executorId != userId && (props.row.taskStatus == 'NEWAPPROVE' || props.row.taskStatus == 'UPDATEAPPROVE' || props.row.taskStatus == 'CANCELAPPROVE') "
+                                        v-if="props.row.canApprove"
                                         @click.stop='auditTask(props.row.id)'>审核</el-button>
                                     <el-button
                                         size="small"
                                         type="primary"
                                         plain
                                         :disabled="props.row.hadremind == 1"
-                                        v-if=" props.row.executorId != userId && props.row.taskStatus == 'APPROVEPASS' "
+                                        v-if="props.row.canRemind"
                                         @click.stop='tipCompleteModal(props.row.id)'>提醒完成</el-button>
                                     <el-button
                                         size="small"
                                         type="primary"
                                         plain
-                                        v-if="validateLevel(props.row.approveLevel) &&  props.row.executorId != userId && props.row.taskStatus == 'WAITEVALUATE' "
+                                        v-if="props.row.canEvaluate"
                                         @click.stop='levelComeplete(props.row.id)'>任务评价</el-button>
                                     
                                     <el-button
                                         size="small"
                                         type="primary"
                                         plain
-                                        v-if=" props.row.executorId == userId && props.row.taskStatus == 'APPROVEPASS' "
+                                        v-if="props.row.canFinish"
                                         @click.stop='completeModal(props.row.id)'>完成</el-button>
 
                                     <el-button
@@ -264,27 +264,27 @@
                                                     size="small"
                                                     type="primary"
                                                     plain
-                                                    v-if="validateLevel(props.row.approveLevel) && props.row.executorId != userId && (props.row.taskStatus == 'NEWAPPROVE' || props.row.taskStatus == 'UPDATEAPPROVE' || props.row.taskStatus == 'CANCELAPPROVE') "
+                                                    v-if="props.row.canApprove"
                                                     @click.stop='auditTask(props.row.id)'>审核</el-button>
                                                 <el-button
                                                     size="small"
                                                     type="primary"
                                                     plain
                                                     :disabled="props.row.hadremind == 1"
-                                                    v-if=" props.row.executorId != userId && props.row.taskStatus == 'APPROVEPASS' "
+                                                    v-if="props.row.canRemind"
                                                     @click.stop='tipCompleteModal(props.row.id)'>提醒完成</el-button>
                                                 <el-button
                                                     size="small"
                                                     type="primary"
                                                     plain
-                                                    v-if="validateLevel(props.row.approveLevel) &&  props.row.executorId != userId && props.row.taskStatus == 'WAITEVALUATE' "
+                                                    v-if="props.row.canEvaluate"
                                                     @click.stop='levelComeplete(props.row.id)'>任务评价</el-button>
                                                 
                                                 <el-button
                                                     size="small"
                                                     type="primary"
                                                     plain
-                                                    v-if=" props.row.executorId == userId && props.row.taskStatus == 'APPROVEPASS' "
+                                                    v-if="props.row.canFinish"
                                                     @click.stop='completeModal(props.row.id)'>完成</el-button>
 
                                                 <el-button

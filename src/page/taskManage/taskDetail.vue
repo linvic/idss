@@ -18,34 +18,34 @@
                         size="small"
                         type="primary"
                         plain
-                        v-if="detailInfo.executorId == userId && detailInfo.taskCategory == 1 && (detailInfo.taskStatus == 'UPDATEAPPROVE' || detailInfo.taskStatus == 'APPROVEPASS')"
+                        v-if="detailInfo.canAdd"
                         @click.stop='addTask'>添加任务</el-button>
 
                     <el-button
                         size="small"
                         type="primary"
                         plain
-                        v-if="isCurHandLevel && (userView != 'STAFF') && (detailInfo.executorId != userId) && (detailInfo.taskStatus == 'NEWAPPROVE' || detailInfo.taskStatus == 'UPDATEAPPROVE' || detailInfo.taskStatus == 'CANCELAPPROVE') "
+                        v-if="detailInfo.canApprove"
                         @click.stop='auditTask(detailInfo.id)'>审核</el-button>
                     <el-button
                         size="small"
                         type="primary"
                         plain
                         :disabled="detailInfo.hadremind == 1"
-                        v-if="detailInfo.executorId != userId && detailInfo.taskStatus == 'APPROVEPASS' "
+                        v-if="detailInfo.canRemind"
                         @click.stop='tipCompleteModal(detailInfo.id)'>提醒完成</el-button>
                     <el-button
                         size="small"
                         type="primary"
                         plain
-                        v-if="isCurHandLevel && (detailInfo.executorId != userId) && detailInfo.taskStatus == 'WAITEVALUATE' "
+                        v-if="detailInfo.canEvaluate"
                         @click.stop='levelComeplete(detailInfo.id)'>任务评价</el-button>
                     
                     <el-button
                         size="small"
                         type="primary"
                         plain
-                        v-if=" detailInfo.executorId == userId && detailInfo.taskStatus == 'APPROVEPASS' "
+                        v-if="detailInfo.canFinish"
                         @click.stop='completeModal(detailInfo.id)'>完成</el-button>
 
                     <el-button
@@ -213,7 +213,7 @@
                                             <span @click="replyTask( props.row.index, props.row.id, $event)"
                                                 class="replyValue">回复</span>
                                         </div>
-                                        <div class="" v-for="item in props.row.taskReplyList">
+                                        <div v-for="(item,index) in props.row.taskReplyList" :key="index">
                                             <div class="reback-time">{{ item.replyTimeDistanceDesc }}</div>
                                             <div class="reback" style="max-width: 294px;min-width: 296px;overflow:hidden;">
                                                 <div style="float:left;">{{item.replyUser.userName}}：</div>
@@ -413,7 +413,7 @@
                     <el-form-item label="任务组成员:" v-if="taskForm.taskCategory == 1" :class="{'is-change': handTaskType === 3 && (auditOldData.taskGropUsers != taskGropUsers)}">
                         <div class="user-right" @click="adduser">添加任务组成员</div>
                         
-                        <div class="user-item ellipsis" v-for="(item, index) in taskGropUsers">
+                        <div class="user-item ellipsis" v-for="(item, index) in taskGropUsers" :key="index">
                             <span class="ellipsis" style="display: inline-block;width: 100%;">{{ item.userName }}</span>
                             <i class="el-icon-circle-close"  @click="removeTodo(index)"></i>
                         </div>
@@ -429,7 +429,7 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item class=""label="任务可见范围:" :class="{'is-change': handTaskType === 3 && (auditOldData.value71 != taskForm.value71)}">
+                    <el-form-item label="任务可见范围:" :class="{'is-change': handTaskType === 3 && (auditOldData.value71 != taskForm.value71)}">
                         <el-select
                             multiple
                             v-model="taskForm.value71"
@@ -1219,12 +1219,11 @@ export default {
                     this.taskForm.modifyReason = this.detailInfo.modifyReason;
                     this.taskForm.projectId = this.detailInfo.projectId;
                     this.taskForm.taskStatus = this.detailInfo.taskStatus; // 状态
+                    
                     if (!this.detailInfo.visibleRange) {
                         this.taskForm.value71 = [];
-                    } else if (this.detailInfo.visibleRange.indexOf(",") < 0) {
-                        this.taskForm.value71 = JSON.parse("[" + parseInt(this.detailInfo.visibleRange) + "]");
                     } else {
-                        this.taskForm.value71 = JSON.parse("[" + String(this.detailInfo.visibleRange.split(",")) + "]");
+                        this.taskForm.value71 = this.detailInfo.visibleRange.split(",");
                     }
 
                     var _taskGropUsers = [];
@@ -1273,12 +1272,11 @@ export default {
                     this.taskForm.modifyReason = this.detailInfo.modifyReason;
                     this.taskForm.projectId = this.detailInfo.projectId;
                     this.taskForm.taskStatus = this.detailInfo.taskStatus; // 状态
+                    
                     if (!this.detailInfo.visibleRange) {
                         this.taskForm.value71 = [];
-                    } else if (this.detailInfo.visibleRange.indexOf(",") < 0) {
-                        this.taskForm.value71 = JSON.parse("[" + parseInt(this.detailInfo.visibleRange) + "]");
                     } else {
-                        this.taskForm.value71 = JSON.parse("[" + String(this.detailInfo.visibleRange.split(",")) + "]");
+                        this.taskForm.value71 = this.detailInfo.visibleRange.split(",");
                     }
 
                     

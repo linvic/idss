@@ -303,7 +303,7 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item class=""label="任务可见范围:" :class="{'is-change': handTaskType === 3 && (auditOldData.value71 != taskForm.value71)}">
+                    <el-form-item label="任务可见范围:" :class="{'is-change': handTaskType === 3 && (auditOldData.value71 != taskForm.value71)}">
                         <el-select
                             multiple
                             v-model="taskForm.value71"
@@ -495,8 +495,8 @@ import {
     assessTask,
     completeTask,
     approveTask,
-    hasPublishPlan,
-    hasPublishSummary,
+    canPublishPlan,
+    canPublishSummary,
     getTaskFocusSet,
     saveTaskFocusSet,
     listDeptsAndUsers
@@ -786,11 +786,11 @@ export default {
         getIsCanAddPersonal(){
             
             // 验证个人是否发布过计划
-            hasPublishPlan({
+            canPublishPlan({
                 planSummaryType: 1
             }).then((res) => {
                 if (res.code == ERR_OK) {
-                    this.isAddPlanPersonal = res.data;
+                    this.isAddPlanPersonal = !res.data;
                 } else {
                     this.$notify({
                         type: 'warning',
@@ -800,7 +800,7 @@ export default {
                 }
             })
             // 验证个人是否发布过总结
-            hasPublishSummary({
+            canPublishSummary({
                 planSummaryType: 1
             }).then((res) => {
                 if (res.code == ERR_OK) {
@@ -1504,11 +1504,11 @@ export default {
             // 1判断是否发了个人计划
             if (this.isAddPlanPersonal) {
                 // 2判断是否发了部门计划
-                hasPublishPlan({
+                canPublishPlan({
                     planSummaryType: 2
                 }).then((res) => {
                     if (res.code == ERR_OK) {
-                        if(res.data) {
+                        if(!res.data) {
                             this.$notify({
                                 type: 'warning',
                                 title: "提示",
@@ -1539,12 +1539,12 @@ export default {
         addSummary() {
             // 1判断是否发了个人总结
             if (this.isAddSummaryPersonal) {
-                // 2判断是否发了部门总结
-                hasPublishSummary({
+                // 2判断是否发可以发部门总结
+                canPublishSummary({
                     planSummaryType: 2
                 }).then((res) => {
                     if (res.code == ERR_OK) {
-                        if(res.data) {
+                        if(!res.data) {
                             this.$notify({
                                 type: 'warning',
                                 title: "提示",

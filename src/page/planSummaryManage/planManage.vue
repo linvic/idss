@@ -137,7 +137,7 @@
 </template>
 
 <script>
-import { getRestTime, getPlanPages, listAllDeptPlanPage,listAllPersonalPlanPage, listPendingPlanPage,listManagerPendingPlanPage,judgeCanSubmit ,hasPublishPlan} from 'service/getData'
+import { getRestTime, getPlanPages, listAllDeptPlanPage,listAllPersonalPlanPage, listPendingPlanPage,listManagerPendingPlanPage ,canPublishPlan} from 'service/getData'
 import {  ERR_OK } from 'service/config'
 export default {
     data () {
@@ -348,50 +348,12 @@ export default {
             // 逻辑判断按钮是否禁用
             this.isCanAddDept = true;
             this.isCanAddPersonal = true;
-            // 验证个人提交时间范围
-            judgeCanSubmit({
-                userType: 1, // 1个人 2 部门
-                submitType: 1, // 1计划  2总结
-            }).then((res) => {
-                if (res.code == ERR_OK) {
-                    if(!res.data) {
-                        this.isCanAddPersonal = false;
-                    }
-                } else {
-                    this.$notify({
-                        type: 'warning',
-                        title: "提示",
-                        message: res.msg
-                    });
-                }
-            })
-            // 验证部门提交时间范围
-            judgeCanSubmit({
-                userType: 2, // 1个人 2 部门
-                submitType: 1, // 1计划  2总结
-            }).then((res) => {
-                if (res.code == ERR_OK) {
-                    if(!res.data) {
-                        this.isCanAddDept = false;
-                    }
-                } else {
-                    this.$notify({
-                        type: 'warning',
-                        title: "提示",
-                        message: res.msg
-                    });
-                }
-            })
             // 验证个人是否发布过计划
-            hasPublishPlan({
+            canPublishPlan({
                 planSummaryType: 1
             }).then((res) => {
                 if (res.code == ERR_OK) {
-                    if(res.data) {
-                        this.isCanAddPersonal = false;
-                    } else {
-                        this.isCanAddDept = false;
-                    }
+                    this.isCanAddPersonal = res.data;
                 } else {
                     this.$notify({
                         type: 'warning',
@@ -401,14 +363,11 @@ export default {
                 }
             })
             // 验证部门是否发布过计划
-            hasPublishPlan({
+            canPublishPlan({
                 planSummaryType: 2
             }).then((res) => {
                 if (res.code == ERR_OK) {
-                    if(res.data) {
-                        this.isCanAddPersonal = false;
-                        this.isCanAddDept = false;
-                    }
+                    this.isCanAddDept = res.data;
                 } else {
                     this.$notify({
                         type: 'warning',

@@ -64,7 +64,7 @@
                                                             <input type="text" name="" value="" class="inputValue" />
                                                             <span @click.stop="replyTask(props.row.id, $event)" class="replyValue">回复</span>
                                                         </div>
-                                                        <div class="" v-for="item in props.row.taskReplyList">
+                                                        <div v-for="(item,index) in props.row.taskReplyList" :key="index">
                                                             <div class="reback-time">{{ item.replyTimeDistanceDesc }}</div>
                                                             <div class="reback" style="max-width: 294px;min-width: 296px;overflow:hidden;">
                                                                 <div style="float:left;">{{item.replyUser.userName}}：</div>
@@ -127,27 +127,27 @@
                                                 size="small"
                                                 type="primary"
                                                 plain
-                                                v-if="validateLevel(props.row.approveLevel) && props.row.executorId != userId && (props.row.taskStatus == 'NEWAPPROVE' || props.row.taskStatus == 'UPDATEAPPROVE' || props.row.taskStatus == 'CANCELAPPROVE') "
+                                                v-if="props.row.canApprove"
                                                 @click.stop='auditTask(props.row.id)'>审核</el-button>
                                             <el-button
                                                 size="small"
                                                 type="primary"
                                                 plain
                                                 :disabled="props.row.hadremind == 1"
-                                                v-if=" props.row.executorId != userId && props.row.taskStatus == 'APPROVEPASS' "
+                                                v-if="props.row.canRemind"
                                                 @click.stop='tipCompleteModal(props.row.id)'>提醒完成</el-button>
                                             <el-button
                                                 size="small"
                                                 type="primary"
                                                 plain
-                                                v-if="validateLevel(props.row.approveLevel) &&  props.row.executorId != userId && props.row.taskStatus == 'WAITEVALUATE' "
+                                                v-if="props.row.canEvaluate"
                                                 @click.stop='levelComeplete(props.row.id)'>任务评价</el-button>
                                             
                                             <el-button
                                                 size="small"
                                                 type="primary"
                                                 plain
-                                                v-if=" props.row.executorId == userId && props.row.taskStatus == 'APPROVEPASS' "
+                                                v-if="props.row.canFinish"
                                                 @click.stop='completeModal(props.row.id)'>完成</el-button>
 
                                             <el-button
@@ -220,7 +220,7 @@
                                                                         <input type="text" name="" value="" class="inputValue" />
                                                                         <span @click.stop="replyTask(props.row.id, $event)" class="replyValue">回复</span>
                                                                     </div>
-                                                                    <div class="" v-for="item in props.row.taskReplyList">
+                                                                    <div v-for="(item,index) in props.row.taskReplyList" :key="index">
                                                                         <div class="reback-time">{{ item.replyTimeDistanceDesc }}</div>
                                                                         <div class="reback" style="max-width: 294px;min-width: 296px;overflow:hidden;">
                                                                             <div style="float:left;">{{item.replyUser.userName}}：</div>
@@ -283,27 +283,27 @@
                                                             size="small"
                                                             type="primary"
                                                             plain
-                                                            v-if="validateLevel(props.row.approveLevel) && props.row.executorId != userId && (props.row.taskStatus == 'NEWAPPROVE' || props.row.taskStatus == 'UPDATEAPPROVE' || props.row.taskStatus == 'CANCELAPPROVE') "
+                                                            v-if="props.row.canApprove"
                                                             @click.stop='auditTask(props.row.id)'>审核</el-button>
                                                         <el-button
                                                             size="small"
                                                             type="primary"
                                                             plain
                                                             :disabled="props.row.hadremind == 1"
-                                                            v-if=" props.row.executorId != userId && props.row.taskStatus == 'APPROVEPASS' "
+                                                            v-if="props.row.canRemind"
                                                             @click.stop='tipCompleteModal(props.row.id)'>提醒完成</el-button>
                                                         <el-button
                                                             size="small"
                                                             type="primary"
                                                             plain
-                                                            v-if="validateLevel(props.row.approveLevel) &&  props.row.executorId != userId && props.row.taskStatus == 'WAITEVALUATE' "
+                                                            v-if="props.row.canEvaluate"
                                                             @click.stop='levelComeplete(props.row.id)'>任务评价</el-button>
                                                         
                                                         <el-button
                                                             size="small"
                                                             type="primary"
                                                             plain
-                                                            v-if=" props.row.executorId == userId && props.row.taskStatus == 'APPROVEPASS' "
+                                                            v-if="props.row.canFinish"
                                                             @click.stop='completeModal(props.row.id)'>完成</el-button>
 
                                                         <el-button

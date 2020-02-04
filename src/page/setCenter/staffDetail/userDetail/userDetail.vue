@@ -84,7 +84,7 @@
                                             <span @click="replyTask(props.row.id, $event)"
                                                 class="replyValue">回复</span>
                                         </div>
-                                        <div class="" v-for="item in props.row.taskReplyList">
+                                        <div class="" v-for="(item,index) in props.row.taskReplyList" :key="index">
                                             <div class="reback-time">{{ item.replyTimeDistanceDesc }}</div>
                                             <div class="reback" style="max-width: 294px;min-width: 296px;overflow:hidden;">
                                                 <div style="float:left;">{{item.replyUser.userName}}：</div>
@@ -148,7 +148,7 @@
                                 size="small"
                                 type="primary"
                                 plain
-                                v-if=" props.row.taskStatus == 'APPROVEPASS' "
+                                v-if="props.row.canFinish"
                                 @click.stop='completeModal(props.row.id)'>完成</el-button>
                             <el-button
                                 size="small"
@@ -377,7 +377,7 @@
                     <el-form-item label="任务组成员:" v-if="taskForm.taskCategory == 1" :class="{'is-change': handTaskType === 3 && (auditOldData.taskGropUsers != taskGropUsers)}">
                         <div class="user-right" @click="adduser">添加任务组成员</div>
                         
-                        <div class="user-item ellipsis" v-for="(item, index) in taskGropUsers">
+                        <div class="user-item ellipsis" v-for="(item, index) in taskGropUsers" :key="index">
                             <span class="ellipsis" style="display: inline-block;width: 100%;">{{ item.userName }}</span>
                             <i class="el-icon-circle-close"  @click="removeTodo(index)"></i>
                         </div>
@@ -392,7 +392,7 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item class=""label="任务可见范围:" :class="{'is-change': handTaskType === 3 && (auditOldData.value71 != taskForm.value71)}">
+                    <el-form-item label="任务可见范围:" :class="{'is-change': handTaskType === 3 && (auditOldData.value71 != taskForm.value71)}">
                         <el-select
                             multiple
                             v-model="taskForm.value71"
