@@ -65,12 +65,13 @@
 </template>
 
 <script>
-  import {captcha,login} from 'service/getData'
+  import {captcha,login,getUserName} from 'service/getData'
   import {ERR_OK} from 'service/config'
   import {baseUrl} from '../../config/env'
   import {setStore,removeStore} from '../../config/mUtils'
   import  store from '../../store'
   import * as types from '../../store/mutation-types'
+  import { mapMutations } from "vuex";
   export default {
     data() {
       return {
@@ -90,6 +91,10 @@
       removeStore('token')
     },
     methods:{
+        ...mapMutations({
+            // 语法糖映射带setSinger，常量对应类似函数
+            setSinger: "SET_SINGER"
+        }),
 //      获取图片验证码
        getPic() {
          this.url=baseUrl+captcha()
@@ -117,11 +122,27 @@
         const self=this
         login(param).then((res) => {
           if(res.code==ERR_OK) {
-          store.commit(types.LOGIN,{token:res.data})
-          store.dispatch('roles',res.data)
-          this.message=false;
-          self.$router.push('/index')
-          setStore('token',res.data)
+            
+            setStore('token',res.data)
+            store.commit(types.LOGIN,{token:res.data})
+            store.dispatch('roles',res.data)
+            getUserName().then((res)=> {
+                if (res.code == ERR_OK) {
+                    this.setSinger(res.data);
+                    setStore("userId", res.data.userId);
+                    setStore("userName", res.data.userName);
+                    setStore("deptId", res.data.deptId);
+                    setStore("userView", res.data.userView);
+                    setStore("deptLevel", res.data.deptLevel);
+                    setStore("isAttendanceAdmin", res.data.isAttendanceAdmin);
+                    setStore("isSalaryAdmin", res.data.isSalaryAdmin);
+                    setStore("canAddTaskGroup", res.data.canAddTaskGroup);
+
+
+                    this.message=false;
+                    this.$router.replace('/index')
+                }
+            });
         }else if(res.code=='validateCodeError'){
           this.getPic()
           this.captcha=""

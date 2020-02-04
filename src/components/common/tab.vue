@@ -189,17 +189,34 @@ import bus from "../../assets/eventBus";
 import { setStore, getStore } from "../../config/mUtils";
 import {
     MessageSiteInfo,
-    getUserName,
     getUserInfo,
     editorUserInfo,
     modifyPassword,
-    viewMessage
+    viewMessage,
+    getUserName
 } from "../../service/getData";
 import { ERR_OK } from "service/config";
 import store from "../../store";
 import * as types from "../../store/mutation-types";
-import { mapMutations } from "vuex";
+import { mapGetters,mapMutations} from 'vuex'
 export default {
+    computed:{
+        name() {
+            return this.singer.userName
+        },
+        userId() {
+            return this.singer.userId
+        },
+        userView() {
+            return this.singer.userView
+        },
+        deptLevel() {
+            return this.singer.deptLevel
+        },
+        ...mapGetters([
+            'singer'
+        ]),
+    },
     data() {
         var checkAge = (rule, value, callback) => {
             if (!value) {
@@ -236,17 +253,13 @@ export default {
             list: [],
             noTi: false,
             totalCount: 0,
-            userId: "",
             dialogVisible4: false,
             setCenterPermission: false,
             personalPermission: false,
             labelPosition: "right",
-            userId: "",
             dialogVisible: false,
             dialogVisible3: false,
             UserInfo: "",
-            name: "",
-            userView: "",
             role: [],
             rolename: "",
             rules: {
@@ -312,14 +325,35 @@ export default {
         }
     },
     mounted() {
-        var self = this;
-        bus.$on("tabChange", function(msg) {
+        bus.$on("tabChange", (msg)=> {
             if (msg == "SUCCESS") {
-                self._MessageSiteInfo();
+                this._MessageSiteInfo();
             }
         });
     },
     methods: {
+
+        ...mapMutations({
+            // 语法糖映射带setSinger，常量对应类似函数
+            setSinger: "SET_SINGER"
+        }),
+        //      获取姓名
+        _getUserName() {
+            getUserName().then((res)=> {
+                if (res.code == ERR_OK) {
+                    this.setSinger(res.data);
+                    
+                    setStore("userId", res.data.userId);
+                    setStore("userName", res.data.userName);
+                    setStore("deptId", res.data.deptId);
+                    setStore("userView", res.data.userView);
+                    setStore("deptLevel", res.data.deptLevel);
+                    setStore("isAttendanceAdmin", res.data.isAttendanceAdmin);
+                    setStore("isSalaryAdmin", res.data.isSalaryAdmin);
+                    setStore("canAddTaskGroup", res.data.canAddTaskGroup);
+                }
+            });
+        },
         skip(row) {
             viewMessage({
                 id: row.messageSiteInfoId
@@ -406,16 +440,15 @@ export default {
             this.dialogVisible = false;
         },
         _MessageSiteInfo() {
-            var self = this;
-            MessageSiteInfo().then(function(res) {
+            MessageSiteInfo().then((res)=> {
                 if (res.code == ERR_OK) {
-                    self.list = res.data.result;
-                    self.totalCount = res.data.totalCount;
+                    this.list = res.data.result;
+                    this.totalCount = res.data.totalCount;
                     if (res.data.result.length == 0) {
-                        self.noTi = true;
+                        this.noTi = true;
                     }
                 } else {
-                    self.$notify.error({
+                    this.$notify.error({
                         title: "错误",
                         message: res.msg
                     });
@@ -431,7 +464,6 @@ export default {
             this.$refs[formName].resetFields();
         },
         submitForm3(formName) {
-            let self = this;
             this.$refs[formName].validate(valid => {
                 if (valid) {
                     this.dialogVisible3 = false;
@@ -515,33 +547,17 @@ export default {
                 }
             });
         },
-        //      获取姓名
-        _getUserName() {
-            var self = this;
-            getUserName().then(function(res) {
-                if (res.code == ERR_OK) {
-                    self.setSinger(res.data);
-                    self.name = res.data.userName;
-                    self.userId = res.data.userId;
-                    self.userView = res.data.userView;
-                    self.deptLevel = res.data.deptLevel;
-                    
-                    setStore("userId", res.data.userId);
-                    setStore("userName", res.data.userName);
-                    setStore("deptId", res.data.deptId);
-                    setStore("userView", res.data.userView);
-                    setStore("deptLevel", res.data.deptLevel);
-                    setStore("isAttendanceAdmin", res.data.isAttendanceAdmin);
-                    setStore("isSalaryAdmin", res.data.isSalaryAdmin);
-                    setStore("canAddTaskGroup", res.data.canAddTaskGroup);
-                }
-            });
-        },
         //      确定退出登录
         sureLoginOut() {
             removeStore("token");
             removeStore("userId");
-            this.$router.push("/login");
+            removeStore("userName");
+            removeStore("userView");
+            removeStore("deptLevel");
+            removeStore("isAttendanceAdmin");
+            removeStore("isSalaryAdmin");
+            removeStore("canAddTaskGroup");
+            this.$router.replace("/login");
             this.dialogVisible = false;
             store.commit(types.LOGIN, { token: null });
             location.reload();
@@ -576,10 +592,7 @@ export default {
             if (command) {
             }
         },
-        ...mapMutations({
-            // 语法糖映射带setSinger，常量对应类似函数
-            setSinger: "SET_SINGER"
-        })
+        
     }
 };
 </script>

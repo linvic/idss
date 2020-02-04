@@ -40,7 +40,7 @@ export function fetchGet(url, params) {
 export function fetchDownloadFileGet(url, params) {
   return new Promise((resolve, reject) => {
     url += (url.indexOf('?') < 0 ? '?' : '&') + param(params)
-    axios.get(url)
+    axios.get(url, {responseType: 'blob'})
       .then(response => {
         if(response.data.code==ERR_LOGIN || response.data.code=="noPermission"){
           router.push('/login')

@@ -43,7 +43,11 @@
                         <el-table-column label="提交时间" prop="submitTime"></el-table-column>
                     </template>
                     <template v-if="isAllDeptList == 0 && userView == 'MANAGER'">
-                        <el-table-column label="标题" prop="title"></el-table-column>
+                        <el-table-column label="标题">
+                            <template slot-scope="scope">
+                                <p>{{scope.row.title}}-{{scope.row.deptName}}</p>
+                            </template>
+                        </el-table-column>
                         <el-table-column label="负责人" prop="deptHeaderName"></el-table-column>
                         <el-table-column label="提交情况" prop="submitCondition"></el-table-column>
                         <el-table-column label="提交时间" prop="submitTime"></el-table-column>
@@ -71,7 +75,7 @@
                     <template v-if="isAllDeptList == 2 && userView == 'MANAGER'">
                         <el-table-column label="标题">
                             <template slot-scope="scope">
-                                <p>{{scope.row.title}}</p>
+                                <p>{{scope.row.title}}-{{scope.row.deptName}}</p>
                                 <p v-if="scope.row.submitedUserList && scope.row.submitedUserList.length > 0" class="table-link">
                                     <ul>
                                         <li>员工计划：</li>

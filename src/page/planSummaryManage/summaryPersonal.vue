@@ -122,7 +122,7 @@
                 <div class="idss-list-top-btn-groups">
                     <el-button type="primary" size="small" plain @click.stop="importUpdate">
                         添加附件
-                        <input ref="excel-upload-input" type="file" accept=".xlsx, .xls, .csv" @change="importFiles" style='display:none'>
+                        <input ref="excel-upload-input" type="file" accept="*" @change="importFiles" style='display:none'>
                     </el-button>
                 </div>
             </div>
@@ -423,7 +423,6 @@ export default {
                 filePath: item.filePath,
                 token: localStorage.getItem('token')
             }).then((res) => {
-                
                 let blob = new Blob([res]);
                 const fileName = item.fileName;
                 const elink = document.createElement("a");
