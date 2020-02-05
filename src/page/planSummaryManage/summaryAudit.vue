@@ -119,7 +119,7 @@
                     <span v-if="!j.taskInfoList || j.taskInfoList.length === 0">该员工因特殊原因无法提交本月总结</span>
                     <span  class="summaryTotalScore" v-else-if="summaryStatus == 'COMPLETION'">绩效得分{{item.summaryTotalScore}}分</span>
                     <div v-if="!j.taskInfoList || j.taskInfoList.length === 0" class="dept-list-top-input">
-                        <span v-if="!j.canEditNoSubmitReason">{{j.notSubmitReason}}</span>
+                        <span>{{j.notSubmitReason}}</span>
                     </div>
                 </div>
                 
