@@ -275,7 +275,7 @@ export default {
                 }
 
             }
-            if (_notAuditUser.length > 0) {
+            if (submitType !== 0 && _notAuditUser.length > 0) {
                 this.notAuditUser = [..._notAuditUser];
                 this.dialogVisible = true;
                 return;
@@ -283,7 +283,7 @@ export default {
             let isValidate = true;
             let _SummaryInfoPojo = [];
             for(let item of this.detailList) {
-                if (!isValidate) return;
+                if (submitType !== 0 && !isValidate) return;
                 for(let j of item.summaryInfoList) {
                     if( !j.taskInfoList || j.taskInfoList.length == 0) {
                         if (j.canEditNoSubmitReason) {
@@ -295,18 +295,20 @@ export default {
                             // 填原因
                             if (!j.notSubmitReason) {
                                 isValidate = false;
-                                this.$notify({
-                                    type: 'warning',
-                                    title: "提示",
-                                    message: '有员工未提交总结，请为其填写原因'
-                                });
+                                if(submitType !== 0) {
+                                    this.$notify({
+                                        type: 'warning',
+                                        title: "提示",
+                                        message: '有员工未提交总结，请为其填写原因'
+                                    });
+                                }
                                 break;
                             }
                     }
                 }
 
             }
-            if (!isValidate) return;
+            if (submitType !== 0 && !isValidate) return;
             let params = {
                 summaryType: 2, // 1个人 2部门
                 deptSummaryDetail: JSON.stringify(_SummaryInfoPojo)
