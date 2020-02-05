@@ -8,7 +8,7 @@
             <div class="idss-list-top">
                 <div class="idss-list-top-title">计划管理<span class="tip">{{timeTips}}</span><span class="tip">{{timeTips2}}</span></div>
                 <div class="idss-list-top-btn-groups">
-                    <el-button size="small" type="primary" @click="linkPlanStaff" v-if="pageType == 2">个人计划列表</el-button>
+                    <el-button size="small" type="primary" @click="linkPlanStaff" v-if="userView != 'MANAGER' && pageType == 2">个人计划列表</el-button>
                     
                     <el-button size="small" type="primary" :disabled="!isCanAddDept" v-if="userView != 'MANAGER' && pageType == 2" @click="linkPlanDeptAdd">发起部门计划</el-button>
                     <el-button size="small" type="primary" :disabled="!isCanAddPersonal" v-if="userView != 'MANAGER'" @click="linkPlanAdd">{{pageType == 2 ? '发起个人计划' : '发起计划'}}</el-button>

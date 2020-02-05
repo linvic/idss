@@ -103,7 +103,7 @@
                 </el-table-column>
                 <el-table-column label="自评打分" width="100">
                     <template slot-scope="scope">
-                        <el-input v-model="scope.row.taskScore" :disabled="scope.row.taskScoreIsDisabled" placeholder="打分" size="small"></el-input>
+                        <el-input v-model="scope.row.taskScore" @keyup.native="onkeyupPrice($event)" :disabled="scope.row.taskScoreIsDisabled" placeholder="打分" size="small"></el-input>
                     </template>
                 </el-table-column>
 
@@ -191,7 +191,8 @@ export default {
                     taskGoal: '', //目标
                     planEndDate: '', //完成时间
                     taskWorkload: '', //工作量基数
-                    taskSummaryStatus: 2, // 是否已完成
+                    taskSummaryStatus: 0, // 是否已完成
+                    canFinishTaskInSummary: true,
                     taskComment: '', // 本人总结
                     taskScore: '', // 打分
                     taskScoreIsDisabled: false, // 打分是否禁用
@@ -358,7 +359,8 @@ export default {
                 taskGoal: '', //目标
                 planEndDate: '', //完成时间
                 taskWorkload: '', //工作量基数
-                taskSummaryStatus: 2, // 是否已完成
+                taskSummaryStatus: 0, // 是否已完成
+                canFinishTaskInSummary: true,
                 taskComment: '', // 本人总结
                 taskScore: '', // 打分
                 taskScoreIsDisabled: false, // 打分是否禁用

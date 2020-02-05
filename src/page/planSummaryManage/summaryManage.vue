@@ -8,7 +8,7 @@
             <div class="idss-list-top">
                 <div class="idss-list-top-title">总结管理<span class="tip">{{timeTips}}</span><span class="tip">{{timeTips2}}</span></div>
                 <div class="idss-list-top-btn-groups">
-                    <el-button size="small" type="primary" @click="linkSummaryStaff" v-if="pageType == 2">个人总结列表</el-button>
+                    <el-button size="small" type="primary" @click="linkSummaryStaff" v-if="userView != 'MANAGER' && pageType == 2">个人总结列表</el-button>
                     
                     <el-button size="small" type="primary" :disabled="!isCanAddDept" v-if="userView != 'MANAGER' && pageType == 2" @click="linkSummaryDeptAdd">发起部门总结</el-button>
                     <el-button size="small" type="primary" :disabled="!isCanAddPersonal" v-if="userView != 'MANAGER'" @click="linkSummaryAdd">{{pageType == 2 ? '发起个人总结' : '发起总结'}}</el-button>

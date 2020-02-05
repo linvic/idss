@@ -149,23 +149,12 @@
                     
                     <el-table-column label="是否已完成" width="110" align="center">
                         <template slot-scope="scope">
+                            
                             <el-switch
-                                v-if="scope.row.taskSummarySwitchStatus == 3"
-                                active-color="#13ce66"
-                                disabled>
-                            </el-switch>
-                            <el-switch
-                                v-else-if="!!scope.row.id && scope.row.taskSummarySwitchStatus == 1"
-                                :value="true"
-                                active-color="#13ce66"
-                                disabled>
-                            </el-switch>
-                            <el-switch
-                                v-else
                                 v-model="scope.row.taskSummaryStatus"
                                 :active-value="1"
-                                :inactive-value="2"
-                                disabled
+                                :inactive-value="0"
+                                :disabled="true"
                                 active-color="#13ce66">
                             </el-switch>
                         </template>

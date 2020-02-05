@@ -1392,6 +1392,7 @@ export default {
                 id: id
             }).then((res) => {
                 if(res.code == ERR_OK) {
+                    this.pageInit();
                     this.$notify({
                         title: '成功',
                         message: '已提醒该员工该任务已完成',

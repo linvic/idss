@@ -59,7 +59,7 @@
                                 v-model="scope.row.taskSummaryStatus"
                                 :active-value="1"
                                 :inactive-value="0"
-                                :disabled="scope.row.canFinishTaskInSummary"
+                                :disabled="!scope.row.canFinishTaskInSummary"
                                 active-color="#13ce66">
                             </el-switch>
                             
@@ -72,7 +72,7 @@
                     </el-table-column>
 
                     <el-table-column v-for="(item,index) in j.showScoreLabels" :key="index" :label="j.showScoreLabels[index]" width="110">
-                        <template slot-scope="scope">
+                        <template>
                             <span>{{j.showScoreValues[index] || '-'}}</span>
                         </template>
                     </el-table-column>
