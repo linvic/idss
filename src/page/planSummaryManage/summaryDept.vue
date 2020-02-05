@@ -59,7 +59,7 @@
                                 v-model="scope.row.taskSummaryStatus"
                                 :active-value="1"
                                 :inactive-value="0"
-                                :disabled="!scope.row.canFinishTaskInSummary"
+                                :disabled="true"
                                 active-color="#13ce66">
                             </el-switch>
                             
