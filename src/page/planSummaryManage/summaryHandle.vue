@@ -219,7 +219,7 @@ export default {
                             (result.userName ? result.userName + ' ' : '')
                                 +
                             (result.title ? result.title : '');
-            this.appealReason = result.summaryStatus; // 申诉原因
+            this.appealReason = result.appealReason; // 申诉原因
             this.summaryStatus = result.summaryStatus;
             this.fileList = result.fileInfoList ? result.fileInfoList : []; // 附件
             this.approveDeptLevel = result.approveDeptLevel;
@@ -558,7 +558,7 @@ export default {
 .appeal-txt {
     background: #f7f7f5;
     padding: 15px 35px;
-    color: #666;
+    color: #D93437;
     font-size: 12px;
 }
 .file-list {
