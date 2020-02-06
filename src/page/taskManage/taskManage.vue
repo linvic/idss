@@ -253,27 +253,8 @@
                                 size="small"
                                 type="primary"
                                 plain
-                                :disabled="props.row.hadremind == 1"
-                                v-if="props.row.canRemind"
-                                @click.stop='tipCompleteModal(props.row.id)'>提醒完成</el-button>
-                            <el-button
-                                size="small"
-                                type="primary"
-                                plain
                                 v-if="props.row.canEvaluate"
                                 @click.stop='levelComeplete(props.row.id)'>任务评价</el-button>
-                            <el-button
-                                size="small"
-                                type="primary"
-                                plain
-                                v-if="props.row.canFinish"
-                                @click.stop='completeModal(props.row.id)'>完成</el-button>
-                            <el-button
-                                size="small"
-                                type="primary"
-                                plain
-                                v-if="props.row.canEdit"
-                                @click.stop="editTask(props.row.id)">编辑任务</el-button>
                             <router-link class="link-btn" :to="{path: '/taskManage/taskDetail',query: { id: props.row.id }}">
                                 <el-button size="small" 
                                     type="primary"
