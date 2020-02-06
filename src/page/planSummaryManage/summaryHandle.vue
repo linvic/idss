@@ -73,7 +73,7 @@
                     </template>
 
                     <template slot-scope="scope">
-                        <el-input v-if="index === scoreIndex" v-model="scope.row.taskScore" :disabled="scope.row.taskScoreIsDisabled" placeholder="打分" size="small"></el-input>
+                        <el-input v-if="index === scoreIndex" v-model="scope.row.taskScore" placeholder="打分" size="small"></el-input>
                         <span v-else>{{scope.row.showScoreValues[index] || '-'}}</span>
                     </template>
                 </el-table-column>
@@ -501,10 +501,9 @@ export default {
                 });
                 
                 this.$router.push({
-                    path: "/planSummaryManage/summaryAudit",
+                    path: "/planSummaryManage/summaryHandle",
                     query: {
-                        id: _newUnHandleDeptSummarys[0],
-                        type: 1
+                        id: _newUnHandleDeptSummarys[0]
                     }
                 })
             } else {
