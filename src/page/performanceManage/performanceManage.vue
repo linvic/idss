@@ -69,6 +69,7 @@
                         <el-button
                             size="small"
                             type="primary" plain
+                            v-if="scope.row.summaryId"
                             @click="linkDetail(scope.row)">查看</el-button>
                     </template>
 

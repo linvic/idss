@@ -105,7 +105,7 @@
                     <el-col :span="12" :lg="10">
                         <div class="idss-set-item">
                             <div class="idss-set-item__bd">
-                                <p>个人总结打分区间： {{changeScoreForm.summaryScoreScopeMin}} - {{changeScoreForm.summaryScoreScopeMax}} 分</p>
+                                <p>个人总结打分区间： {{summaryScoreScopeMin}} - {{summaryScoreScopeMax}} 分</p>
                                 <span>任务完成时的自评打分参照此区间分值</span>
                             </div>
                             <div class="idss-set-item__ft">
@@ -697,6 +697,8 @@ export default {
 
             
             dialogChangeScore: false,
+            summaryScoreScopeMin: '',
+            summaryScoreScopeMax: '',
             changeScoreForm: {
                 summaryScoreScopeMin: '',
                 summaryScoreScopeMax: '',
@@ -850,7 +852,9 @@ export default {
                         if (item.categoryCode == 'SUMMARY_SCORE') {
                             let scope = item.summaryScoreScope.split(',');
                             if (scope && scope.length == 2) {
+                                this.summaryScoreScopeMin = scope[0];
                                 this.changeScoreForm.summaryScoreScopeMin = scope[0];
+                                this.summaryScoreScopeMax = scope[1];
                                 this.changeScoreForm.summaryScoreScopeMax = scope[1];
                             }
                         }
