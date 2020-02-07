@@ -49,7 +49,7 @@
                             <p>个人：{{scope.row.personalScore || 0}}</p>
                             <p>部门：{{scope.row.deptScore || 0}}</p>
                         </div>
-                        <span v-else>{{scope.row.otherCut || 0}}</span>
+                        <span v-else>{{scope.row.personalScore || 0}}</span>
                     </template>
                     
                 </el-table-column>
