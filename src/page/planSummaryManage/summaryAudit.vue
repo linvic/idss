@@ -330,6 +330,7 @@ export default {
             let _newList = result;
             // 处理元数据
             for(let l of _newList) {
+                if(!l.summaryInfoList) continue;
                 for(let v of l.summaryInfoList) {
                     for(let item of v.taskInfoList) {
                         

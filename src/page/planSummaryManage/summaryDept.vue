@@ -189,6 +189,7 @@ export default {
             let _newList = result;
             // 处理元数据
             for(let l of _newList) {
+                if(!l.summaryInfoList) continue;
                 for(let v of l.summaryInfoList) {
                     for(let item of v.taskInfoList) {
                         let _taskEvaluatePojoJson = [];
@@ -277,7 +278,7 @@ export default {
         submit(submitType) {
             let _notAuditUser = [];
             for(let item of this.detailList) {
-                
+                if(!item.summaryInfoList) continue;
                 for(let j of item.summaryInfoList) {
                     if(this.validateLevel(j.approveLevel) && (j.summaryStatus == 'TOAPPROVE' || j.summaryStatus == 'APPROVING' || j.summaryStatus == 'FIRSTAPPROVED')) {
                         _notAuditUser.push(j);

@@ -176,6 +176,7 @@ export default {
         computeWeight() {
             for(let i of this.detailList) {
                 
+                if(!i.planInfoList) continue;
                 for(let j of i.planInfoList) {
                     
                     if( j.taskInfoList && j.taskInfoList.length > 0) {
@@ -227,7 +228,7 @@ export default {
 
             let _notAuditUser = [];
             for(let item of this.detailList) {
-                
+                if(!item.planInfoList) continue;
                 for(let j of item.planInfoList) {
                     if(this.validateLevel(j.approveLevel) && (j.planStatus == 'TOAPPROVE' || j.planStatus == 'APPROVING' || j.planStatus == 'FIRSTAPPROVED')) {
                         _notAuditUser.push(j);

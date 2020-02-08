@@ -208,7 +208,7 @@ export default {
         computeDeptWeight() {
             
             for(let i of this.detailList) {
-                
+                if(!i.planInfoList) continue;
                 for(let j of i.planInfoList) {
                     
                     if( j.taskInfoList && j.taskInfoList.length > 0) {
