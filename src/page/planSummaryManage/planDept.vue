@@ -18,47 +18,57 @@
                     <el-button size="small" type="primary" @click="submit(2)" v-else>提交计划</el-button>
                 </div>
             </div>
-            <div v-for="(j,k) in item.planInfoList" :key="k" class="dept-list">
+            <div v-if="item.planInfoList && item.planInfoList.length > 0">
+                <div v-for="(j,k) in item.planInfoList" :key="k" class="dept-list">
+                    <div class="dept-list-top">
+                        {{j.userName || '无名'}}
+                        <el-button class="m-l-10" type="primary" size="small" plain v-if="validateLevel(j.approveLevel) && (j.planStatus == 'TOAPPROVE' || j.planStatus == 'APPROVING' || j.planStatus == 'FIRSTAPPROVED')" @click="linkPlanAudit(j.id)">审核</el-button>
+                        <span v-if="!j.taskInfoList || j.taskInfoList.length === 0">该员工因特殊原因无法提交本月计划</span>
+                        <div v-if="!j.taskInfoList || j.taskInfoList.length === 0" class="dept-list-top-input">
+                            <span v-if="!j.canEditNoSubmitReason">{{j.notSubmitReason}}</span>
+                            <el-input v-if="j.canEditNoSubmitReason" size="small" v-model="j.notSubmitReason" placeholder="请填写原因" style="width: 300px"></el-input>
+                        </div>
+                    </div>
+                    
+                    <el-table :data="j.taskInfoList" v-if="j.taskInfoList && j.taskInfoList.length > 0">
+                        <el-table-column type="index" label="序号" width="120"></el-table-column>
+                        <el-table-column label="类别">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.taskTypeName || ''}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="事项">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.title || ''}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="本月目标">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.taskGoal || ''}}</span>
+                            </template>
+                        </el-table-column>
+                        
+                        <el-table-column label="最迟完成时间" width="160px">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.planEndDate || ''}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="权重" width="110">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.weight || ''}}</span>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+
+                </div>
+            </div>
+            <div class="dept-list" v-else>
                 <div class="dept-list-top">
-                    {{j.userName || '无名'}}
-                    <el-button class="m-l-10" type="primary" size="small" plain v-if="validateLevel(j.approveLevel) && (j.planStatus == 'TOAPPROVE' || j.planStatus == 'APPROVING' || j.planStatus == 'FIRSTAPPROVED')" @click="linkPlanAudit(j.id)">审核</el-button>
-                    <span v-if="!j.taskInfoList || j.taskInfoList.length === 0">该员工因特殊原因无法提交本月计划</span>
-                    <div v-if="!j.taskInfoList || j.taskInfoList.length === 0" class="dept-list-top-input">
-                        <span v-if="!j.canEditNoSubmitReason">{{j.notSubmitReason}}</span>
-                        <el-input v-if="j.canEditNoSubmitReason" size="small" v-model="j.notSubmitReason" placeholder="请填写原因" style="width: 300px"></el-input>
+                    <span>该部门因特殊原因无法提交本月计划</span>
+                    <div class="dept-list-top-input m-b">
+                        <el-input size="small" v-model="item.notSubmitReason" placeholder="请填写原因" style="width: 300px"></el-input>
                     </div>
                 </div>
-                
-                <el-table :data="j.taskInfoList" v-if="j.taskInfoList && j.taskInfoList.length > 0">
-                    <el-table-column type="index" label="序号" width="120"></el-table-column>
-                    <el-table-column label="类别">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.taskTypeName || ''}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="事项">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.title || ''}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="本月目标">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.taskGoal || ''}}</span>
-                        </template>
-                    </el-table-column>
-                    
-                    <el-table-column label="最迟完成时间" width="160px">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.planEndDate || ''}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="权重" width="110">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.weight || ''}}</span>
-                        </template>
-                    </el-table-column>
-                </el-table>
-
             </div>
 
         </div>
@@ -234,6 +244,25 @@ export default {
             let _PlanInfoPojo = [];
             for(let item of this.detailList) {
                 if (submitType !== 0 && !isValidate) return;
+                if (!item.planInfoList || item.planInfoList.length === 0) {
+                    _PlanInfoPojo.push({
+                        userId: item.userId,
+                        notSubmitReason: item.notSubmitReason
+                    })
+                    // 填原因
+                    if (!item.notSubmitReason) {
+                        isValidate = false;
+                        if(submitType !== 0) {
+                            this.$notify({
+                                type: 'warning',
+                                title: "提示",
+                                message: '有部门未提交计划，请为其填写原因'
+                            });
+                        }
+                        break;
+                    }
+                    return;
+                }
                 for(let j of item.planInfoList) {
                     if( !j.taskInfoList || j.taskInfoList.length == 0) {
                         if (j.canEditNoSubmitReason) {

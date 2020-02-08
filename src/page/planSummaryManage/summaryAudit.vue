@@ -112,71 +112,80 @@
                 </div>
             </div>
             <div class="submitCondition" v-if="index === 0">{{submitCondition}}</div>
-            <div v-for="(j,k) in item.summaryInfoList" :key="k" class="dept-list">
+            <div v-if="item.summaryInfoList && item.summaryInfoList.length > 0">
+                <div v-for="(j,k) in item.summaryInfoList" :key="k" class="dept-list">
+                    <div class="dept-list-top">
+                        {{j.userName || '无名'}}
+                        <el-button class="m-l-10" type="primary" size="small" plain @click="linkSummaryAudit(j.id)" v-if="validateLevel(j.approveLevel) && (j.summaryStatus == 'TOAPPROVE' || j.summaryStatus == 'APPROVING' || j.summaryStatus == 'FIRSTAPPROVED')">审核</el-button>
+                        <span v-if="!j.taskInfoList || j.taskInfoList.length === 0">该员工因特殊原因无法提交本月总结</span>
+                        <span  class="summaryTotalScore" v-else-if="summaryStatus == 'COMPLETION'">绩效得分{{j.summaryTotalScore}}分</span>
+                        <div v-if="!j.taskInfoList || j.taskInfoList.length === 0" class="dept-list-top-input">
+                            <span>{{j.notSubmitReason}}</span>
+                        </div>
+                    </div>
+                    
+                    <el-table :data="j.taskInfoList" v-if="j.taskInfoList && j.taskInfoList.length > 0">
+                        <el-table-column type="index" label="序号" width="120"></el-table-column>
+                        <el-table-column label="类别">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.taskTypeName || ''}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="事项">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.title || ''}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="本月目标">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.taskGoal || ''}}</span>
+                            </template>
+                        </el-table-column>
+                        
+                        <el-table-column label="最迟完成时间" width="160px">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.planEndDate || ''}}</span>
+                            </template>
+                        </el-table-column>
+                        
+                        <el-table-column label="是否已完成" width="110" align="center">
+                            <template slot-scope="scope">
+                                
+                                <el-switch
+                                    v-model="scope.row.taskSummaryStatus"
+                                    :active-value="1"
+                                    :inactive-value="0"
+                                    :disabled="true"
+                                    active-color="#13ce66">
+                                </el-switch>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="本人总结">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.taskComment}}</span>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column v-for="(item,index) in j.showScoreLabels" :key="index" width="110">
+                            <template slot="header" slot-scope="scope">
+                                {{j.showScoreLabels[index]}}
+                            </template>
+
+                            <template slot-scope="scope">
+                                <span>{{scope.row.showScoreValues[index] || '-'}}</span>
+                            </template>
+                        </el-table-column>
+
+                    </el-table>
+                </div>
+            </div>
+            <div class="dept-list" v-else>
                 <div class="dept-list-top">
-                    {{j.userName || '无名'}}
-                    <el-button class="m-l-10" type="primary" size="small" plain @click="linkSummaryAudit(j.id)" v-if="validateLevel(j.approveLevel) && (j.summaryStatus == 'TOAPPROVE' || j.summaryStatus == 'APPROVING' || j.summaryStatus == 'FIRSTAPPROVED')">审核</el-button>
-                    <span v-if="!j.taskInfoList || j.taskInfoList.length === 0">该员工因特殊原因无法提交本月总结</span>
-                    <span  class="summaryTotalScore" v-else-if="summaryStatus == 'COMPLETION'">绩效得分{{j.summaryTotalScore}}分</span>
-                    <div v-if="!j.taskInfoList || j.taskInfoList.length === 0" class="dept-list-top-input">
-                        <span>{{j.notSubmitReason}}</span>
+                    <span>该部门因特殊原因无法提交本月总结</span>
+                    <div class="dept-list-top-input m-b">
+                        <span>{{item.notSubmitReason}}</span>
                     </div>
                 </div>
-                
-                <el-table :data="j.taskInfoList" v-if="j.taskInfoList && j.taskInfoList.length > 0">
-                    <el-table-column type="index" label="序号" width="120"></el-table-column>
-                    <el-table-column label="类别">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.taskTypeName || ''}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="事项">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.title || ''}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="本月目标">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.taskGoal || ''}}</span>
-                        </template>
-                    </el-table-column>
-                    
-                    <el-table-column label="最迟完成时间" width="160px">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.planEndDate || ''}}</span>
-                        </template>
-                    </el-table-column>
-                    
-                    <el-table-column label="是否已完成" width="110" align="center">
-                        <template slot-scope="scope">
-                            
-                            <el-switch
-                                v-model="scope.row.taskSummaryStatus"
-                                :active-value="1"
-                                :inactive-value="0"
-                                :disabled="true"
-                                active-color="#13ce66">
-                            </el-switch>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="本人总结">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.taskComment}}</span>
-                        </template>
-                    </el-table-column>
-
-                    <el-table-column v-for="(item,index) in j.showScoreLabels" :key="index" width="110">
-                        <template slot="header" slot-scope="scope">
-                            {{j.showScoreLabels[index]}}
-                        </template>
-
-                        <template slot-scope="scope">
-                            <span>{{scope.row.showScoreValues[index] || '-'}}</span>
-                        </template>
-                    </el-table-column>
-
-                </el-table>
-
             </div>
 
         </div>

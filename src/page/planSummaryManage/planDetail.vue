@@ -48,48 +48,60 @@
             <div class="idss-list-top">
                 <div class="idss-list-top-title">{{item.deptName || ''}} {{item.title || ''}}</div>
             </div>
-            <div v-for="(j,k) in item.planInfoList" :key="k" class="dept-list">
+            <div v-if="item.planInfoList && item.planInfoList.length > 0">
+                <div v-for="(j,k) in item.planInfoList" :key="k" class="dept-list">
+                    <div class="dept-list-top">
+                        {{j.userName || '无名'}}
+                        <span v-if="!j.taskInfoList || j.taskInfoList.length === 0">该员工因特殊原因无法提交本月计划</span>
+                        <div v-if="!j.taskInfoList || j.taskInfoList.length === 0" class="dept-list-top-input">
+                            <span>{{j.notSubmitReason}}</span>
+                        </div>
+                    </div>
+                    
+                    <el-table :data="j.taskInfoList" v-if="j.taskInfoList && j.taskInfoList.length > 0">
+                        <el-table-column type="index" label="序号" width="120"></el-table-column>
+                        <el-table-column label="类别">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.taskTypeName || ''}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="事项">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.title || ''}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="本月目标">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.taskGoal || ''}}</span>
+                            </template>
+                        </el-table-column>
+                        
+                        <el-table-column label="最迟完成时间" width="160px">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.planEndDate || ''}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="权重" width="110">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.weight || ''}}</span>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+
+                </div>
+            </div>
+
+            <div class="dept-list" v-else>
                 <div class="dept-list-top">
-                    {{j.userName || '无名'}}
-                    <span v-if="!j.taskInfoList || j.taskInfoList.length === 0">该员工因特殊原因无法提交本月计划</span>
-                    <div v-if="!j.taskInfoList || j.taskInfoList.length === 0" class="dept-list-top-input">
-                        <span>{{j.notSubmitReason}}</span>
+                    <span>该部门因特殊原因无法提交本月计划</span>
+                    <div class="dept-list-top-input m-b">
+                        <span>{{item.notSubmitReason}}</span>
                     </div>
                 </div>
-                
-                <el-table :data="j.taskInfoList" v-if="j.taskInfoList && j.taskInfoList.length > 0">
-                    <el-table-column type="index" label="序号" width="120"></el-table-column>
-                    <el-table-column label="类别">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.taskTypeName || ''}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="事项">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.title || ''}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="本月目标">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.taskGoal || ''}}</span>
-                        </template>
-                    </el-table-column>
-                    
-                    <el-table-column label="最迟完成时间" width="160px">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.planEndDate || ''}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="权重" width="110">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.weight || ''}}</span>
-                        </template>
-                    </el-table-column>
-                </el-table>
-
             </div>
 
         </div>
+
         
         <!-- 操作记录 -->
         <HandleLogs :logType="2" :id="id"></HandleLogs>

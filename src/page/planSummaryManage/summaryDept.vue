@@ -18,66 +18,76 @@
                     <el-button size="small" type="primary" @click="submit(2)" v-else>提交总结</el-button>
                 </div>
             </div>
-            <div v-for="(j,k) in item.summaryInfoList" :key="k" class="dept-list">
+            <div v-if="item.summaryInfoList && item.summaryInfoList.length > 0">
+                <div v-for="(j,k) in item.summaryInfoList" :key="k" class="dept-list">
+                    <div class="dept-list-top">
+                        {{j.userName || '无名'}}
+                        <el-button class="m-l-10" type="primary" size="small" plain @click="linkSummaryAudit(j.id)" v-if="validateLevel(j.approveLevel) && (j.summaryStatus == 'TOAPPROVE' || j.summaryStatus == 'APPROVING' || j.summaryStatus == 'FIRSTAPPROVED')">审核</el-button>
+                        <span v-if="!j.taskInfoList || j.taskInfoList.length === 0">该员工因特殊原因无法提交本月总结</span>
+                        <div v-if="!j.taskInfoList || j.taskInfoList.length === 0" class="dept-list-top-input">
+                            <span v-if="!j.canEditNoSubmitReason">{{j.notSubmitReason}}</span>
+                            <el-input v-if="j.canEditNoSubmitReason" size="small" v-model="j.notSubmitReason" placeholder="请填写原因" style="width: 300px"></el-input>
+                        </div>
+                    </div>
+                    
+                    <el-table :data="j.taskInfoList" v-if="j.taskInfoList && j.taskInfoList.length > 0">
+                        <el-table-column type="index" label="序号" width="120"></el-table-column>
+                        <el-table-column label="类别">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.taskTypeName || ''}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="事项">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.title || ''}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="本月目标">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.taskGoal || ''}}</span>
+                            </template>
+                        </el-table-column>
+                        
+                        <el-table-column label="最迟完成时间" width="160px">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.planEndDate || ''}}</span>
+                            </template>
+                        </el-table-column>
+                        
+                        <el-table-column label="是否已完成" width="100" align="center">
+                            <template slot-scope="scope">
+                                <el-switch
+                                    v-model="scope.row.taskSummaryStatus"
+                                    :active-value="1"
+                                    :inactive-value="0"
+                                    :disabled="true"
+                                    active-color="#13ce66">
+                                </el-switch>
+                                
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="本人总结">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.taskComment}}</span>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column v-for="(item,index) in j.showScoreLabels" :key="index" :label="j.showScoreLabels[index]" width="110">
+                            <template>
+                                <span>{{j.showScoreValues[index] || '-'}}</span>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+
+                </div>
+            </div>
+            <div class="dept-list" v-else>
                 <div class="dept-list-top">
-                    {{j.userName || '无名'}}
-                    <el-button class="m-l-10" type="primary" size="small" plain @click="linkSummaryAudit(j.id)" v-if="validateLevel(j.approveLevel) && (j.summaryStatus == 'TOAPPROVE' || j.summaryStatus == 'APPROVING' || j.summaryStatus == 'FIRSTAPPROVED')">审核</el-button>
-                    <span v-if="!j.taskInfoList || j.taskInfoList.length === 0">该员工因特殊原因无法提交本月总结</span>
-                    <div v-if="!j.taskInfoList || j.taskInfoList.length === 0" class="dept-list-top-input">
-                        <span v-if="!j.canEditNoSubmitReason">{{j.notSubmitReason}}</span>
-                        <el-input v-if="j.canEditNoSubmitReason" size="small" v-model="j.notSubmitReason" placeholder="请填写原因" style="width: 300px"></el-input>
+                    <span>该部门因特殊原因无法提交本月总结</span>
+                    <div class="dept-list-top-input m-b">
+                        <el-input size="small" v-model="item.notSubmitReason" placeholder="请填写原因" style="width: 300px"></el-input>
                     </div>
                 </div>
-                
-                <el-table :data="j.taskInfoList" v-if="j.taskInfoList && j.taskInfoList.length > 0">
-                    <el-table-column type="index" label="序号" width="120"></el-table-column>
-                    <el-table-column label="类别">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.taskTypeName || ''}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="事项">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.title || ''}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="本月目标">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.taskGoal || ''}}</span>
-                        </template>
-                    </el-table-column>
-                    
-                    <el-table-column label="最迟完成时间" width="160px">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.planEndDate || ''}}</span>
-                        </template>
-                    </el-table-column>
-                    
-                    <el-table-column label="是否已完成" width="100" align="center">
-                        <template slot-scope="scope">
-                            <el-switch
-                                v-model="scope.row.taskSummaryStatus"
-                                :active-value="1"
-                                :inactive-value="0"
-                                :disabled="true"
-                                active-color="#13ce66">
-                            </el-switch>
-                            
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="本人总结">
-                        <template slot-scope="scope">
-                            <span>{{scope.row.taskComment}}</span>
-                        </template>
-                    </el-table-column>
-
-                    <el-table-column v-for="(item,index) in j.showScoreLabels" :key="index" :label="j.showScoreLabels[index]" width="110">
-                        <template>
-                            <span>{{j.showScoreValues[index] || '-'}}</span>
-                        </template>
-                    </el-table-column>
-                </el-table>
-
             </div>
 
         </div>
@@ -284,7 +294,28 @@ export default {
             let _SummaryInfoPojo = [];
             for(let item of this.detailList) {
                 if (submitType !== 0 && !isValidate) return;
+
+                if (!item.summaryInfoList || item.summaryInfoList.length === 0) {
+                    _SummaryInfoPojo.push({
+                        userId: item.userId,
+                        notSubmitReason: item.notSubmitReason
+                    })
+                    // 填原因
+                    if (!item.notSubmitReason) {
+                        isValidate = false;
+                        if(submitType !== 0) {
+                            this.$notify({
+                                type: 'warning',
+                                title: "提示",
+                                message: '有部门未提交总结，请为其填写原因'
+                            });
+                        }
+                        break;
+                    }
+                    return;
+                }
                 for(let j of item.summaryInfoList) {
+
                     if( !j.taskInfoList || j.taskInfoList.length == 0) {
                         if (j.canEditNoSubmitReason) {
                             _SummaryInfoPojo.push({
