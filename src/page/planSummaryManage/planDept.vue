@@ -262,7 +262,7 @@ export default {
                         }
                         break;
                     }
-                    return;
+                    continue;
                 }
                 for(let j of item.planInfoList) {
                     if( !j.taskInfoList || j.taskInfoList.length == 0) {

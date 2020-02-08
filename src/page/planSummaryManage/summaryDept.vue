@@ -276,6 +276,7 @@ export default {
             }
         },
         submit(submitType) {
+
             let _notAuditUser = [];
             for(let item of this.detailList) {
                 if(!item.summaryInfoList) continue;
@@ -313,7 +314,7 @@ export default {
                         }
                         break;
                     }
-                    return;
+                    continue;
                 }
                 for(let j of item.summaryInfoList) {
 
@@ -349,6 +350,8 @@ export default {
                 params.id = this.id;
             }
             if (submitType === 0) {
+                console.log('点击保存草稿',params)
+                return;
                 saveDraftSummary(params).then((res) => {
                     if (res.code == ERR_OK) {
                         this.$router.push('/planSummaryManage/summaryManage');
