@@ -112,7 +112,10 @@
                         <el-button
                             size="small"
                             type="primary" plain
-                            v-if="isAllDeptList != 2 && validateLevel(scope.row.approveLevel) && (userView != 'STAFF') && (scope.row.planStatus === 'TOAPPROVE' || scope.row.planStatus === 'APPROVING' || scope.row.planStatus === 'FIRSTAPPROVED')"
+                            v-if="isAllDeptList != 2
+                                && validateLevel(scope.row.approveLevel)
+                                && (userView != 'STAFF')
+                                && (scope.row.planStatus === 'TOAPPROVE' || scope.row.planStatus === 'APPROVING' || scope.row.planStatus === 'FIRSTAPPROVED')"
                             @click="linkAudit(scope.row)">审核</el-button>
                         <el-button
                             size="small"

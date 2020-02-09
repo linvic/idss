@@ -47,7 +47,7 @@
          </el-select>
         </div>
         <div class="role-button1" @click="showModel">
-          设置任务组
+          设置任务类别
         </div>
       </div>
       <div class="table-content">
@@ -145,7 +145,7 @@
       </el-dialog>
     </div>
     <el-dialog
-      title="部门包含任务组"
+      title="部门包含任务类别"
       :visible.sync="dialogVisibleS"
       width="560px"
       :before-close="handleCloseS" top='25%' class="teamDetail">
@@ -448,7 +448,7 @@
               self.getDate(1,10,-1,-1)
               self.$notify({
                 title: '成功',
-                message:"设置任务组成功",
+                message:"设置任务类别成功",
                 type: 'success'
               });
 
@@ -462,7 +462,7 @@
         }else{
             this.$notify.info({
               title: '提示',
-              message: '请勾选任务组'
+              message: '请勾选任务类别'
             });
         }
       },

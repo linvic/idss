@@ -66,7 +66,7 @@
                                 <p>{{scope.row.title}}</p>
                                 <p v-if="scope.row.submitedUserList && scope.row.submitedUserList.length > 0" class="table-link">
                                     <ul>
-                                        <li>员工计划：</li>
+                                        <li>员工总结：</li>
                                         <li class="li" v-for="item in scope.row.submitedUserList" :key="item.summaryId" @click="linkDetail(item.summaryId,1)"> {{item.userName}}</li>
                                     </ul>
                                 </p>
@@ -81,7 +81,7 @@
                                 <p>{{scope.row.title}}-{{scope.row.deptName}}</p>
                                 <p v-if="scope.row.submitedUserList && scope.row.submitedUserList.length > 0" class="table-link">
                                     <ul>
-                                        <li>员工计划：</li>
+                                        <li>员工总结：</li>
                                         <li class="li" v-for="item in scope.row.submitedUserList" :key="item.summaryId" @click="linkDetail(item.summaryId,1)"> {{item.userName}}</li>
                                     </ul>
                                 </p>
