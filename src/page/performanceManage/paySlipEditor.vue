@@ -105,6 +105,8 @@ export default {
             dataTotal: 0, // 数据总数
             tableData: [],
 
+            canSend: false
+
             
         }
     },

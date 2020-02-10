@@ -110,14 +110,12 @@
         <el-dialog :title="cutFormTitle" :visible.sync="dialogCutForm" width="500px" top="10%">
             <el-form :model="cutForm" ref="cutForm" :rules="cutFormRules" label-position="left" label-suffix="：" label-width="100px">
                 <el-form-item label="扣款金额" prop="otherCut">
-                    <el-input  @keyup.native="onkeyupPrice($event)" v-model="cutForm.otherCut" placeholder="请输入扣款金额" size="small">
+                    <el-input @keyup.native="onkeyupPrice($event)" v-model="cutForm.otherCut" placeholder="请输入扣款金额" size="small">
                         <span slot="append">元</span>
                     </el-input>
                 </el-form-item>
                 <el-form-item label="扣款原因" prop="otherCutReason">
-                    <el-input  type="textarea" v-model="cutForm.otherCutReason" placeholder="请输入扣款原因" size="small">
-                        <span slot="append">元</span>
-                    </el-input>
+                    <el-input  type="textarea" v-model="cutForm.otherCutReason" placeholder="请输入扣款原因" size="small"></el-input>
                 </el-form-item>
                 
             </el-form>
@@ -310,7 +308,7 @@ export default {
                 if (valid) {
                     updateAttendance({
                         id: this.cutForm.id,
-                        otherCut: this.cutForm.otherCut,
+                        otherCut: Math.abs(this.cutForm.otherCut),
                         otherCutReason: this.cutForm.otherCutReason,
                     }).then((result) => {
                         if (result.code == ERR_OK) {
