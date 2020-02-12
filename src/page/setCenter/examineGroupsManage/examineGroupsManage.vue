@@ -370,7 +370,8 @@ export default {
 }
 
 .card-list li{
-    float: left;
+    display: inline-block;
+    vertical-align: top;
     width: 370px;
     margin-bottom: 20px;
     cursor: pointer;

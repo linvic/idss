@@ -140,7 +140,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import { departmentList, addDepartment,listDeptUsers, listAllUsers, deleteDepartment, getDepartment, editorDepartment,getParentDepts } from 'service/getData'
+  import { departmentList, addDepartment,listDeptRoleUsers, listAllUsers, deleteDepartment, getDepartment, editorDepartment,getParentDepts } from 'service/getData'
 //  import Tab from 'components/common/tab'
   import {ERR_OK} from 'service/config'
   export default {
@@ -249,7 +249,7 @@
         const params = {
           deptId:deptId
         }
-        listDeptUsers(params).then((res) => {
+        listDeptRoleUsers(params).then((res) => {
           if(res.code == ERR_OK) {
             self.options = res.data
           }

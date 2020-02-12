@@ -735,8 +735,8 @@ export function impChangeOrdTask(params){
 
 
 /**获取部门负责人**/
-export function listDeptUsers(params){
-  return fetchGet('/sysUser/listDeptUsers',param(params))
+export function listDeptRoleUsers(params){
+  return fetchGet('/sysUser/listDeptRoleUsers',param(params))
 }
 
 /**员工详情获取周报列表**/

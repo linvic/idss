@@ -167,18 +167,18 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <div class="pagination-depart" v-show="total > 0">
-                <el-pagination
-                    background
-                    @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
-                    :current-page="nowPage"
-                    :page-sizes="[10, 15, 50]"
-                    :page-size="pageShow"
-                    layout="total, sizes, prev, pager, next, jumper"
-                    :total="total">
-                </el-pagination>
-            </div>
+        </div>
+        <div class="pagination-depart" v-show="total > 0">
+            <el-pagination
+                background
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="pageIndex"
+                :page-sizes="[1, 15, 50]"
+                :page-size="pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total">
+            </el-pagination>
         </div>
         
         
@@ -525,8 +525,8 @@ export default {
             result1: [], // 员工待处理任务
             
             result: [], // 重点关注任务
-            nowPage: 1,
-            pageShow: 10,
+            pageIndex: 1,
+            pageSize: 1,
             total: 0,
             expands: [],
 
@@ -749,7 +749,7 @@ export default {
             this.getStatisticCounts(); //获取待处理数量
             this.getIsCanAddPersonal(); // 获取是否可勾选权限
             
-                this.nowPage = 1;
+                this.pageIndex = 1;
                 this.getData(); // 获取重点关注任务
             
 
@@ -936,21 +936,20 @@ export default {
         
         // 重点关注任务分页
         handleSizeChange(val) {
-            this.pageShow = val;
+            this.pageSize = val;
             this.getData()
         },
         handleCurrentChange(val) {
-            this.nowPage = val;
+            this.pageIndex = val;
             this.getData()
         },
         // 获取重点关注任务
         getData() {
             if(this.userView == 'STAFF') {
                 this.result1 = [];
-                this.total = 0;
                 listMyPendingTask({
-                    nowPage: this.nowPage,
-                    pageShow: this.pageShow
+                    nowPage: this.pageIndex,
+                    pageShow: this.pageSize
                 }).then((res) => {
                     if (res.code == ERR_OK) {
                         this.result1 = res.data.result;
@@ -959,10 +958,9 @@ export default {
                 })
             } else {
                 this.result = [];
-                this.total = 0;
                 listHomeFocusTask({
-                    nowPage: this.nowPage,
-                    pageShow: this.pageShow
+                    nowPage: this.pageIndex,
+                    pageShow: this.pageSize
                 }).then((res) => {
                     if (res.code == ERR_OK) {
                         this.result = res.data.result;
