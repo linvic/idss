@@ -174,7 +174,7 @@
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :current-page="pageIndex"
-                :page-sizes="[1, 15, 50]"
+                :page-sizes="[10, 15, 50]"
                 :page-size="pageSize"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="total">
@@ -526,7 +526,7 @@ export default {
             
             result: [], // 重点关注任务
             pageIndex: 1,
-            pageSize: 1,
+            pageSize: 10,
             total: 0,
             expands: [],
 
