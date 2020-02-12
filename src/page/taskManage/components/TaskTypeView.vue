@@ -368,6 +368,13 @@ export default {
         this.userId = localStorage.getItem("userId");
         this.deptLevel = localStorage.getItem("deptLevel");
         this.userView = localStorage.getItem("userView");
+        
+        if(this.userView == 'MANAGER') {
+        var taskTypeViewWorkloadSetIds = localStorage.getItem("taskTypeViewWorkloadSetIds");
+            if (taskTypeViewWorkloadSetIds && taskTypeViewWorkloadSetIds.length > 0) {
+                this.taskWorkloads = taskTypeViewWorkloadSetIds.split(',')
+            }
+        }
 
         this.getDeptTaskGroupByDeptIds(); // 获取部门列表
     },
@@ -400,7 +407,11 @@ export default {
             })
         },
         activeDeptChange() {
-            console.log('变化',this.taskTypeViewActiveId)
+
+            if(this.userView == 'MANAGER') {
+                localStorage.setItem("taskTypeViewWorkloadSetIds", this.taskWorkloads.join(','));
+            }
+            
             if (this.taskTypeViewActiveId) {
                 localStorage.setItem("taskTypeViewActiveId", this.taskTypeViewActiveId);
                 // 遍历查找当前项

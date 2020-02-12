@@ -39,18 +39,7 @@
               label="时间"
             >
             </el-table-column>
-            <el-table-column
-              label="类型"
-            >
-              <template slot-scope="props">
-                <span v-if="props.row.sourceType=='TASK'">任务提醒</span>
-                <span v-if="props.row.sourceType=='NOTICE'">公告提醒</span>
-                <span v-if="props.row.sourceType=='DAILY'">日报提醒</span>
-                <span v-if="props.row.sourceType=='WEEKLY'">周报提醒</span>
-                <span v-if="props.row.sourceType=='DEPTWEEKLY'">部门周报提醒</span>
-                <span v-if="props.row.sourceType=='PERFM'">申诉提醒</span>
-              </template>
-            </el-table-column>
+            <el-table-column prop="sourceTypeName" label="类型" ></el-table-column>
 
           </el-table>
         </div>

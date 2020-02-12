@@ -295,18 +295,20 @@
                             <span>{{detailInfo.personalSummarySituation || '-'}}</span>
                         </div>
                     </div>
-                    <div class="info-flex-item">
+                    <div class="info-flex-item" v-if="userView != 'STAFF'">
                         <div class="info-flex-item-title">部门总结提交时间</div>
                         <div class="info-flex-item-center">
                             <span>{{detailInfo.deptSummaryTime || '-'}}</span>
                         </div>
                     </div>
-                    <div class="info-flex-item">
+                    <div class="info-flex-item" v-else></div>
+                    <div class="info-flex-item" v-if="userView != 'STAFF'">
                         <div class="info-flex-item-title">部门总结提交情况</div>
                         <div class="info-flex-item-center">
                             <span>{{detailInfo.deptSummarySituation || '-'}}</span>
                         </div>
                     </div>
+                    <div class="info-flex-item" v-else></div>
                     <div class="info-flex-item"></div>
                     <div class="info-flex-item"></div>
                     <div class="info-flex-item"></div>

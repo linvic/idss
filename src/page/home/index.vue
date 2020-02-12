@@ -26,7 +26,7 @@
             <el-col
                 :span="userView != 'STAFF' ? 8 : 24"
                 :class="{'staff-box': userView == 'STAFF'}"
-                v-if="(userView == 'STAFF' && !isAddPlanPersonal && !isAddSummaryPersonal) || (userView == 'DEPT') || (userView == 'MANAGER')">
+                v-if="(userView == 'STAFF' && (!isAddPlanPersonal || !isAddSummaryPersonal)) || (userView == 'DEPT') || (userView == 'MANAGER')">
                 <div class="take-top-wrapper m-t-10">
                     <div class="take-left">
                         <div class="take-top" style="font-size: 14px;font-weight:normal">快捷操作</div>
@@ -446,11 +446,11 @@
                 
                 <el-form-item label="任务执行人" prop="users" v-if="userView == 'DEPT'">
                     <el-checkbox-group v-model="customizedForm.users">
-                        <el-checkbox v-for="(item,index) in users" :label="item.userId + ''" :key="index">{{item.userName}}</el-checkbox>
+                        <el-checkbox v-for="(item,index) in users" :label="item.userId + ''" :disabled="item.checked" :key="index">{{item.userName}}</el-checkbox>
                     </el-checkbox-group>
                 </el-form-item>
                 <el-form-item label="部门及任务执行人" prop="deptsAndUsers" v-if="userView == 'MANAGER'">
-                    <el-checkbox-group v-model="customizedForm.deptsAndUsers" class="depts-box">
+                    <el-checkbox-group v-model="customizedForm.deptsAndUsers" :min="1" class="depts-box">
                         <div v-for="(item,index) in deptsAndUsers" :key="index" class="depts-box-item">
                             <div class="depts-box-title">{{item.deptName}}</div>
                             <el-checkbox v-for="j in item.deptUsers" :key="j.userId" :label="j.userId + ''">{{j.userName}}</el-checkbox>
@@ -477,7 +477,7 @@
 import moment from 'moment'
 import {
     getStatisticCount,
-    listDeptPendingTasks,
+    listMyPendingTask,
     listHomeFocusTask,
     departmentList,
     listByExecutor,
@@ -748,13 +748,9 @@ export default {
         pageInit() {
             this.getStatisticCounts(); //获取待处理数量
             this.getIsCanAddPersonal(); // 获取是否可勾选权限
-            if(this.userView == 'STAFF') {
-                // 非员工
-                this.getUntreatTask(); //获取员工待处理
-            } else {
-                this.pageShow = 1;
+            
+                this.nowPage = 1;
                 this.getData(); // 获取重点关注任务
-            }
             
 
             
@@ -806,7 +802,7 @@ export default {
                 planSummaryType: 1
             }).then((res) => {
                 if (res.code == ERR_OK) {
-                    this.isAddSummaryPersonal = res.data;
+                    this.isAddSummaryPersonal = !res.data;
                 } else {
                     this.$notify({
                         type: 'warning',
@@ -949,17 +945,31 @@ export default {
         },
         // 获取重点关注任务
         getData() {
-            this.result = [];
-            this.total = 0;
-            listHomeFocusTask({
-                nowPage: this.nowPage,
-                pageShow: this.pageShow
-            }).then((res) => {
-                if (res.code == ERR_OK) {
-                    this.result = res.data.result;
-                    this.total = res.data.totalCount;
-                }
-            })
+            if(this.userView == 'STAFF') {
+                this.result1 = [];
+                this.total = 0;
+                listMyPendingTask({
+                    nowPage: this.nowPage,
+                    pageShow: this.pageShow
+                }).then((res) => {
+                    if (res.code == ERR_OK) {
+                        this.result1 = res.data.result;
+                        this.total = res.data.totalCount;
+                    }
+                })
+            } else {
+                this.result = [];
+                this.total = 0;
+                listHomeFocusTask({
+                    nowPage: this.nowPage,
+                    pageShow: this.pageShow
+                }).then((res) => {
+                    if (res.code == ERR_OK) {
+                        this.result = res.data.result;
+                        this.total = res.data.totalCount;
+                    }
+                })
+            }
         },
         openDetails(row) {
             
@@ -968,15 +978,6 @@ export default {
                 query: { id: row.id }
             })
             
-        },
-        // 员工待处理任务列表
-        getUntreatTask() {
-            this.result1 = []
-            listDeptPendingTasks().then((res) => {
-                if (res.code == ERR_OK) {
-                    this.result1 = res.data;
-                }
-            })
         },
         
 
@@ -1566,8 +1567,8 @@ export default {
         },
         linkPlan() {
             
-            if (this.appealingIdsPlan && (this.appealingIdsPlan.split(',').length > 0)) {
-                id = this.appealingIdsPlan.split(',')[0];
+            if (this.toApproveIds && (this.toApproveIds.split(',').length > 0)) {
+                id = this.toApproveIds.split(',')[0];
                 
                 // 审核个人总结
                 this.$router.push({
@@ -1587,8 +1588,8 @@ export default {
         },
         linkSummary() {
             
-            if (this.appealingIdsSummary && (this.appealingIdsSummary.split(',').length > 0)) {
-                id = this.appealingIdsSummary.split(',')[0];
+            if (this.toApproveIds && (this.toApproveIds.split(',').length > 0)) {
+                id = this.toApproveIds.split(',')[0];
                 
                 // 审核个人总结
                 this.$router.push({
@@ -1652,9 +1653,14 @@ export default {
                         }
                         this.customizedForm.workloadSet = [..._workloadSet];
 
-                            console.log('呵呵',res.data.executorIdSet)
                         if (this.userView == 'DEPT') {
-                            this.customizedForm.users = res.data.executorIdSet.split(',');
+                            let executorIds = res.data.executorIdSet.split(',');
+                            for(let item of this.users) {
+                                if(item.checked) {
+                                    executorIds.push(item.userId + '');
+                                }
+                            }
+                            this.customizedForm.users = [...executorIds];
                         } else if (this.userView == 'MANAGER') {
                             this.customizedForm.deptsAndUsers = res.data.executorIdSet.split(',');
                         }
