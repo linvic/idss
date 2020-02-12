@@ -763,13 +763,13 @@ export default {
                     for(let item of totalList) {
                         if (item.type == 'TASK') {
                             this.taskTotal = item.count;
-                            this.appealingIdsTask = item.appealingIds;
+                            this.appealingIdsTask = item.toApproveIds;
                         } else if (item.type == 'PLAN') {
                             this.planTotal = item.count;
-                            this.appealingIdsPlan = item.appealingIds;
+                            this.appealingIdsPlan = item.toApproveIds;
                         } else if (item.type == 'SUMMARY') {
                             this.summaryTotal = item.count;
-                            this.appealingIdsSummary = item.appealingIds;
+                            this.appealingIdsSummary = item.toApproveIds;
                         }
                     }
                 } else {
@@ -1566,9 +1566,9 @@ export default {
             })
         },
         linkPlan() {
-            
-            if (this.toApproveIds && (this.toApproveIds.split(',').length > 0)) {
-                id = this.toApproveIds.split(',')[0];
+
+            if (this.appealingIdsPlan && (this.appealingIdsPlan.split(',').length > 0)) {
+                let id = this.appealingIdsPlan.split(',')[0];
                 
                 // 审核个人总结
                 this.$router.push({
@@ -1588,8 +1588,8 @@ export default {
         },
         linkSummary() {
             
-            if (this.toApproveIds && (this.toApproveIds.split(',').length > 0)) {
-                id = this.toApproveIds.split(',')[0];
+            if (this.appealingIdsSummary && (this.appealingIdsSummary.split(',').length > 0)) {
+                let id = this.appealingIdsSummary.split(',')[0];
                 
                 // 审核个人总结
                 this.$router.push({

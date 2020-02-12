@@ -214,9 +214,10 @@ const routes = [
                 name: "allPlanSummary",
                 meta: {
                     title: "全部计划总结",
+                    userViews: ['MANAGER','DEPT'],
                     noCache: true
                 },
-                hidden: false,
+                hidden: true,
                 component: resolve =>
                     require(["../page/planSummaryManage/allPlanSummary"], resolve)
             },
@@ -387,8 +388,7 @@ const routes = [
         component: Layout,
         meta: {
             title: "提醒管理",
-            icon: "el-icon-web-icon_fx",
-            roles: ["fxkz1"]
+            icon: "el-icon-web-icon_fx"
         },
         hidden: true,
         children: [

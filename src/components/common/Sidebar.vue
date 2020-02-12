@@ -46,6 +46,14 @@
 	import {  ERR_OK } from 'service/config'
 	import router from '../../router/index'
 	export default {
+		computed: {
+			...mapGetters([
+				'singer'
+			]),
+			userView() {
+				return this.singer.userView
+			}
+		},
 		props: {
 			// isCollapse: {
 			// 	type: Boolean
@@ -55,21 +63,15 @@
 				default: false
 			}
 		},
-		computed: {
-			// routes() {
-        	// 	return this.$store.state.permission.routers
-			// },
-		},
 		data() {
 			return {
 				isCollapse: false,
-				userView: 'MANAGER', // MANAGER   DEPT   STAFF
 				routes: router.options.routes,
 				roleRoutes: [],
 			}
 		},
 		created() {
-			console.log(this.routes)
+			console.log('用户',this.userView);
             this.getMenuResources();
 		},
 		methods: {
@@ -106,7 +108,20 @@
 							} else {
 								j.hidden = true;
 							}
+							// userView控制
+							if (j.meta && j.meta.userViews && (j.meta.userViews.indexOf(this.userView) > -1) ) {
+								j.hidden = false;
+							}
+							if (j.children && j.children.length > 0) {
+								for(let k of j.children) {
+									if (k.meta && k.meta.userViews && (k.meta.userViews.indexOf(this.userView) > -1) ) {
+										k.hidden = false;
+									}
+								}
+							}
+							
 						}
+						console.log('新路由',_roleRoutes)
 						this.$set(this,'roleRoutes',_roleRoutes)
 					} else {
 						this.$notify.error({

@@ -13,7 +13,7 @@
                 <div class="idss-list-top-btn-groups">
                     <el-button size="small" plain type="primary" @click="submit(3)" v-if="handleStatus == 2 || handleStatus == 3">驳回申诉</el-button>
                     <el-button size="small" type="primary" @click="submit(4)" v-if="handleStatus == 2 || handleStatus == 3">通过申诉</el-button>
-                    <el-button size="small" type="primary" @click="submit(5)"v-if="handleStatus == 1">完成</el-button>
+                    <el-button size="small" type="primary" @click="submit(5)" v-if="handleStatus == 1">完成</el-button>
                 </div>
             </div>
             <div class="info">
@@ -255,14 +255,14 @@
                             <span>{{detailInfo.personalPlanSituation || '-'}}</span>
                         </div>
                     </div>
-                    <div class="info-flex-item" v-if="userView != 'STAFF'">
+                    <div class="info-flex-item" v-if="detailInfo.deptPlanSituation">
                         <div class="info-flex-item-title">部门计划提交时间</div>
                         <div class="info-flex-item-center">
                             <span>{{detailInfo.deptPlanTime || '-'}}</span>
                         </div>
                     </div>
                     <div class="info-flex-item" v-else></div>
-                    <div class="info-flex-item" v-if="userView != 'STAFF' && detailInfo.deptPlanSituation">
+                    <div class="info-flex-item" v-if="detailInfo.deptPlanSituation">
                         <div class="info-flex-item-title">部门计划提交情况</div>
                         <div class="info-flex-item-center">
                             <span>{{detailInfo.deptPlanSituation || '-'}}</span>
@@ -295,14 +295,14 @@
                             <span>{{detailInfo.personalSummarySituation || '-'}}</span>
                         </div>
                     </div>
-                    <div class="info-flex-item" v-if="userView != 'STAFF'">
+                    <div class="info-flex-item" v-if="detailInfo.deptSummarySituation">
                         <div class="info-flex-item-title">部门总结提交时间</div>
                         <div class="info-flex-item-center">
                             <span>{{detailInfo.deptSummaryTime || '-'}}</span>
                         </div>
                     </div>
                     <div class="info-flex-item" v-else></div>
-                    <div class="info-flex-item" v-if="userView != 'STAFF' && detailInfo.deptSummarySituation">
+                    <div class="info-flex-item" v-if="detailInfo.deptSummarySituation">
                         <div class="info-flex-item-title">部门总结提交情况</div>
                         <div class="info-flex-item-center">
                             <span>{{detailInfo.deptSummarySituation || '-'}}</span>

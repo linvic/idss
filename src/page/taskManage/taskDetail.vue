@@ -118,6 +118,7 @@
                 <div class="title-name1">任务完成评价</div>
             </div>
                 <div class="notice-wrapper">
+                    <div class="take-comment-list" v-if="detailInfo.completionDate"><span>任务完成时间：{{detailInfo.completionDate}}</span></div>
                     <div class="take-comment-list" v-for="(item,index) in takeComment" :key="index">
                         <span>{{item.label}}：</span>
                         <span>{{item.taskScore}}分</span>
