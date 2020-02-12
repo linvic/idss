@@ -452,19 +452,19 @@
                 
                 <el-form-item prop="value1">
                     <div slot="label">
-                        <el-radio class="radio" v-model="changeCutValueForm.type" label="1">
+                        <el-radio class="radio" v-model="changeCutValueForm.type" label="1" @change="changeCutType">
                             <el-input  @keyup.native="onkeyupPrice($event)" v-model="changeCutValueForm.value" placeholder="" style="width:50px;" size="small"></el-input> 元
                         </el-radio>
                     </div>
                 </el-form-item>
                 <el-form-item prop="">
                     <div slot="label">
-                        <el-radio class="radio" v-model="changeCutValueForm.type" label="2">1天基本工资</el-radio>
+                        <el-radio class="radio" v-model="changeCutValueForm.type" label="2" @change="changeCutType">1天基本工资</el-radio>
                     </div>
                 </el-form-item>
                 <el-form-item prop="">
                     <div slot="label">
-                        <el-radio class="radio" v-model="changeCutValueForm.type" label="3">2天基本工资</el-radio>
+                        <el-radio class="radio" v-model="changeCutValueForm.type" label="3" @change="changeCutType">2天基本工资</el-radio>
                     </div>
                     
                 </el-form-item>
@@ -1224,6 +1224,11 @@ export default {
 
         },
         
+        changeCutType() {
+            if (this.changeCutValueForm.type != 1) {
+                this.changeCutValueForm.value = '';
+            }
+        },
         setCutValue(submitLevel, submitType, level) {
             let obj = null;
             let levelCutValue = '';

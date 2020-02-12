@@ -185,7 +185,7 @@ export default {
                 pageShow: this.pageSize,
                 deptTreeIds: this.filterForm.deptId,
                 userId: this.filterForm.userId,
-                examineDate: this.filterForm.examineDate
+                examineDate: this.filterForm.examineDate ? this.filterForm.examineDate : ''
             }
             // params.keyword = this.keyword
             meritssPage(params).then((res) => {

@@ -174,7 +174,7 @@ export default {
                 nowPage: this.pageIndex,
                 pageShow: this.pageSize,
                 deptId: this.filterForm.deptId,
-                month: this.filterForm.month
+                month: this.filterForm.month ? this.filterForm.month : ''
             }
             getAllPlanSummaryInfo(params).then((res) => {
                 if (res.code == ERR_OK) {

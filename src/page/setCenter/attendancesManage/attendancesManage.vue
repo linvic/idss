@@ -72,7 +72,7 @@
                 
                 <el-form-item prop="value1">
                     <div slot="label">
-                        <el-radio class="radio" v-model="changeCutValueForm.chargeType" :label="1">
+                        <el-radio class="radio" v-model="changeCutValueForm.chargeType" :label="1" @change="changeCutType">
                             <el-input  @keyup.native="onkeyupPrice($event)" v-model="changeCutValueForm.chargeValue" placeholder="" style="width:50px;" size="small"></el-input> 元
                             <span v-if="changeCutValueForm.attendanceFailCode == 'LEAVE_ABSENCE'"> / 小时</span>
                         </el-radio>
@@ -80,17 +80,17 @@
                 </el-form-item>
                 <el-form-item prop="" v-if="changeCutValueForm.attendanceFailCode != 'LEAVE_ABSENCE'">
                     <div slot="label">
-                        <el-radio class="radio" v-model="changeCutValueForm.chargeType" :label="2">1天基本工资</el-radio>
+                        <el-radio class="radio" v-model="changeCutValueForm.chargeType" :label="2" @change="changeCutType">1天基本工资</el-radio>
                     </div>
                 </el-form-item>
                 <el-form-item prop="" v-if="changeCutValueForm.attendanceFailCode != 'LEAVE_ABSENCE'">
                     <div slot="label">
-                        <el-radio class="radio" v-model="changeCutValueForm.chargeType" :label="3">2天基本工资</el-radio>
+                        <el-radio class="radio" v-model="changeCutValueForm.chargeType" :label="3" @change="changeCutType">2天基本工资</el-radio>
                     </div>
                 </el-form-item>
                 <el-form-item prop="" v-if="changeCutValueForm.attendanceFailCode == 'LEAVE_ABSENCE'">
                     <div slot="label">
-                        <el-radio class="radio" v-model="changeCutValueForm.chargeType" :label="4">1天基本工资的8分之1
+                        <el-radio class="radio" v-model="changeCutValueForm.chargeType" :label="4" @change="changeCutType">1天基本工资的8分之1
                             <span v-if="changeCutValueForm.attendanceFailCode == 'LEAVE_ABSENCE'"> / 小时</span>
                         </el-radio>
                     </div>
@@ -261,6 +261,11 @@ export default {
             
             
         },
+        changeCutType() {
+            if (this.changeCutValueForm.chargeType != 1) {
+                this.changeCutValueForm.chargeValue = '';
+            }
+        },
         changeCutValueSubmit() {
             if (this.changeCutValueForm.chargeType) {
                 if (this.changeCutValueForm.chargeType == 1 && !this.changeCutValueForm.chargeValue) {
@@ -273,6 +278,8 @@ export default {
                 }
                 if (this.changeCutValueForm.chargeType == 1) {
                     _params.chargeValue = this.changeCutValueForm.chargeValue;
+                } else {
+                    _params.chargeValue = '';
                 }
                 
                 updateSysAttendances(_params).then((res) => {

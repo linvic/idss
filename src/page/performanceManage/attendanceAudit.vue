@@ -262,7 +262,7 @@
                         </div>
                     </div>
                     <div class="info-flex-item" v-else></div>
-                    <div class="info-flex-item" v-if="userView != 'STAFF'">
+                    <div class="info-flex-item" v-if="userView != 'STAFF' && detailInfo.deptPlanSituation">
                         <div class="info-flex-item-title">部门计划提交情况</div>
                         <div class="info-flex-item-center">
                             <span>{{detailInfo.deptPlanSituation || '-'}}</span>
@@ -302,7 +302,7 @@
                         </div>
                     </div>
                     <div class="info-flex-item" v-else></div>
-                    <div class="info-flex-item" v-if="userView != 'STAFF'">
+                    <div class="info-flex-item" v-if="userView != 'STAFF' && detailInfo.deptSummarySituation">
                         <div class="info-flex-item-title">部门总结提交情况</div>
                         <div class="info-flex-item-center">
                             <span>{{detailInfo.deptSummarySituation || '-'}}</span>
