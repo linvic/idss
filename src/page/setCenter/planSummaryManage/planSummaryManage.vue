@@ -89,7 +89,7 @@
                                 <span>总经理打分完毕的时间即为第0小时</span>
                             </div>
                             <div class="idss-set-item__ft">
-                                <el-button size="small" @click="dialogChangeCheckTimes = true">设置</el-button>
+                                <el-button size="small" @click="openDialogChangeCheckTimes">设置</el-button>
                             </div>
                         </div>
                     </el-col>
@@ -109,7 +109,8 @@
                                 <span>任务完成时的自评打分参照此区间分值</span>
                             </div>
                             <div class="idss-set-item__ft">
-                                <el-button size="small" @click="dialogChangeScore = true">设置</el-button>
+                                <el-button size="small" @click="openDialogChangeScore">设置</el-button>
+                                
                             </div>
                         </div>
                     </el-col>
@@ -1012,6 +1013,12 @@ export default {
                 }
             })
         },
+
+        openDialogChangeScore() {  
+            this.dialogChangeScore = true;
+            this.changeScoreForm.summaryScoreScopeMin = this.summaryScoreScopeMin;
+            this.changeScoreForm.summaryScoreScopeMax = this.summaryScoreScopeMax;
+        },
         changeScoreSubmit() {
             this.$refs.changeScoreForm.validate(valid => {
                 if (valid) {
@@ -1339,6 +1346,10 @@ export default {
 
         },
 
+        openDialogChangeCheckTimes() {
+            this.dialogChangeCheckTimes = true;
+            this.checkTimes.checkDuration = this.checkDuration;
+        },
         changeCheckTimesSubmit() {
             this.$refs.checkTimes.validate(valid => {
                 if (valid) {

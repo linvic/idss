@@ -15,7 +15,7 @@
             <div class="idss-set-list">
                 
                 <ul class="card-list">
-                    <li v-for="jtem in item.pojoList">
+                    <li v-for="(jtem,j) in item.pojoList" :key="j">
                         <div class="card-list-top">
                             <div class="card-list-top-left ellipsis" style='width:220px;'>{{jtem.name}}</div>
                             <div class="card-list-top-right text-right">
@@ -48,7 +48,7 @@
                     <el-input v-model="handleForm.name" placeholder="请输入绩效组名称" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="绩效单位" prop="unit">
-                    <el-input v-model="handleForm.unit" @keyup.native="onkeyupChinese($event)" placeholder="请输入绩效单位" size="small"></el-input>
+                    <el-input v-model="handleForm.unit" placeholder="请输入绩效单位" size="small"></el-input>
                 </el-form-item>
                 
                 <el-form-item label="考核时间" prop="examineTime">
@@ -58,7 +58,7 @@
                     <el-time-picker
                         size="small"
                         v-model="handleForm.examineMinutes"
-                        format= 'HH:mm'
+                        format='HH:mm'
                         value-format="HH:mm"
                         style="width:100px"
                         placeholder="">
@@ -101,6 +101,7 @@
 import dayPickNext from '../../../components/date/dayPickNext'
 import { getSysExamineGroups,updateSysExamineGroups,getSysAllUsers } from 'service/getData'
 import {  ERR_OK } from 'service/config'
+import moment from 'moment'
 export default {
     name: "setCenterExamineGroupsManage",
     components: {
@@ -140,6 +141,19 @@ export default {
                 callback();
             }
         };
+
+        var checkUnit = (rule, value, callback) => {
+            if (!value) {
+                return callback(new Error('请输入'));
+            }
+            setTimeout(() => {
+                if (!(/^[\u2E80-\u9FFF]+$/.test(value))) {
+                    callback(new Error('只能输入汉字'));
+                } else {
+                    callback();
+                }
+            }, 50);
+        };
         return {
             
             baseData: [],
@@ -155,7 +169,7 @@ export default {
                     { required: true, message: '请输入', trigger: 'blue' }
                 ],
                 unit: [
-                    { required: true, message: '请输入', trigger: 'blue' }
+                    { required: true, validator: checkUnit, trigger: 'blur' }
                 ],
                 examineTime: [
                     { required: true,validator: validateExamineTime, trigger: 'blue' }
@@ -260,9 +274,13 @@ export default {
         changeSubmit() {
             this.$refs.handleForm.validate(valid => {
                 if (valid) {
-
-                    let _examineMinutes = this.handleForm.examineMinutes.toString().split(' ')[4];
+                    let _examineMinutes = this.handleForm.examineMinutes;
+                    if (this.handleForm.examineMinutes.length !== 5) {
+                        _examineMinutes = moment(this.handleForm.examineMinutes).format('HH:mm');
+                    }
+                    
                     let examineTime = this.handleForm.examineDay + '-' +_examineMinutes.split(':')[0] + ':' + _examineMinutes.split(':')[1];
+                    
                     let params = {
                         id: this.handleForm.id,
                         categary: this.handleForm.categary,

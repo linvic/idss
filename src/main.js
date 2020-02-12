@@ -59,7 +59,7 @@ Vue.mixin({
 		// 汉字
 		onkeyupChinese(e){
 			var val = e.target.value
-      val = val.replace(/([^\u4e00-\u9fa5])/g,'');
+			val = val.replace(/([^\u4e00-\u9fa5])/g,'');
 			e.target.value = val;
     },
 	}

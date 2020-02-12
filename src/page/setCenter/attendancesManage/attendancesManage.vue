@@ -43,7 +43,7 @@
                                 <span>发送考勤完成的时间即为第0小时</span>
                             </div>
                             <div class="idss-set-item__ft">
-                                <el-button size="small" @click="dialogChangeCheckTimes = true">设置</el-button>
+                                <el-button size="small" @click="openDialogChangeCheckTimes">设置</el-button>
                             </div>
                         </div>
                     </el-col>
@@ -296,6 +296,10 @@ export default {
         },
 
 
+        openDialogChangeCheckTimes() {
+            this.dialogChangeCheckTimes = true;
+            this.checkTimes.checkDuration = this.checkDuration;
+        },
         changeCheckTimesSubmit() {
             this.$refs.checkTimes.validate(valid => {
                 if (valid) {
