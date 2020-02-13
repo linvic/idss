@@ -1251,7 +1251,7 @@ export default {
                     this.taskForm.taskGroupId = this.detailInfo.taskGroupId ? this.detailInfo.taskGroupId : '';
                     
                     this.taskForm.modifyReason = this.detailInfo.modifyReason;
-                    this.taskForm.projectId = this.detailInfo.projectId;
+                    this.taskForm.projectId = this.detailInfo.projectId ? this.detailInfo.projectId : '';
                     this.taskForm.taskStatus = this.detailInfo.taskStatus; // 状态
                     
                     if (!this.detailInfo.visibleRange) {
@@ -1307,7 +1307,7 @@ export default {
                     this.taskForm.taskGroupId = this.detailInfo.taskGroupId ? this.detailInfo.taskGroupId : '';
                     
                     this.taskForm.modifyReason = this.detailInfo.modifyReason;
-                    this.taskForm.projectId = this.detailInfo.projectId;
+                    this.taskForm.projectId = this.detailInfo.projectId ? this.detailInfo.projectId : '';
                     this.taskForm.taskStatus = this.detailInfo.taskStatus; // 状态
                     
                     if (!this.detailInfo.visibleRange) {

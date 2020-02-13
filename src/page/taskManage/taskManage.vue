@@ -545,9 +545,8 @@
                         </el-form-item>
                     </div>
                     <div v-show="taskForm.taskCategory == 1">
-                        <el-form-item label="任务组成员:" :class="{'is-change': handTaskType === 3 && (auditOldData.taskGropUsers != taskGropUsers)}">
+                        <el-form-item label="任务组成员:" :class="{'is-change': handTaskType === 3 && (JSON.stringify(auditOldData.taskGropUsers) != JSON.stringify(taskGropUsers))}">
                             <div class="user-right" @click="adduser">添加任务组成员</div>
-                            
                             <div class="user-item ellipsis" v-for="(item, index) in taskGropUsers" :key="index">
                                 <span class="ellipsis" style="display: inline-block;width: 100%;">{{ item.userName }}</span>
                                 <i class="el-icon-circle-close"  @click="removeTodo(index)"></i>
@@ -1534,7 +1533,7 @@ export default {
                         this.taskForm.taskGroupId = res.data.taskGroupId ? res.data.taskGroupId : '';
                         
                         this.taskForm.modifyReason = res.data.modifyReason;
-                        this.taskForm.projectId = res.data.projectId;
+                        this.taskForm.projectId = res.data.projectId ? res.data.projectId : '';
                         this.taskForm.taskStatus = res.data.taskStatus; // 状态
                         if (!res.data.visibleRange) {
                             this.taskForm.value71 = [];
@@ -1601,7 +1600,7 @@ export default {
                         this.taskForm.taskGroupId = res.data.taskGroupId ? res.data.taskGroupId : '';
                         
                         this.taskForm.modifyReason = res.data.modifyReason;
-                        this.taskForm.projectId = res.data.projectId;
+                        this.taskForm.projectId = res.data.projectId ? res.data.projectId : '';
                         this.taskForm.taskStatus = res.data.taskStatus; // 状态
                         if (!res.data.visibleRange) {
                             this.taskForm.value71 = [];
@@ -1625,7 +1624,7 @@ export default {
                             }
                         }
                         this.taskGropUsers = [..._taskGropUsers];
-
+                        this.auditOldData.taskGropUsers = [..._taskGropUsers];
                         this.auditOldData.value71 = this.taskForm.value71;
                     })
 

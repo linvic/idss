@@ -1223,7 +1223,7 @@ export default {
                         this.taskForm.taskGroupId = res.data.taskGroupId ? res.data.taskGroupId : '';
                         
                         this.taskForm.modifyReason = res.data.modifyReason;
-                        this.taskForm.projectId = res.data.projectId;
+                        this.taskForm.projectId = res.data.projectId ? res.data.projectId : '';
                         this.taskForm.taskStatus = res.data.taskStatus; // 状态
                         if (!res.data.visibleRange) {
                             this.taskForm.value71 = [];
@@ -1292,7 +1292,7 @@ export default {
                         this.taskForm.taskGroupId = res.data.taskGroupId ? res.data.taskGroupId : '';
                         
                         this.taskForm.modifyReason = res.data.modifyReason;
-                        this.taskForm.projectId = res.data.projectId;
+                        this.taskForm.projectId = res.data.projectId ? res.data.projectId : '';
                         this.taskForm.taskStatus = res.data.taskStatus; // 状态
                         if (!res.data.visibleRange) {
                             this.taskForm.value71 = [];
@@ -2003,5 +2003,49 @@ export default {
     .depts-box-item {
         margin-left: 20px;
     }
+}
+
+.user-item,
+.user-left,
+.user-right {
+    float: left;
+}
+.user-right-wrapper {
+    width: 392px;
+    margin-left: 10px;
+}
+.user-item {
+    position: relative;
+    width: 95px;
+    height: 30px;
+    line-height: 30px;
+    border: 1px solid #999999;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #333333;
+    overflow: inherit;
+    text-align: center;
+    margin-right: 15px;
+    margin-bottom: 10px;
+}
+.user-item i {
+    position: absolute;
+    z-index: 100;
+    color: #999;
+    top: -7px;
+    right: -7px;
+}
+.user-right {
+    width: 110px;
+    height: 30px;
+    cursor: pointer;
+    line-height: 30px;
+    text-align: center;
+    border: 1px solid #D83436;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #D93437;
+    margin-right: 15px;
+    margin-bottom: 10px;
 }
 </style>
