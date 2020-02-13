@@ -358,13 +358,13 @@
                     <el-input type="textarea" v-model="taskForm.modifyReason" style="width:363px;display:inline-block;"></el-input>
                 </el-form-item>
                 <div v-show="stretch">
-                    <el-form-item label="任务性质:" :class="{'is-change': handTaskType === 3 && (auditOldData.taskCategory != taskForm.taskCategory)}">
+                    <el-form-item label="任务性质:" :class="{'is-change': handTaskType === 3 && (auditOldData.taskCategory != taskForm.taskCategory)}" prop="taskCategory">
                         <el-radio-group v-model="taskForm.taskCategory" :disabled="(handTaskType == 2 && taskForm.taskStatus != 'TOSUBMIT') || handTaskType == 3">
                             <el-radio :label="0">单条任务</el-radio>
                             <el-radio :label="1" v-if="!(handTaskType == 1 && !canAddTaskGroup)">任务组任务</el-radio>
                         </el-radio-group>
                     </el-form-item>
-                    <el-form-item label="关联任务组:" v-if="taskForm.taskCategory == 0" :class="{'is-change': handTaskType === 3 && (auditOldData.taskGroupId != taskForm.taskGroupId)}">
+                    <el-form-item label="关联任务组:" v-if="taskForm.taskCategory == 0" :class="{'is-change': handTaskType === 3 && (auditOldData.taskGroupId != taskForm.taskGroupId)}" prop="taskGroupId">
                         <el-select v-model="taskForm.taskGroupId" clearable placeholder="请选择关联任务组" style="width:363px;display:inline-block;">
                             <el-option
                                 v-for="item in groupLists"
@@ -382,7 +382,7 @@
                             <i class="el-icon-circle-close"  @click="removeTodo(index)"></i>
                         </div>
                     </el-form-item>
-                    <el-form-item label="关联项目:" :class="{'is-change': handTaskType === 3 && (auditOldData.projectId != taskForm.projectId)}">
+                    <el-form-item label="关联项目:" :class="{'is-change': handTaskType === 3 && (auditOldData.projectId != taskForm.projectId)}" prop="projectId">
                         <el-select v-model="taskForm.projectId" clearable placeholder="请选择关联项目" style="width:363px;display:inline-block;">
                             <el-option
                                 v-for="item in projects"
@@ -392,7 +392,7 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="任务可见范围:" :class="{'is-change': handTaskType === 3 && (auditOldData.value71 != taskForm.value71)}">
+                    <el-form-item label="任务可见范围:" :class="{'is-change': handTaskType === 3 && (auditOldData.value71 != taskForm.value71)}" prop="value71">
                         <el-select
                             multiple
                             v-model="taskForm.value71"
@@ -1202,6 +1202,7 @@ export default {
 
             this.taskGropUsers = [];
             this.dialogTaskForm = true;
+            this.goLink(this.taskForm.executorId);
         },
         // 编辑任务
         editTask(id) {
@@ -1225,7 +1226,7 @@ export default {
                         this.taskForm.planEndDate = res.data.planEndDate;
                         this.taskForm.content = res.data.content;
                         this.taskForm.taskCategory = res.data.taskCategory;
-                        this.taskForm.taskGroupId = res.data.taskGroupId;
+                        this.taskForm.taskGroupId = res.data.taskGroupId ? res.data.taskGroupId : '';
                         
                         this.taskForm.modifyReason = res.data.modifyReason;
                         this.taskForm.projectId = res.data.projectId;
@@ -1287,7 +1288,7 @@ export default {
                         this.taskForm.planEndDate = res.data.planEndDate;
                         this.taskForm.content = res.data.content;
                         this.taskForm.taskCategory = res.data.taskCategory;
-                        this.taskForm.taskGroupId = res.data.taskGroupId;
+                        this.taskForm.taskGroupId = res.data.taskGroupId ? res.data.taskGroupId : '';
                         
                         this.taskForm.modifyReason = res.data.modifyReason;
                         this.taskForm.projectId = res.data.projectId;

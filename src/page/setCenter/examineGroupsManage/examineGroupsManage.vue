@@ -142,7 +142,7 @@ export default {
             }
         };
 
-        var checkUnit = (rule, value, callback) => {
+        var checkChinese = (rule, value, callback) => {
             if (!value) {
                 return callback(new Error('请输入'));
             }
@@ -166,10 +166,10 @@ export default {
             handleFormRules: {
                 
                 name: [
-                    { required: true, message: '请输入', trigger: 'blue' }
+                    { required: true, validator: checkChinese, trigger: 'blur' }
                 ],
                 unit: [
-                    { required: true, validator: checkUnit, trigger: 'blur' }
+                    { required: true, validator: checkChinese, trigger: 'blur' }
                 ],
                 examineTime: [
                     { required: true,validator: validateExamineTime, trigger: 'blue' }

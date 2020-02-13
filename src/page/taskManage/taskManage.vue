@@ -183,7 +183,7 @@
                                             <span @click="replyTask(props.row.id, $event)"
                                                 class="replyValue">回复</span>
                                         </div>
-                                        <div class="" v-for="item in props.row.taskReplyList">
+                                        <div v-for="(item,index) in props.row.taskReplyList" :key="index">
                                             <div class="reback-time">{{ item.replyTimeDistanceDesc }}</div>
                                             <div class="reback" style="max-width: 294px;min-width: 296px;overflow:hidden;">
                                                 <div style="float:left;">{{item.replyUser.userName}}：</div>
@@ -523,13 +523,13 @@
                     <el-input type="textarea" v-model="taskForm.modifyReason" style="width:363px;display:inline-block;"></el-input>
                 </el-form-item>
                 <div v-show="stretch">
-                    <el-form-item label="任务性质:" :class="{'is-change': handTaskType === 3 && (auditOldData.taskCategory != taskForm.taskCategory)}">
+                    <el-form-item label="任务性质:" :class="{'is-change': handTaskType === 3 && (auditOldData.taskCategory != taskForm.taskCategory)}" prop="taskCategory">
                         <el-radio-group v-model="taskForm.taskCategory" :disabled="(handTaskType == 2 && taskForm.taskStatus != 'TOSUBMIT') || handTaskType == 3">
                             <el-radio :label="0">单条任务</el-radio>
                             <el-radio :label="1" v-if="!(handTaskType == 1 && !canAddTaskGroup)">任务组任务</el-radio>
                         </el-radio-group>
                     </el-form-item>
-                    <el-form-item label="关联任务组:" v-if="taskForm.taskCategory == 0" :class="{'is-change': handTaskType === 3 && (auditOldData.taskGroupId != taskForm.taskGroupId)}">
+                    <el-form-item label="关联任务组:" v-if="taskForm.taskCategory == 0" :class="{'is-change': handTaskType === 3 && (auditOldData.taskGroupId != taskForm.taskGroupId)}" prop="taskGroupId">
                         <el-select v-model="taskForm.taskGroupId" clearable placeholder="请选择关联任务组" style="width:363px;display:inline-block;">
                             <el-option
                                 v-for="item in groupLists"
@@ -547,7 +547,7 @@
                             <i class="el-icon-circle-close"  @click="removeTodo(index)"></i>
                         </div>
                     </el-form-item>
-                    <el-form-item label="关联项目:" :class="{'is-change': handTaskType === 3 && (auditOldData.projectId != taskForm.projectId)}">
+                    <el-form-item label="关联项目:" :class="{'is-change': handTaskType === 3 && (auditOldData.projectId != taskForm.projectId)}" prop="projectId">
                         <el-select v-model="taskForm.projectId" clearable placeholder="请选择关联项目" style="width:363px;display:inline-block;">
                             <el-option
                                 v-for="item in projects"
@@ -557,7 +557,7 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="任务可见范围:" :class="{'is-change': handTaskType === 3 && (auditOldData.value71 != taskForm.value71)}">
+                    <el-form-item label="任务可见范围:" :class="{'is-change': handTaskType === 3 && (auditOldData.value71 != taskForm.value71)}" prop="value71">
                         <el-select
                             multiple
                             v-model="taskForm.value71"
@@ -1033,7 +1033,6 @@ export default {
             }).then(res => {
                 if (res.code == ERR_OK) {
                     this.optionsObj = res.data;
-
                     let isCheckVal = false;
                     if (this.taskForm.reportId) {
                             
@@ -1465,6 +1464,8 @@ export default {
 
             this.taskGropUsers = [];
             this.dialogTaskForm = true;
+
+            this.goLink(this.taskForm.executorId);
         },
         mindTask1(id) {
             this.taskForm.taskTypeId = id
@@ -1492,7 +1493,7 @@ export default {
                         this.taskForm.planEndDate = res.data.planEndDate;
                         this.taskForm.content = res.data.content;
                         this.taskForm.taskCategory = res.data.taskCategory;
-                        this.taskForm.taskGroupId = res.data.taskGroupId;
+                        this.taskForm.taskGroupId = res.data.taskGroupId ? res.data.taskGroupId : '';
                         
                         this.taskForm.modifyReason = res.data.modifyReason;
                         this.taskForm.projectId = res.data.projectId;
@@ -1554,7 +1555,7 @@ export default {
                         this.taskForm.planEndDate = res.data.planEndDate;
                         this.taskForm.content = res.data.content;
                         this.taskForm.taskCategory = res.data.taskCategory;
-                        this.taskForm.taskGroupId = res.data.taskGroupId;
+                        this.taskForm.taskGroupId = res.data.taskGroupId ? res.data.taskGroupId : '';
                         
                         this.taskForm.modifyReason = res.data.modifyReason;
                         this.taskForm.projectId = res.data.projectId;
