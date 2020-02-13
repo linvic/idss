@@ -1586,6 +1586,9 @@ export default {
                         if(!this.auditOldData.taskGroupId) {
                             this.auditOldData.taskGroupId = '';
                         }
+                        if(!this.auditOldData.projectId) {
+                            this.auditOldData.projectId = '';
+                        }
                         
                         
                         this.taskForm.title = res.data.title;

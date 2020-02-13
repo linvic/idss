@@ -1294,6 +1294,9 @@ export default {
                     if(!this.auditOldData.taskGroupId) {
                         this.auditOldData.taskGroupId = '';
                     }
+                    if(!this.auditOldData.projectId) {
+                        this.auditOldData.projectId = '';
+                    }
                     
                     this.taskForm.title = this.detailInfo.title;
                     this.taskForm.executorId = this.detailInfo.executorId;
