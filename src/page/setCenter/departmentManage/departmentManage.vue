@@ -43,7 +43,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="上级部门:"  style="margin-right: 40px !important;">
-              <el-select v-model="deptPid" placeholder="请选择任务类型" style="width:100%;">
+              <el-select v-model="deptPid" placeholder="请选择上级部门" style="width:100%;">
                 <el-option label="无" :value="-1"></el-option>
                 <el-option v-for="item in parentDepts" :key="item.deptId" :label="item.deptName" :value="item.deptId"></el-option>
               </el-select>
@@ -112,7 +112,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="上级部门:"  style="margin-right: 40px !important;">
-          <el-select v-model="deptPid1" placeholder="请选择任务类型" style="width:100%;">
+          <el-select v-model="deptPid1" placeholder="请选择上级部门" style="width:100%;">
             <el-option label="无" :value="-1"></el-option>
             <el-option v-for="item in parentDepts" :key="item.deptId" :label="item.deptName" :value="item.deptId" v-if="item.deptId != deptId"></el-option>
           </el-select>

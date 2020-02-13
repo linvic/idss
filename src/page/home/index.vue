@@ -207,7 +207,10 @@
                         <el-option v-for="item in users" :label="item.userName" :value="item.userId" :key="item.userId"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="任务类型:" prop="taskTypeId" :class="{'is-change': handTaskType === 3 && (auditOldData.taskTypeId != taskForm.taskTypeId)}">
+                <el-form-item label="任务类型:" v-show="taskForm.taskTypeName">
+                    <el-input v-model="taskForm.taskTypeName" disabled style="width:363px;display:inline-block;"></el-input>
+                </el-form-item>
+                <el-form-item label="任务类型:" v-show="!taskForm.taskTypeName" required prop="taskTypeId" :class="{'is-change': handTaskType === 3 && (auditOldData.taskTypeId != taskForm.taskTypeId)}">
                     <el-select v-model="taskForm.taskTypeId" clearable placeholder="请选择类型" style="width:363px;display:inline-block;" >
                         <el-option
                             v-for="item in optionType"
@@ -507,6 +510,13 @@ import {  ERR_OK } from 'service/config'
 import Sortable from 'sortablejs'
 export default {
     data () {
+        var checkTaskTypeId = (rule, value, callback) => {
+            if (!value && !this.taskForm.taskTypeName) {
+                return callback(new Error('请选择任务类型'));
+            } else {
+                callback();
+            }
+        };
         return {
             
             taskTotal: 0,
@@ -561,11 +571,7 @@ export default {
                     }
                 ],
                 taskTypeId: [
-                    {
-                        required: true,
-                        message: "请选择任务类型",
-                        type: "number"
-                    }
+                    { validator: checkTaskTypeId }
                 ],
                 reportId: [
                     {
@@ -616,6 +622,7 @@ export default {
                 reportId: "", // 任务汇报对象
                 taskWorkload: "", // 任务工作量
                 taskTypeId: "", // 任务类型
+                taskTypeName: '', // 任务类型名称，用于判断考核任务
                 executorId: "", // 执行人
                 modifyReason: '', //修改原因
                 taskCategory: 0, // 任务性质
@@ -992,7 +999,10 @@ export default {
         },
         // 弹窗关闭
         beforeCloseTaskForm() {
-            this.$refs.taskForm.resetFields();
+            this.taskForm.taskTypeName = '';
+            this.$nextTick(()=> {
+                this.$refs.taskForm.resetFields();
+            })
             this.dialogTaskForm = false;
         },
         submitTaskForm(submitType) {
@@ -1013,11 +1023,13 @@ export default {
                 reportId: this.taskForm.reportId, // 任务汇报对象
                 projectId: this.taskForm.projectId, // 关联项目
                 taskWorkload: this.taskForm.taskWorkload, // 任务工作量
-                taskCategory: this.taskForm.taskCategory, // 任务性质
                 visibleRange: value71,
                 planEndDate: time,
                 content: this.taskForm.content
             };
+            if(!this.taskForm.taskTypeName) {
+                params.taskCategory = this.taskForm.taskCategory; // 任务性质
+            }
             if (this.taskForm.taskCategory == 0) {
                 params.taskGroupId = this.taskForm.taskGroupId;
             } else if (this.taskForm.taskCategory == 1) {
@@ -1049,7 +1061,9 @@ export default {
                 }
                 saveDraftTask(params).then(res => {
                     if (res.code == ERR_OK) {
-                        this.$refs.taskForm.resetFields();
+                        this.$nextTick(()=> {
+                            this.$refs.taskForm.resetFields();
+                        })
                         this.dialogTaskForm = false;
                         this.pageInit();
                         this.$notify({
@@ -1072,7 +1086,9 @@ export default {
                         }
                         publishTask(params).then(res => {
                             if (res.code == ERR_OK) {
-                                this.$refs.taskForm.resetFields();
+                                this.$nextTick(()=> {
+                                    this.$refs.taskForm.resetFields();
+                                })
                                 this.dialogTaskForm = false;
                                 this.pageInit();
                                 this.$notify({
@@ -1097,7 +1113,9 @@ export default {
                         params.modifyReason = this.taskForm.modifyReason;
                         sureEditorTask(params).then(res => {
                             if (res.code == ERR_OK) {
-                                this.$refs.taskForm.resetFields();
+                                this.$nextTick(()=> {
+                                    this.$refs.taskForm.resetFields();
+                                })
                                 this.dialogTaskForm = false;
                                 this.pageInit();
                                 this.$notify({
@@ -1122,7 +1140,9 @@ export default {
                         params.modifyReason = this.taskForm.modifyReason;
                         approveTask(params).then(res => {
                             if (res.code == ERR_OK) {
-                                this.$refs.taskForm.resetFields();
+                                this.$nextTick(()=> {
+                                    this.$refs.taskForm.resetFields();
+                                })
                                 this.dialogTaskForm = false;
                                 this.pageInit();
                                 this.$notify({
@@ -1193,6 +1213,13 @@ export default {
                         this.taskForm.planEndDate = res.data.planEndDate;
                         this.taskForm.content = res.data.content;
                         this.taskForm.taskCategory = res.data.taskCategory;
+
+                        // 考核任务判断
+                        if (this.taskForm.taskCategory == 2) {
+                            this.taskForm.taskCategory = 0;
+                            this.taskForm.taskTypeName = res.data.taskTypeName;
+                        }
+
                         this.taskForm.taskGroupId = res.data.taskGroupId ? res.data.taskGroupId : '';
                         
                         this.taskForm.modifyReason = res.data.modifyReason;

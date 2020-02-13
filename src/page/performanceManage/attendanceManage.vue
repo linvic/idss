@@ -141,7 +141,7 @@
 </template>
 
 <script>
-import {  attendanceRecordsPage,getParentDepts,listUserDynamic} from 'service/getData'
+import {  attendanceRecordsPage,getParentDepts,listUserAttendance} from 'service/getData'
 import {  ERR_OK } from 'service/config'
 export default {
     data () {
@@ -206,7 +206,7 @@ export default {
             this.getUserLists();
         },
         getUserLists() {
-            listUserDynamic({deptId: this.filterForm.deptId}).then((res) => {
+            listUserAttendance({deptId: this.filterForm.deptId}).then((res) => {
                 if(res.code == ERR_OK) {
                     this.userList = res.data
                 } else {

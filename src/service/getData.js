@@ -451,6 +451,11 @@ export function showTaskList(params){
 export function listUserDynamic(params){
   return fetchGet('/sysUser/listUserDynamic',param(params))
 }
+// 获取员工
+export function listUserAttendance(params){
+  return fetchGet('/sysUser/listUserAttendance',param(params))
+}
+
 /**新增或者更新今日总结**/
 export function addTodayCommont(params){
   return fetchPost('/daily/addTodayCommont',param(params))
