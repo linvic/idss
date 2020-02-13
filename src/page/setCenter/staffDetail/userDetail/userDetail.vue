@@ -359,12 +359,12 @@
                 </el-form-item>
                 <div v-show="stretch">
                     <el-form-item label="任务性质:" :class="{'is-change': handTaskType === 3 && (auditOldData.taskCategory != taskForm.taskCategory)}" prop="taskCategory">
-                        <el-radio-group v-model="taskForm.taskCategory" :disabled="(handTaskType == 2 && taskForm.taskStatus != 'TOSUBMIT') || handTaskType == 3">
+                        <el-radio-group v-model="taskForm.taskCategory" :disabled="(handTaskType == 2 && taskForm.taskStatus != 'TOSUBMIT') || handTaskType == 3" @change="changeTaskCategory">
                             <el-radio :label="0">单条任务</el-radio>
                             <el-radio :label="1" v-if="!(handTaskType == 1 && !canAddTaskGroup)">任务组任务</el-radio>
                         </el-radio-group>
                     </el-form-item>
-                    <el-form-item label="关联任务组:" v-if="taskForm.taskCategory == 0" :class="{'is-change': handTaskType === 3 && (auditOldData.taskGroupId != taskForm.taskGroupId)}" prop="taskGroupId">
+                    <el-form-item label="关联任务组:" v-show="taskForm.taskCategory == 0" :class="{'is-change': handTaskType === 3 && (auditOldData.taskGroupId != taskForm.taskGroupId)}" prop="taskGroupId">
                         <el-select v-model="taskForm.taskGroupId" clearable placeholder="请选择关联任务组" style="width:363px;display:inline-block;">
                             <el-option
                                 v-for="item in groupLists"
@@ -374,7 +374,7 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="任务组成员:" v-if="taskForm.taskCategory == 1" :class="{'is-change': handTaskType === 3 && (auditOldData.taskGropUsers != taskGropUsers)}">
+                    <el-form-item label="任务组成员:" v-show="taskForm.taskCategory == 1" :class="{'is-change': handTaskType === 3 && (auditOldData.taskGropUsers != taskGropUsers)}">
                         <div class="user-right" @click="adduser">添加任务组成员</div>
                         
                         <div class="user-item ellipsis" v-for="(item, index) in taskGropUsers" :key="index">
@@ -1039,6 +1039,11 @@ export default {
             this.getTaskTypesByExecutor(id);
             this.getTaskGroupLists(id); //关联任务组列表
         },
+        changeTaskCategory() {
+            this.$nextTick(()=> {
+                this.$refs.taskForm.clearValidate();
+            })
+        },
         // 弹窗关闭
         beforeCloseTaskForm() {
             this.$refs.taskForm.resetFields();
@@ -1278,6 +1283,9 @@ export default {
                 if (res.code == ERR_OK) {
                     this.$nextTick(()=> {
                         this.auditOldData = Object.assign({},res.data);
+                        if(!this.auditOldData.taskGroupId) {
+                            this.auditOldData.taskGroupId = '';
+                        }
                         
                         this.taskForm.title = res.data.title;
                         this.taskForm.executorId = res.data.executorId;

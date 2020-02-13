@@ -392,16 +392,16 @@
                 </el-form-item>
                 <div v-show="stretch">
                     <el-form-item label="任务性质:" :class="{'is-change': handTaskType === 3 && (auditOldData.taskCategory != taskForm.taskCategory)}" prop="taskCategory">
-                        <el-radio-group v-model="taskForm.taskCategory" :disabled="(handTaskType === 2 && taskForm.taskStatus != 'TOSUBMIT') || handTaskType === 1  || handTaskType === 3">
+                        <el-radio-group v-model="taskForm.taskCategory" :disabled="(handTaskType === 2 && taskForm.taskStatus != 'TOSUBMIT') || handTaskType === 1  || handTaskType === 3" @change="changeTaskCategory">
                             <el-radio :label="0">单条任务</el-radio>
                             <el-radio :label="1" v-if="!(handTaskType == 1 && !canAddTaskGroup)">任务组任务</el-radio>
                         </el-radio-group>
                     </el-form-item>
                     
-                    <el-form-item label="关联任务组:" v-if=" handTaskType == 1 && taskForm.taskCategory == 0">
+                    <el-form-item label="关联任务组:" v-show=" handTaskType == 1 && taskForm.taskCategory == 0">
                         <el-input disabled v-model="detailInfo.title" style="width:363px;display:inline-block;"></el-input>
                     </el-form-item>
-                    <el-form-item label="关联任务组:" v-if=" handTaskType != 1 && taskForm.taskCategory == 0" :class="{'is-change': handTaskType === 3 && (auditOldData.taskGroupId != taskForm.taskGroupId)}" prop="taskGroupId">
+                    <el-form-item label="关联任务组:" v-show=" handTaskType != 1 && taskForm.taskCategory == 0" :class="{'is-change': handTaskType === 3 && (auditOldData.taskGroupId != taskForm.taskGroupId)}" prop="taskGroupId">
                         <el-select v-model="taskForm.taskGroupId" clearable placeholder="请选择关联任务组" style="width:363px;display:inline-block;">
                             <el-option
                                 v-for="item in groupLists"
@@ -997,6 +997,11 @@ export default {
             this.getTaskTypesByExecutor(id);
             this.getTaskGroupLists(id); //关联任务组列表
         },
+        changeTaskCategory() {
+            this.$nextTick(()=> {
+                this.$refs.taskForm.clearValidate();
+            })
+        },
         // 弹窗关闭
         beforeCloseTaskForm() {
             this.$refs.taskForm.resetFields();
@@ -1258,6 +1263,9 @@ export default {
             this.handTaskId = id; //记录当前编辑id
                 this.$nextTick(()=> {
                     this.auditOldData = Object.assign({},this.detailInfo);
+                    if(!this.auditOldData.taskGroupId) {
+                        this.auditOldData.taskGroupId = '';
+                    }
                     
                     this.taskForm.title = this.detailInfo.title;
                     this.taskForm.executorId = this.detailInfo.executorId;
