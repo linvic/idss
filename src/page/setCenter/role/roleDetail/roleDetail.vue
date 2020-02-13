@@ -171,7 +171,7 @@
             <el-input v-model.number="formLabelAlign.basicPay"></el-input>
           </el-form-item>
           <el-form-item label="绩效工资：" required prop="money">
-            <el-input v-model.trim="formLabelAlign.money" @keyup.native="onkeyupPrice($event)"></el-input>
+            <el-input v-model.trim="formLabelAlign.money"></el-input>
           </el-form-item>
           <el-form-item label="状态：" required>
             <el-radio-group v-model="resource">

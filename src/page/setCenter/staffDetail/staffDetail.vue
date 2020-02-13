@@ -213,10 +213,10 @@
             <el-input type="password" v-model.trim="formLabelAlign3.pass" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="底薪：" required prop="basicPay3">
-            <el-input v-model.trim="formLabelAlign3.basicPay3" @keyup.native="onkeyupPrice($event)"></el-input>
+            <el-input v-model.trim="formLabelAlign3.basicPay3"></el-input>
           </el-form-item>
           <el-form-item label="绩效工资：" required prop="money3">
-            <el-input v-model.trim="formLabelAlign3.money3" @keyup.native="onkeyupPrice($event)"></el-input>
+            <el-input v-model.trim="formLabelAlign3.money3"></el-input>
           </el-form-item>
           <el-form-item label="状态：" required>
             <el-radio-group v-model="resource3">
@@ -269,7 +269,7 @@
           <el-form-item label="底薪：" required prop="basicPay">
             <el-input v-model.number="formLabelAlign.basicPay"></el-input>
           </el-form-item>
-          <el-form-item label="绩效工资：" prop="money">
+          <el-form-item label="绩效工资：" required prop="money">
             <el-input v-model.number="formLabelAlign.money"></el-input>
           </el-form-item>
           <el-form-item label="状态：" required>
