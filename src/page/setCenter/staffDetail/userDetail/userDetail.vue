@@ -22,8 +22,8 @@
                 <div class="take-left">
                     <div class="take-top" style="font-size: 14px;font-weight:normal">用户信息</div>
                 </div>
-                <div class="take-right" @click="addPunish(1)" v-if="userView!='STAFF'">发起奖励</div>
-                <div class="take-right" @click="addPunish(0)" v-if="userView!='STAFF'">发起惩罚</div>
+                <!-- <div class="take-right" @click="addPunish(1)" v-if="userView!='STAFF'">发起奖励</div>
+                <div class="take-right" @click="addPunish(0)" v-if="userView!='STAFF'">发起惩罚</div> -->
                 <div class="take-right" @click="addTaskByExecutorId" v-if="userView!='STAFF'">分发任务</div>
                 <div class="take-right" @click="editUserInfo">编辑</div>
                 
@@ -37,15 +37,15 @@
                     <li>角色：{{userInfo.roleName}}</li>
                     <li>部门：{{userInfo.deptName}}</li>
                     <li>团队：{{userInfo.teamName}}</li>
-                    <li>绩效评估分：{{userInfo.performanceScore }}</li>
-                    <li>当月绩效评估分：{{userInfo.thisMonthEvalScore}}</li>
-                    <li>任务绩效分：{{userInfo.evaluatingScore}}</li>
+                    <!-- <li>绩效评估分：{{userInfo.performanceScore }}</li> -->
+                    <li>当月绩效评估分：{{userInfo.thisMonthEvalScore || '-'}}</li>
+                    <!-- <li>任务绩效分：{{userInfo.evaluatingScore}}</li>
                     <li>奖励次数：{{userInfo.rewardSize}}</li>
                     <li>奖励金额共计：{{userInfo.rewardAmount}}</li>
                     <li></li>
                     <li>惩罚次数：{{userInfo.punishSize}}</li>
                     <li>惩罚金额总计：{{userInfo.punishAmount}}</li>
-                    <li>奖惩合计：{{userInfo.rpTotal}}</li>
+                    <li>奖惩合计：{{userInfo.rpTotal}}</li> -->
                 </ul>
             </div>
         </div>
@@ -296,10 +296,10 @@
                         <el-option v-for="item in users" :key="item.userId" :label="item.userName" :value="item.userId"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="任务类型:" v-show="taskForm.taskTypeName">
+                <el-form-item label="任务类型:" v-if="taskForm.taskTypeName">
                     <el-input v-model="taskForm.taskTypeName" disabled style="width:363px;display:inline-block;"></el-input>
                 </el-form-item>
-                <el-form-item label="任务类型:" v-show="!taskForm.taskTypeName" required prop="taskTypeId" :class="{'is-change': handTaskType === 3 && (auditOldData.taskTypeId != taskForm.taskTypeId)}">
+                <el-form-item label="任务类型:" v-if="!taskForm.taskTypeName" required prop="taskTypeId" :class="{'is-change': handTaskType === 3 && (auditOldData.taskTypeId != taskForm.taskTypeId)}">
                     <el-select v-model="taskForm.taskTypeId" clearable placeholder="请选择类型" style="width:363px;display:inline-block;" >
                         <el-option
                             v-for="item in optionType"
@@ -338,7 +338,6 @@
                         <i class="el-icon-warning"></i>
                         <div slot="content">
                             <p>任务工作量说明：</p>
-                            <p>- 本月基准任务为“完成2篇投后月报”，占本月计划考核权重的13%；</p>
                             <p>- 任务发布后会由上级进行审核，审核通过后本月计划中所有任务的权重都自动修改；</p>
                             <p>- 任务工作量基数为“1”时，不需要上级审核。</p>
                         </div>
@@ -692,6 +691,7 @@ export default {
                 reportId: "", // 任务汇报对象
                 taskWorkload: "", // 任务工作量
                 taskTypeId: "", // 任务类型
+                taskTypeIdBack: "", // 任务类型id备份，用于判断考核任务
                 taskTypeName: '', // 任务类型名称，用于判断考核任务
                 executorId: "", // 执行人
                 modifyReason: '', //修改原因
@@ -1054,6 +1054,7 @@ export default {
         // 弹窗关闭
         beforeCloseTaskForm() {
             this.taskForm.taskTypeName = '';
+            this.taskForm.taskTypeIdBack = ''; // 备份值
             this.$nextTick(()=> {
                 this.$refs.taskForm.resetFields();
             })
@@ -1083,6 +1084,10 @@ export default {
             };
             if(!this.taskForm.taskTypeName) {
                 params.taskCategory = this.taskForm.taskCategory; // 任务性质
+                params.taskTypeId = this.taskForm.taskTypeId;
+            } else {
+                params.taskCategory = 2;
+                params.taskTypeId = this.taskForm.taskTypeIdBack;
             }
             if (this.taskForm.taskCategory == 0) {
                 params.taskGroupId = this.taskForm.taskGroupId;
@@ -1115,10 +1120,7 @@ export default {
                 }
                 saveDraftTask(params).then(res => {
                     if (res.code == ERR_OK) {
-                        this.$nextTick(()=> {
-                            this.$refs.taskForm.resetFields();
-                        })
-                        this.dialogTaskForm = false;
+                        this.beforeCloseTaskForm();
                         this.pageInit();
                         this.$notify({
                             title: "成功",
@@ -1140,10 +1142,7 @@ export default {
                         }
                         publishTask(params).then(res => {
                             if (res.code == ERR_OK) {
-                                this.$nextTick(()=> {
-                                    this.$refs.taskForm.resetFields();
-                                })
-                                this.dialogTaskForm = false;
+                                this.beforeCloseTaskForm();
                                 this.pageInit();
                                 this.$notify({
                                     title: "成功",
@@ -1167,10 +1166,7 @@ export default {
                         params.modifyReason = this.taskForm.modifyReason;
                         sureEditorTask(params).then(res => {
                             if (res.code == ERR_OK) {
-                                this.$nextTick(()=> {
-                                    this.$refs.taskForm.resetFields();
-                                })
-                                this.dialogTaskForm = false;
+                                this.beforeCloseTaskForm();
                                 this.pageInit();
                                 this.$notify({
                                     title: "成功",
@@ -1194,10 +1190,7 @@ export default {
                         params.modifyReason = this.taskForm.modifyReason;
                         approveTask(params).then(res => {
                             if (res.code == ERR_OK) {
-                                this.$nextTick(()=> {
-                                    this.$refs.taskForm.resetFields();
-                                })
-                                this.dialogTaskForm = false;
+                                this.beforeCloseTaskForm();
                                 this.pageInit();
                                 this.$notify({
                                     title: "成功",
@@ -1256,6 +1249,7 @@ export default {
                         if (this.taskForm.taskCategory == 2) {
                             this.taskForm.taskCategory = 0;
                             this.taskForm.taskTypeName = res.data.taskTypeName;
+                            this.taskForm.taskTypeIdBack = res.data.taskTypeId; // 备份值
                         }
 
                         this.taskForm.taskGroupId = res.data.taskGroupId ? res.data.taskGroupId : '';
@@ -1326,6 +1320,13 @@ export default {
                         this.taskForm.planEndDate = res.data.planEndDate;
                         this.taskForm.content = res.data.content;
                         this.taskForm.taskCategory = res.data.taskCategory;
+                        // 考核任务判断
+                        if (this.taskForm.taskCategory == 2) {
+                            this.taskForm.taskCategory = 0;
+                            this.auditOldData.taskCategory = 0;
+                            this.taskForm.taskTypeName = res.data.taskTypeName;
+                            this.taskForm.taskTypeIdBack = res.data.taskTypeId; // 备份值
+                        }
                         this.taskForm.taskGroupId = res.data.taskGroupId ? res.data.taskGroupId : '';
                         
                         this.taskForm.modifyReason = res.data.modifyReason;

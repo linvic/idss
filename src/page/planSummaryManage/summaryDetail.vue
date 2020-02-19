@@ -20,8 +20,7 @@
                 </div>
                 
                 <el-table :data="listData">
-                    <el-table-column type="index" label="序号" width="80"></el-table-column>
-                    <el-table-column label="类别">
+                    <el-table-column label="类别" width="180">
                         <template slot-scope="scope">
                             <span>{{scope.row.taskTypeName}}</span>
                         </template>
@@ -44,7 +43,7 @@
                         </template>
                     </el-table-column>
                     
-                    <el-table-column label="工作量基数" width="100">
+                    <el-table-column label="工作量基数" width="90">
                         <template slot-scope="scope">
                             <span>{{scope.row.taskWorkload}}</span>
                         </template>
@@ -121,8 +120,7 @@
                     </div>
                     
                     <el-table :data="j.taskInfoList" v-if="j.taskInfoList && j.taskInfoList.length > 0">
-                        <el-table-column type="index" label="序号" width="120"></el-table-column>
-                        <el-table-column label="类别">
+                        <el-table-column label="类别" width="180">
                             <template slot-scope="scope">
                                 <span>{{scope.row.taskTypeName || ''}}</span>
                             </template>
@@ -408,7 +406,7 @@ export default {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     inputType: 'textarea',
-                    inputPattern: /^.{1,400}$/,
+                    inputPattern: /^[\s\S]{1,400}$/,
                     inputErrorMessage: '请输入申诉内容（400字符内）'
                 }).then(({ value }) => {
                     

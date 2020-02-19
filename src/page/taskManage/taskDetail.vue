@@ -138,11 +138,11 @@
                     <el-input v-model="quicklyContent" placeholder="输入内容快捷回复"></el-input>
                 </div>
                 <div style="float:left;margin-top:3px;" v-if='quicklyContent'>
-                    <el-button size="small" type="primary" plain @click.stop='replyTask'>回复</el-button>
+                    <el-button size="small" type="primary" plain @click.stop='replyTaskTop'>回复</el-button>
                 </div>
 
                 </div>
-                <div :class="{'notice-reback' : true, 'isSeeMoreTaskReplys': isSeeMoreTaskReplys}" v-for="(item,index) in taskReplys" :key="index" v-if="isSeeMoreTaskReplys || index < 2">
+                <div :class="{'notice-reback' : true, 'isSeeMoreTaskReplys': isSeeMoreTaskReplys}" v-for="(item,index) in taskReplys" :key="index" v-if="isSeeMoreTaskReplys || index <= 2">
                     <div class="" style="overflow:hidden;">
                         <div class="notice-reback-left" v-if="item.replySource == 0">
                             <span style="color:#d83436;cursor:pointer;">{{item.createUser.userName}}</span> 回复 <span style="color:#d83436;cursor:pointer;">{{item.replyUser.userName}}</span>： {{item.replyContent}}
@@ -211,7 +211,7 @@
                                     <div>
                                         <div class="input-back">
                                             <input type="text" name="" value="" class="inputValue" />
-                                            <span @click="replyTask( props.row.index, props.row.id, $event)"
+                                            <span @click="replyTask( props.row, $event)"
                                                 class="replyValue">回复</span>
                                         </div>
                                         <div v-for="(item,index) in props.row.taskReplyList" :key="index">
@@ -329,10 +329,10 @@
                         <el-option v-for="item in users" :key="item.userId" :label="item.userName" :value="item.userId"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="任务类型:" v-show="taskForm.taskTypeName">
+                <el-form-item label="任务类型:" v-if="taskForm.taskTypeName">
                     <el-input v-model="taskForm.taskTypeName" disabled style="width:363px;display:inline-block;"></el-input>
                 </el-form-item>
-                <el-form-item label="任务类型:" v-show="!taskForm.taskTypeName" required prop="taskTypeId" :class="{'is-change': handTaskType === 3 && (auditOldData.taskTypeId != taskForm.taskTypeId)}">
+                <el-form-item label="任务类型:" v-if="!taskForm.taskTypeName" required prop="taskTypeId" :class="{'is-change': handTaskType === 3 && (auditOldData.taskTypeId != taskForm.taskTypeId)}">
                     <el-select v-model="taskForm.taskTypeId" clearable placeholder="请选择类型" style="width:363px;display:inline-block;" >
                         <el-option
                             v-for="item in optionType"
@@ -371,7 +371,6 @@
                         <i class="el-icon-warning"></i>
                         <div slot="content">
                             <p>任务工作量说明：</p>
-                            <p>- 本月基准任务为“完成2篇投后月报”，占本月计划考核权重的13%；</p>
                             <p>- 任务发布后会由上级进行审核，审核通过后本月计划中所有任务的权重都自动修改；</p>
                             <p>- 任务工作量基数为“1”时，不需要上级审核。</p>
                         </div>
@@ -711,6 +710,7 @@ export default {
                 reportId: "", // 任务汇报对象
                 taskWorkload: "", // 任务工作量
                 taskTypeId: "", // 任务类型
+                taskTypeIdBack: "", // 任务类型id备份，用于判断考核任务
                 taskTypeName: '', // 任务类型名称，用于判断考核任务
                 executorId: "", // 执行人
                 modifyReason: '', //修改原因
@@ -1013,6 +1013,7 @@ export default {
         // 弹窗关闭
         beforeCloseTaskForm() {
             this.taskForm.taskTypeName = '';
+            this.taskForm.taskTypeIdBack = ''; // 备份值
             this.$nextTick(()=> {
                 this.$refs.taskForm.resetFields();
             })
@@ -1042,6 +1043,10 @@ export default {
             };
             if(!this.taskForm.taskTypeName) {
                 params.taskCategory = this.taskForm.taskCategory; // 任务性质
+                params.taskTypeId = this.taskForm.taskTypeId;
+            } else {
+                params.taskCategory = 2;
+                params.taskTypeId = this.taskForm.taskTypeIdBack;
             }
             if (this.taskForm.taskCategory == 0) {
                 params.taskGroupId = this.taskForm.taskGroupId;
@@ -1075,10 +1080,8 @@ export default {
                 }
                 saveDraftTask(params).then(res => {
                     if (res.code == ERR_OK) {
-                        this.$nextTick(()=> {
-                            this.$refs.taskForm.resetFields();
-                        })
-                        this.dialogTaskForm = false;
+                        
+                        this.beforeCloseTaskForm();
                         this.pageInit();
                         this.$notify({
                             title: "成功",
@@ -1100,10 +1103,7 @@ export default {
                         }
                         publishTask(params).then(res => {
                             if (res.code == ERR_OK) {
-                                this.$nextTick(()=> {
-                                    this.$refs.taskForm.resetFields();
-                                })
-                                this.dialogTaskForm = false;
+                                this.beforeCloseTaskForm();
                                 this.pageInit();
                                 this.$notify({
                                     title: "成功",
@@ -1127,10 +1127,7 @@ export default {
                         params.modifyReason = this.taskForm.modifyReason;
                         sureEditorTask(params).then(res => {
                             if (res.code == ERR_OK) {
-                                this.$nextTick(()=> {
-                                    this.$refs.taskForm.resetFields();
-                                })
-                                this.dialogTaskForm = false;
+                                this.beforeCloseTaskForm();
                                 this.pageInit();
                                 this.$notify({
                                     title: "成功",
@@ -1154,10 +1151,7 @@ export default {
                         params.modifyReason = this.taskForm.modifyReason;
                         approveTask(params).then(res => {
                             if (res.code == ERR_OK) {
-                                this.$nextTick(()=> {
-                                    this.$refs.taskForm.resetFields();
-                                })
-                                this.dialogTaskForm = false;
+                                this.beforeCloseTaskForm();
                                 this.pageInit();
                                 this.$notify({
                                     title: "成功",
@@ -1245,7 +1239,8 @@ export default {
                     // 考核任务判断
                     if (this.taskForm.taskCategory == 2) {
                         this.taskForm.taskCategory = 0;
-                        this.taskForm.taskTypeName = res.data.taskTypeName;
+                        this.taskForm.taskTypeName = this.detailInfo.taskTypeName;
+                        this.taskForm.taskTypeIdBack = this.detailInfo.taskTypeId; // 备份值
                     }
 
                     this.taskForm.taskGroupId = this.detailInfo.taskGroupId ? this.detailInfo.taskGroupId : '';
@@ -1307,6 +1302,13 @@ export default {
                     this.taskForm.planEndDate = this.detailInfo.planEndDate;
                     this.taskForm.content = this.detailInfo.content;
                     this.taskForm.taskCategory = this.detailInfo.taskCategory;
+                    // 考核任务判断
+                    if (this.taskForm.taskCategory == 2) {
+                        this.taskForm.taskCategory = 0;
+                        this.auditOldData.taskCategory = 0;
+                        this.taskForm.taskTypeName = this.detailInfo.taskTypeName;
+                        this.taskForm.taskTypeIdBack = this.detailInfo.taskTypeId; // 备份值
+                    }
                     this.taskForm.taskGroupId = this.detailInfo.taskGroupId ? this.detailInfo.taskGroupId : '';
                     
                     this.taskForm.modifyReason = this.detailInfo.modifyReason;
@@ -1583,7 +1585,39 @@ export default {
             el.style.display = 'block'
         },
         // 快捷回复
-        replyTask(){
+        replyTask(row, event){
+            let val = event.target.parentNode.childNodes[0].value;
+            
+            if(val.trim().length > 200) {
+                this.$notify({
+                    title: '提示',
+                    message:'回复内容不能超过200个字符！'
+                });
+            }else{
+                userTaskReply({
+                    taskId: row.id,
+                    replyDesc: val
+                }).then((res) => {
+                    if (res.code == ERR_OK) {
+                        event.target.parentNode.childNodes[0].value = '';
+                        this.$set(row, 'taskReplyList', res.data);
+                        
+                        this.$notify({
+                            title: '成功',
+                            message: '恭喜你，回复成功',
+                            type: 'success'
+                        });
+                    }else{
+                        this.$notify.error({
+                            title: '错误',
+                            message: res.msg
+                        });
+                    }
+                })
+            }
+        },
+        // 快捷回复
+        replyTaskTop(){
             if(this.quicklyContent.trim().length > 200) {
                 this.$notify({
                     title: '提示',
@@ -2026,5 +2060,81 @@ export default {
 .dialog-footer button:last-child {
     color: #D93437;
     border: 1px solid #D83436;
+}
+
+.demo-table-expand {
+    font-size: 0;
+}
+.demo-table-expand label {
+    width: 90px;
+    color: #505363;
+}
+.demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 25%;
+}
+.demo-table-expand .el-form-item:first-child {
+    width: 340px;
+    overflow: hidden;
+}
+.demo-table-expand .el-form-item:nth-child(2) {
+    width: 330px;
+    overflow: hidden;
+}
+.demo-table-expand .el-form-item:nth-child(3) {
+    width: 155px;
+    overflow: hidden;
+}
+.demo-table-expand .el-form-item:nth-child(4) {
+    width: 255px;
+    overflow: hidden;
+}
+.content-tab {
+    line-height: 17px;
+    display: block;
+    font-size: 12px;
+    padding: 0 53px 0 0;
+    min-width: 297px;
+}
+.input-back input {
+    height: 24px;
+    width: 225px;
+    padding-left: 6px;
+    border: 1px solid #979797;
+}
+.input-back span {
+    height: 24px;
+    width: 48px;
+    display: inline-block;
+    background: #D93437;
+    line-height: 24px;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: center;
+}
+.reback {
+    font-size: 12px;
+    color: #505363;
+    line-height: 28px;
+    background: #DFDFDF;
+    padding-left: 10px;
+}
+.reback-time {
+    text-align: left;
+    font-size: 12px;
+    color: #505363;
+    line-height: 12px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+.reback1 {
+    line-height: 17px;
+    padding-left: 0;
+    background: transparent;
+}
+.special {
+    color: transparent;
 }
 </style>

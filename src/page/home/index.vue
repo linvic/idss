@@ -2,56 +2,59 @@
     <div class="wrapper">
         <el-row :gutter="20">
             <el-col :span="16" v-if="userView != 'STAFF'">
-                <div class="take-top-wrapper m-t-10">
-                    <div class="take-left">
-                        <div class="take-top" style="font-size: 14px;font-weight:normal">快速审核</div>
+                <div class="m-b">
+                    <div class="take-top-wrapper m-t-10">
+                        <div class="take-left">
+                            <div class="take-top" style="font-size: 14px;font-weight:normal">快速审核</div>
+                        </div>
                     </div>
-                </div>
-                <div class="index-card">
-                    <div class="index-card-item" @click="linkTask">
-                        <div class="index-card-item-title">待处理任务</div>
-                        <p class="index-card-item-number">{{taskTotal || 0}}</p>
+                    <div class="index-card">
+                        <div class="index-card-item" @click="linkTask">
+                            <div class="index-card-item-title">待处理任务</div>
+                            <p class="index-card-item-number">{{taskTotal || 0}}</p>
+                        </div>
+                        <div class="index-card-item" @click="linkPlan">
+                            <div class="index-card-item-title">待处理计划</div>
+                            <p class="index-card-item-number">{{planTotal || 0}}</p>
+                        </div>
+                        <div class="index-card-item" @click="linkSummary">
+                            <div class="index-card-item-title">待处理总结</div>
+                            <p class="index-card-item-number">{{summaryTotal || 0}}</p>
+                        </div>
+                        
                     </div>
-                    <div class="index-card-item" @click="linkPlan">
-                        <div class="index-card-item-title">待处理计划</div>
-                        <p class="index-card-item-number">{{planTotal || 0}}</p>
-                    </div>
-                    <div class="index-card-item" @click="linkSummary">
-                        <div class="index-card-item-title">待处理总结</div>
-                        <p class="index-card-item-number">{{summaryTotal || 0}}</p>
-                    </div>
-                    
                 </div>
             </el-col>
             <el-col
                 :span="userView != 'STAFF' ? 8 : 24"
-                :class="{'staff-box': userView == 'STAFF'}"
                 v-if="(userView == 'STAFF' && (!isAddPlanPersonal || !isAddSummaryPersonal)) || (userView == 'DEPT') || (userView == 'MANAGER')">
-                <div class="take-top-wrapper m-t-10">
-                    <div class="take-left">
-                        <div class="take-top" style="font-size: 14px;font-weight:normal">快捷操作</div>
+                <div :class="{'m-b': true, 'staff-box': userView == 'STAFF'}">
+                    <div class="take-top-wrapper m-t-10">
+                        <div class="take-left">
+                            <div class="take-top" style="font-size: 14px;font-weight:normal">快捷操作</div>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="index-card">
-                    <div class="index-card-btn" @click="addTask" v-if="userView != 'STAFF'">
-                        <img class="index-card-btn-icon" src="../../images/icon_index_rw.png" alt="">
-                        <p class="index-card-btn-txt">发起任务</p>
-                    </div>
-                    <div class="index-card-btn" @click="addPlan" v-if="(userView == 'STAFF' && !isAddPlanPersonal) || (userView == 'DEPT')">
-                        <img class="index-card-btn-icon" src="../../images/icon_index_jh.png" alt="">
-                        <p class="index-card-btn-txt">发起个人计划</p>
-                    </div>
-                    <div class="index-card-btn" @click="addSummary" v-if="(userView == 'STAFF' && !isAddSummaryPersonal) || (userView == 'DEPT')">
-                        <img class="index-card-btn-icon" src="../../images/icon_index_zj.png" alt="">
-                        <p class="index-card-btn-txt">发起个人总结</p>
+                    
+                    <div class="index-card">
+                        <div class="index-card-btn" @click="addTask" v-if="userView != 'STAFF'">
+                            <img class="index-card-btn-icon" src="../../images/icon_index_rw.png" alt="">
+                            <p class="index-card-btn-txt">发起任务</p>
+                        </div>
+                        <div class="index-card-btn" @click="addPlan" v-if="(userView == 'STAFF' && !isAddPlanPersonal) || (userView == 'DEPT')">
+                            <img class="index-card-btn-icon" src="../../images/icon_index_jh.png" alt="">
+                            <p class="index-card-btn-txt">发起个人计划</p>
+                        </div>
+                        <div class="index-card-btn" @click="addSummary" v-if="(userView == 'STAFF' && !isAddSummaryPersonal) || (userView == 'DEPT')">
+                            <img class="index-card-btn-icon" src="../../images/icon_index_zj.png" alt="">
+                            <p class="index-card-btn-txt">发起个人总结</p>
+                        </div>
                     </div>
                 </div>
             </el-col>
         </el-row>
         <!-- 员工任务待处理 -->
         <div v-if="userView == 'STAFF'">
-            <div class="take-top-wrapper m-t-10">
+            <div class="take-top-wrapper">
                 <div class="take-left">
                     <div class="take-top" style="font-size: 14px;font-weight:normal">正在进行的任务</div>
                 </div>
@@ -111,7 +114,7 @@
 
         <!-- 重点关注任务 -->
         <div v-else>
-            <div class="take-top-wrapper m-t-10">
+            <div class="take-top-wrapper">
                 <div class="take-left">
                     <div class="take-top" style="font-size: 14px;font-weight:normal">重点关注任务</div>
                 </div>
@@ -207,10 +210,10 @@
                         <el-option v-for="item in users" :label="item.userName" :value="item.userId" :key="item.userId"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="任务类型:" v-show="taskForm.taskTypeName">
+                <el-form-item label="任务类型:" v-if="taskForm.taskTypeName">
                     <el-input v-model="taskForm.taskTypeName" disabled style="width:363px;display:inline-block;"></el-input>
                 </el-form-item>
-                <el-form-item label="任务类型:" v-show="!taskForm.taskTypeName" required prop="taskTypeId" :class="{'is-change': handTaskType === 3 && (auditOldData.taskTypeId != taskForm.taskTypeId)}">
+                <el-form-item label="任务类型:" v-if="!taskForm.taskTypeName" required prop="taskTypeId" :class="{'is-change': handTaskType === 3 && (auditOldData.taskTypeId != taskForm.taskTypeId)}">
                     <el-select v-model="taskForm.taskTypeId" clearable placeholder="请选择类型" style="width:363px;display:inline-block;" >
                         <el-option
                             v-for="item in optionType"
@@ -249,7 +252,6 @@
                         <i class="el-icon-warning"></i>
                         <div slot="content">
                             <p>任务工作量说明：</p>
-                            <p>- 本月基准任务为“完成2篇投后月报”，占本月计划考核权重的13%；</p>
                             <p>- 任务发布后会由上级进行审核，审核通过后本月计划中所有任务的权重都自动修改；</p>
                             <p>- 任务工作量基数为“1”时，不需要上级审核。</p>
                         </div>
@@ -526,7 +528,6 @@ export default {
             appealingIdsPlan: '',
             appealingIdsSummary: '',
 
-            userView: 'STAFF', // MANAGER   DEPT   STAFF
             userId: '',
             canAddTaskGroup: false, // 是否有创建任务组权限
 
@@ -622,6 +623,7 @@ export default {
                 reportId: "", // 任务汇报对象
                 taskWorkload: "", // 任务工作量
                 taskTypeId: "", // 任务类型
+                taskTypeIdBack: "", // 任务类型id备份，用于判断考核任务
                 taskTypeName: '', // 任务类型名称，用于判断考核任务
                 executorId: "", // 执行人
                 modifyReason: '', //修改原因
@@ -740,7 +742,6 @@ export default {
         this.deptLevel = localStorage.getItem("deptLevel");
         this.userView = localStorage.getItem("userView");
         this.canAddTaskGroup = localStorage.getItem("canAddTaskGroup") == 'true' ? true : false;
-        // this.userView = 'STAFF'; // MANAGER   DEPT   STAFF
         this.pageInit();
         
         console.log('当前用户id',this.userId);
@@ -1000,6 +1001,7 @@ export default {
         // 弹窗关闭
         beforeCloseTaskForm() {
             this.taskForm.taskTypeName = '';
+            this.taskForm.taskTypeIdBack = ''; // 备份值
             this.$nextTick(()=> {
                 this.$refs.taskForm.resetFields();
             })
@@ -1029,6 +1031,10 @@ export default {
             };
             if(!this.taskForm.taskTypeName) {
                 params.taskCategory = this.taskForm.taskCategory; // 任务性质
+                params.taskTypeId = this.taskForm.taskTypeId;
+            } else {
+                params.taskCategory = 2;
+                params.taskTypeId = this.taskForm.taskTypeIdBack;
             }
             if (this.taskForm.taskCategory == 0) {
                 params.taskGroupId = this.taskForm.taskGroupId;
@@ -1061,10 +1067,7 @@ export default {
                 }
                 saveDraftTask(params).then(res => {
                     if (res.code == ERR_OK) {
-                        this.$nextTick(()=> {
-                            this.$refs.taskForm.resetFields();
-                        })
-                        this.dialogTaskForm = false;
+                        this.beforeCloseTaskForm();
                         this.pageInit();
                         this.$notify({
                             title: "成功",
@@ -1086,10 +1089,7 @@ export default {
                         }
                         publishTask(params).then(res => {
                             if (res.code == ERR_OK) {
-                                this.$nextTick(()=> {
-                                    this.$refs.taskForm.resetFields();
-                                })
-                                this.dialogTaskForm = false;
+                                this.beforeCloseTaskForm();
                                 this.pageInit();
                                 this.$notify({
                                     title: "成功",
@@ -1113,10 +1113,7 @@ export default {
                         params.modifyReason = this.taskForm.modifyReason;
                         sureEditorTask(params).then(res => {
                             if (res.code == ERR_OK) {
-                                this.$nextTick(()=> {
-                                    this.$refs.taskForm.resetFields();
-                                })
-                                this.dialogTaskForm = false;
+                                this.beforeCloseTaskForm();
                                 this.pageInit();
                                 this.$notify({
                                     title: "成功",
@@ -1140,10 +1137,7 @@ export default {
                         params.modifyReason = this.taskForm.modifyReason;
                         approveTask(params).then(res => {
                             if (res.code == ERR_OK) {
-                                this.$nextTick(()=> {
-                                    this.$refs.taskForm.resetFields();
-                                })
-                                this.dialogTaskForm = false;
+                                this.beforeCloseTaskForm();
                                 this.pageInit();
                                 this.$notify({
                                     title: "成功",
@@ -1218,6 +1212,7 @@ export default {
                         if (this.taskForm.taskCategory == 2) {
                             this.taskForm.taskCategory = 0;
                             this.taskForm.taskTypeName = res.data.taskTypeName;
+                            this.taskForm.taskTypeIdBack = res.data.taskTypeId; // 备份值
                         }
 
                         this.taskForm.taskGroupId = res.data.taskGroupId ? res.data.taskGroupId : '';
@@ -1291,7 +1286,15 @@ export default {
                         this.taskForm.taskWorkload = res.data.taskWorkload;
                         this.taskForm.planEndDate = res.data.planEndDate;
                         this.taskForm.content = res.data.content;
+                        
                         this.taskForm.taskCategory = res.data.taskCategory;
+                        // 考核任务判断
+                        if (this.taskForm.taskCategory == 2) {
+                            this.taskForm.taskCategory = 0;
+                            this.auditOldData.taskCategory = 0;
+                            this.taskForm.taskTypeName = res.data.taskTypeName;
+                            this.taskForm.taskTypeIdBack = res.data.taskTypeId; // 备份值
+                        }
                         this.taskForm.taskGroupId = res.data.taskGroupId ? res.data.taskGroupId : '';
                         
                         this.taskForm.modifyReason = res.data.modifyReason;

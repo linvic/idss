@@ -20,3 +20,6 @@ export const  roles= function ({ commit },state) {
 export const  LogOut= function ({ commit, state }) {
       commit(types.SET_SINGER , "")
 }
+export const setPageScrollTopByTaskManage = function ({ commit }, val) {
+  commit(types.SET_PAGESCROLLTOP_BY_TASKMANAGE , val)
+}

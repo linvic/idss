@@ -54,9 +54,9 @@
                                             <div>
                                                 <div class="input-back">
                                                     <input type="text" name="" value="" class="inputValue" />
-                                                    <span @click.stop="replyTask(props.row.id, $event)" class="replyValue">回复</span>
+                                                    <span @click.stop="replyTask(props.row, $event)" class="replyValue">回复</span>
                                                 </div>
-                                                <div class="" v-for="item in props.row.taskReplyList">
+                                                <div v-for="(item,index) in props.row.taskReplyList" :key="index">
                                                     <div class="reback-time">{{ item.replyTimeDistanceDesc }}</div>
                                                     <div class="reback" style="max-width: 294px;min-width: 296px;overflow:hidden;">
                                                         <div style="float:left;">{{item.replyUser.userName}}：</div>
@@ -161,7 +161,7 @@
                             </el-table-column>
                         </el-table>
                         <!-- 类型-子类型 -->
-                        <el-collapse v-model="item.taskInfos.activeChildTypeId">
+                        <el-collapse v-model="item.taskInfos.activeChildTypeId" @change="changeLevelTwoActive">
                             <el-collapse-item v-for="j in item.taskInfos.childTaskTypeTaskPojoList" :name="j.taskTypeId" :key="j.taskTypeId">
                                 <div slot="title" class="zc-collapse-title">
                                     <span>{{j.taskTypeName}}</span>
@@ -199,9 +199,9 @@
                                                         <div>
                                                             <div class="input-back">
                                                                 <input type="text" name="" value="" class="inputValue" />
-                                                                <span @click.stop="replyTask(props.row.id, $event)" class="replyValue">回复</span>
+                                                                <span @click.stop="replyTask(props.row, $event)" class="replyValue">回复</span>
                                                             </div>
-                                                            <div class="" v-for="item in props.row.taskReplyList">
+                                                            <div v-for="(item,index) in props.row.taskReplyList" :key="index">
                                                                 <div class="reback-time">{{ item.replyTimeDistanceDesc }}</div>
                                                                 <div class="reback" style="max-width: 294px;min-width: 296px;overflow:hidden;">
                                                                     <div style="float:left;">{{item.replyUser.userName}}：</div>
@@ -378,6 +378,9 @@ export default {
 
         this.getDeptTaskGroupByDeptIds(); // 获取部门列表
     },
+    updated() {
+        this.$emit("pageLoadUpdate");
+    },
     watch: {
 
     },
@@ -406,6 +409,11 @@ export default {
                 }
             })
         },
+        changeLevelTwoActive(ids){
+            console.log('改变',ids)
+            localStorage.setItem("activeChildTypeId", ids.join(','));
+        },
+        
         activeDeptChange() {
 
             if(this.userView == 'MANAGER') {
@@ -424,20 +432,33 @@ export default {
                             _params.taskWorkloads = this.taskWorkloads.join(',')
                         }
                         taskTypePendingTaskByEntity(_params).then((res) => {
+                            this.$emit('pageLoadAxiosCountReduce');
                             if (res.code == ERR_OK) {
                                 // 详情内容
                                 this.$set(item, 'taskInfos', res.data);
+                                
 
                                 if (item.taskInfos) {
                                     // 一级用户默认展开
                                     if (item.taskInfos.childTaskTypeTaskPojoList && item.taskInfos.childTaskTypeTaskPojoList.length > 0) {
-                                        let types = [];
-                                        for (let j of item.taskInfos.childTaskTypeTaskPojoList) {
-                                            types.push(j.taskTypeId)
+                                        let _activeChildTypeIds = localStorage.getItem("activeChildTypeId");
+                                        let _ids = [];
+                                        if (_activeChildTypeIds && _activeChildTypeIds.length > 0) {
+                                            _ids = _activeChildTypeIds.split(',').map(Number);
                                         }
-                                        console.log(types)
-                                        this.$set(item.taskInfos, 'activeChildTypeId', types);
+                                        let types = [];
+                                        let localStorageTypes = [];
+                                        for (let j of item.taskInfos.childTaskTypeTaskPojoList) {
+                                            types.push(j.taskTypeId);
+                                            if (_ids.indexOf(j.taskTypeId) > -1) {
+                                                localStorageTypes.push(j.taskTypeId);
+                                            }
+                                        }
+                                        this.$set(item.taskInfos, 'activeChildTypeId', localStorageTypes.length > 0 ? localStorageTypes : types);
 
+                                        localStorage.setItem("activeChildTypeId", localStorageTypes.join(','));
+
+                                        
                                     }
 
 
@@ -524,9 +545,9 @@ export default {
             // 编辑任务
             this.$emit('editTask', id)
         },
-        replyTask(id,event) {
+        replyTask(row,event) {
             // 任务回复
-            this.$emit('replyTask', id, event)
+            this.$emit('replyTask', row, event, 5)
         }
     }
 }

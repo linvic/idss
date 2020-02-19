@@ -138,7 +138,7 @@ export default {
                 cancelButtonText: '取消',
                 inputType: 'textarea',
                 inputValue: j.outGoingDec,
-                inputPattern: /^.{1,400}$/,
+                inputPattern: /^[\s\S]{1,400}$/,
                 inputErrorMessage: '请输入（400字符内）'
             }).then(({ value }) => {
                 this.$set(j, 'outGoingDec', value);
@@ -204,7 +204,7 @@ export default {
                         inputType: 'textarea',
                         inputValue: j.denyReason,
                         inputPlaceholder: '请填写否认外出的原因',
-                        inputPattern: /^.{1,400}$/,
+                        inputPattern: /^[\s\S]{1,400}$/,
                         inputErrorMessage: '请输入（400字符内）'
                     }).then(({ value }) => {
                         this.$set(j, 'denyReason', value);

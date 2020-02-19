@@ -33,7 +33,7 @@
                             </ul>
                         </div>
                         <!-- 部门-用户 -->
-                        <el-collapse v-model="item.taskInfos.activeExecutorId">
+                        <el-collapse v-model="item.taskInfos.activeExecutorId" @change="changeUserLevelOneActive">
                             <el-collapse-item v-for="j in item.taskInfos.userTaskPojoList" :name="j.executorId" :key="j.executorId">
                                 <div slot="title" class="zc-collapse-title">
                                     <span>{{j.executorName}}</span>
@@ -62,7 +62,7 @@
                                                     <div>
                                                         <div class="input-back">
                                                             <input type="text" name="" value="" class="inputValue" />
-                                                            <span @click.stop="replyTask(props.row.id, $event)" class="replyValue">回复</span>
+                                                            <span @click.stop="replyTask(props.row, $event)" class="replyValue">回复</span>
                                                         </div>
                                                         <div v-for="(item,index) in props.row.taskReplyList" :key="index">
                                                             <div class="reback-time">{{ item.replyTimeDistanceDesc }}</div>
@@ -172,8 +172,8 @@
                             </el-collapse-item>
                         </el-collapse>
                         <!-- 部门-子部门 -->
-                        <el-collapse v-model="item.taskInfos.activeChildDeptId" accordion>
-                            <el-collapse-item v-for="j in item.taskInfos.childDeptTaskPojoList" :name="j.executorId" :key="j.executorId">
+                        <el-collapse v-model="item.taskInfos.activeChildDeptId" accordion @change="changeLevelTwoActive">
+                            <el-collapse-item v-for="j in item.taskInfos.childDeptTaskPojoList" :name="j.deptId" :key="j.deptId">
                                 <div slot="title" class="zc-collapse-title">
                                     <span>{{item.deptName}} - {{j.deptName}}</span>
                                     <div class="zc-collapse-title-btns">
@@ -189,7 +189,7 @@
                                         </ul>
                                     </div>
                                     <!-- 部门-子部门-用户 -->
-                                    <el-collapse v-model="j.activeExecutorId">
+                                    <el-collapse v-model="j.activeExecutorId" @change="changeUserLevelTwoActive">
                                         <el-collapse-item v-for="k in j.userTaskPojoList" :name="k.executorId" :key="k.executorId">
                                             <div slot="title" class="zc-collapse-title">
                                                 <span style="margin-left:10px;font-size:12px;">{{k.executorName}}</span>
@@ -218,7 +218,7 @@
                                                                 <div>
                                                                     <div class="input-back">
                                                                         <input type="text" name="" value="" class="inputValue" />
-                                                                        <span @click.stop="replyTask(props.row.id, $event)" class="replyValue">回复</span>
+                                                                        <span @click.stop="replyTask(props.row, $event)" class="replyValue">回复</span>
                                                                     </div>
                                                                     <div v-for="(item,index) in props.row.taskReplyList" :key="index">
                                                                         <div class="reback-time">{{ item.replyTimeDistanceDesc }}</div>
@@ -401,6 +401,9 @@ export default {
 
         this.getTaskDeptLists(); // 获取部门列表
     },
+    updated() {
+        this.$emit("pageLoadUpdate");
+    },
     watch: {
 
     },
@@ -445,30 +448,62 @@ export default {
                             _params.taskWorkloads = this.taskWorkloads.join(',')
                         }
                         deptPendingTaskByEntity(_params).then((res) => {
+                            console.log('任务视图加载完成')
+                            this.$emit('pageLoadAxiosCountReduce');
                             if (res.code == ERR_OK) {
+
                                 // 详情内容
                                 this.$set(item, 'taskInfos', res.data);
 
+                                // 读取二级展开记录
+                                let _activeChildDeptId = localStorage.getItem("activeChildDeptId");
+                                if (_activeChildDeptId) {
+                                    this.$set(item.taskInfos, 'activeChildDeptId', parseInt(_activeChildDeptId));
+                                }
+
+        
                                 if (item.taskInfos) {
                                     // 一级用户默认展开
                                     if (item.taskInfos.userTaskPojoList && item.taskInfos.userTaskPojoList.length > 0) {
-                                        let users = [];
-                                        for (let j of item.taskInfos.userTaskPojoList) {
-                                            users.push(j.executorId)
+                                        
+                                        let _activeExecutorIds = localStorage.getItem("activeExecutorId");
+                                        let _ids = [];
+                                        if (_activeExecutorIds && _activeExecutorIds.length > 0) {
+                                            _ids = _activeExecutorIds.split(',').map(Number);
                                         }
-                                        this.$set(item.taskInfos, 'activeExecutorId', users);
+                                        let users = [];
+
+                                        let localStorageUsers = [];
+                                        for (let j of item.taskInfos.userTaskPojoList) {
+                                            users.push(j.executorId);
+                                            if (_ids.indexOf(j.executorId) > -1) {
+                                                localStorageUsers.push(j.executorId);
+                                            }
+                                        }
+                                        this.$set(item.taskInfos, 'activeExecutorId', localStorageUsers.length > 0 ? localStorageUsers : users);
+                                        localStorage.setItem("activeExecutorId", localStorageUsers.join(','));
 
                                     }
 
                                     if (item.taskInfos.childDeptTaskPojoList && item.taskInfos.childDeptTaskPojoList.length > 0) {
                                         // 二级用户默认展开
                                         for (let j of item.taskInfos.childDeptTaskPojoList) {
+                                            let _activeTwoExecutorIds = localStorage.getItem("activeTwoExecutorId");
+                                            let _ids = [];
+                                            if (_activeTwoExecutorIds && _activeTwoExecutorIds.length > 0) {
+                                                _ids = _activeTwoExecutorIds.split(',').map(Number);
+                                            }
                                             let users = [];
+                                            let localStorageUsers = [];
                                             if (j.userTaskPojoList && j.userTaskPojoList.length > 0) {
                                                 for (let k of j.userTaskPojoList) {
-                                                    users.push(k.executorId)
+                                                    users.push(k.executorId);
+                                                    if (_ids.indexOf(k.executorId) > -1) {
+                                                        localStorageUsers.push(k.executorId);
+                                                    }
                                                 }
-                                                this.$set(j, 'activeExecutorId', users);
+                                                this.$set(j, 'activeExecutorId', localStorageUsers.length > 0 ? localStorageUsers : users);
+                                                localStorage.setItem("activeTwoExecutorId", localStorageUsers.join(','));
                                             }
                                         }
                                     }
@@ -489,6 +524,18 @@ export default {
             }
         },
         
+        changeLevelTwoActive(id) {
+            console.log('改变',id)
+            localStorage.setItem("activeChildDeptId", id);
+        },
+        changeUserLevelOneActive(ids){
+            console.log('改变',ids)
+            localStorage.setItem("activeExecutorId", ids.join(','));
+        },
+        changeUserLevelTwoActive(ids){
+            console.log('改变',ids)
+            localStorage.setItem("activeTwoExecutorId", ids.join(','));
+        },
         validateLevel(level) {
             let isCurHandLevel = false;
 
@@ -556,9 +603,9 @@ export default {
             // 编辑任务
             this.$emit('editTask', id)
         },
-        replyTask(id,event) {
+        replyTask(row,event) {
             // 任务回复
-            this.$emit('replyTask', id, event)
+            this.$emit('replyTask', row, event);
         }
     }
 }

@@ -4,3 +4,7 @@ export const token = state => state.token
 export const title = state => state.title
 
 export const singer = state => state.singer
+
+export const pageScrollTopByTaskManage = state => state.pageScrollTopByTaskManage
+
+

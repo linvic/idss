@@ -250,7 +250,7 @@ export default {
         outline: none;
         padding: 0 10px;
         transition: border-color .2s cubic-bezier(.645,.045,.355,1);
-        width: 180px;
+        width: 190px;
         .el-input__icon {
             line-height: 0;
         }

@@ -12,8 +12,8 @@
             </div>
             <div class="idss-set-list">
                 <el-row :gutter="180">
-                    <el-col :span="8" :lg="7" v-for="(item,index) in baseData" :key="index">
-                        <div class="idss-set-item">
+                    <el-col :span="8" v-for="(item,index) in baseData" :key="index">
+                        <div class="idss-set-item" style="max-width:330px;">
                             <div class="idss-set-item__bd">
                                 <p>{{item.attendanceName}}：<span>{{[item.chargeType, item.chargeValue, item.attendanceFailCode] | filterCutValue}}</span></p>
                             </div>
@@ -33,8 +33,8 @@
             </div>
             <div class="idss-set-list">
                 <el-row :gutter="180">
-                    <el-col :span="12" :lg="10">
-                        <div class="idss-set-item">
+                    <el-col :span="24">
+                        <div class="idss-set-item" style="max-width:500px;">
                             <div class="idss-set-item__bd">
                                 <p>个人总结核对打分时间： 
                                     <span v-if="checkDuration">0 - {{checkDuration}} 小时</span>
@@ -73,7 +73,7 @@
                 <el-form-item prop="value1">
                     <div slot="label">
                         <el-radio class="radio" v-model="changeCutValueForm.chargeType" :label="1" @change="changeCutType">
-                            <el-input  @keyup.native="onkeyupPrice($event)" v-model="changeCutValueForm.chargeValue" placeholder="" style="width:50px;" size="small"></el-input> 元
+                            <el-input  @keyup.native="onkeyupPrice($event)" v-model="changeCutValueForm.chargeValue" placeholder="" style="width:80px;" size="small"></el-input> 元
                             <span v-if="changeCutValueForm.attendanceFailCode == 'LEAVE_ABSENCE'"> / 小时</span>
                         </el-radio>
                     </div>

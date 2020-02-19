@@ -45,23 +45,13 @@
       </div>
     </div>
     <el-dialog
-      title="添加任务类型"
+      title="添加子任务类别"
       :visible.sync="dialogVisible3"
       width="560px"
       :before-close="handleClose3" top='25%' class="department department1">
       <el-form :label-position="labelPosition" ref="formLabelAlign3" :rules="rules" label-width="120px" :model="formLabelAlign3">
-        <el-form-item label="类型名称：" required prop="name3">
+        <el-form-item label="子类别名称：" required prop="name3">
           <el-input v-model.trim="formLabelAlign3.name3"></el-input>
-        </el-form-item>
-        <el-form-item label="类型分值：" required prop="region3" class="typeNumber">
-          <el-select v-model="formLabelAlign3.region3" placeholder="选择分值">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
         </el-form-item>
       </el-form>
         <span slot="footer" class="dialog-footer">
@@ -80,7 +70,7 @@
         </el-form-item>
         
         <div class="money-wrapper">
-          <div class="reward-left"><span style="color: red"> * </span>子任务类型：
+          <div class="reward-left"><span style="color: red"> * </span>子任务类别：
           </div>
           <div class="reward-right">
             <div class="reward-item" v-for='(m,index) in addMoneyData'  @click="checkType(m,index)">
@@ -108,7 +98,7 @@
           <el-input v-model.trim="ruleForm.name"></el-input>
         </el-form-item>
         <div class="money-wrapper">
-          <div class="reward-left"><span style="color: red"> * </span>子任务类型：
+          <div class="reward-left"><span style="color: red"> * </span>子任务类别：
           </div>
           <div class="reward-right">
             <div class="reward-item" v-for='(item,index) in editorData' @click="checkType(item,index)">
@@ -129,23 +119,13 @@
     </el-dialog>
     <!--编辑添加任务类别-->
     <el-dialog
-      title="添加子任务类型"
+      :title="editor? '编辑子任务类别' :'添加子任务类别'"
       :visible.sync="dialogVisible4"
       width="560px"
       :before-close="handleClose4" top='25%' class="department department1">
       <el-form :label-position="labelPosition" ref="formLabelAlign4" :rules="rules" label-width="120px" :model="formLabelAlign4">
-        <el-form-item label="子类型名称：" required prop="name4">
+        <el-form-item label="子类别名称：" required prop="name4">
           <el-input v-model.trim="formLabelAlign4.name4"></el-input>
-        </el-form-item>
-        <el-form-item label="子类型分值：" required prop="region4" class="typeNumber">
-          <el-select v-model="formLabelAlign4.region4" placeholder="选择分值">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
         </el-form-item>
       </el-form>
         <span slot="footer" class="dialog-footer">
@@ -191,21 +171,17 @@
         index:"",
         ruleForm: {
           name: '',
-          region: '',
           type: ''
         },
         formLabelAlign:{
           name: '',
-          region: '',
           type: ''
         },
         formLabelAlign3:{
           name3: '',
-          region3:"",
       },
         formLabelAlign4:{
           name4: '',
-          region4:"",
         },
         rules: {
           name: [
@@ -216,21 +192,14 @@
             {required: true, message: '请填写任务类别名称'},
             { max: 20, message: '长度不能超过20字符'}
           ],
-          region3:[
-            {required: true,type: 'number', message: '请选择'},
-          ],
           name4:[
             {required: true, message: '请填写任务类别名称'},
             { max: 20, message: '长度不能超过20字符'}
-          ],
-          region4:[
-            {required: true,type: 'number', message: '请选择'},
           ]
         },
         taskData:[],
         addMoneyData:[],
         editorData:[],
-        options: score,
         addIdEditor:"",
         editor:false
       };
@@ -285,7 +254,7 @@
               this.$notify({
                 title: '提示',
                 duration:3000,
-                message: "请添加子任务类型"
+                message: "请添加子任务类别"
               });
             }else{
               this.dialogVisible = false;
@@ -333,7 +302,7 @@
         this.dialogVisible2 = false
         this.$refs[formName].resetFields();
       },
-//      添加分组类型
+//      添加分组类别
       addTypes(){
         this.dialogVisible4= true;
         this.editor=false;
@@ -344,7 +313,6 @@
       checkType(item,index){
         this.dialogVisible4= true;
         this.formLabelAlign4.name4=item.taskTypeName;
-        this.formLabelAlign4.region4=item.taskTypeScore;
         this.addIdEditor=item.taskTypeId
         this.editor=true;
         this.index=index;
@@ -376,7 +344,7 @@
               this.$notify({
                 title: '提示',
                 duration:3000,
-                message: "请添加子任务类型"
+                message: "请添加子任务类别"
               });
               return
             }
@@ -409,13 +377,13 @@
             var self=this;
             let param={
               taskTypeName:this.formLabelAlign3.name3,
-              taskTypeScore:this.formLabelAlign3.region3,
+              taskTypeScore:0
             }
             addTaskType(param).then(function (res) {
               if(res.code==ERR_OK){
                 self.$notify({
-                  title: '添加子任务类型',
-                  message: '添加子任务类型成功',
+                  title: '添加子任务类别',
+                  message: '添加子任务类别成功',
                   duration:3000,
                   type: 'success'
                 });
@@ -442,18 +410,16 @@
               var param={
                 taskTypeId:this.addIdEditor,
                 taskTypeName:this.formLabelAlign4.name4,
-                taskTypeScore:this.formLabelAlign4.region4
+                taskTypeScore:0
               }
               taskTypeupdate(param).then((res) =>{
                 if(res.code==ERR_OK){
                   if(this.editorData.length>0){
                     this.editorData[this.index].taskTypeName=this.formLabelAlign4.name4
-                    this.editorData[this.index].taskTypeScore=this.formLabelAlign4.region4
                     Vue.set(this.editorData, this.index,this.editorData[this.index]);
                   }
                   if(this.addMoneyData.length>0){
                     this.addMoneyData[this.index].taskTypeName=this.formLabelAlign4.name4
-                    this.addMoneyData[this.index].taskTypeScore=this.formLabelAlign4.region4
                     Vue.set(this.addMoneyData, this.index,this.addMoneyData[this.index]);
                   }
                 }else{
@@ -476,14 +442,14 @@
         let param={
           taskTypeId:item,
           taskTypeName:this.formLabelAlign4.name4,
-          taskTypeScore:this.formLabelAlign4.region4,
+          taskTypeScore:0
         }
         addTaskType(param).then((res)=> {
           if(res.code==ERR_OK){
             this.$notify({
-              title: '添加子任务类型',
+              title: '添加子任务类别',
               duration:3000,
-              message: '添加子任务类型成功',
+              message: '添加子任务类别成功',
               type: 'success'
             });
             this.editorData.push(res.data)
@@ -813,7 +779,7 @@
     float: left;
   }
   .reward-left{
-   width: 95px;
+   width: 100px;
     height:22px;
     line-height: 22px;
   }
@@ -822,7 +788,6 @@
     width: 355px;
   }
   .reward-right .reward-item{
-    width: 70px;
     height:22px;
     line-height: 22px;
     font-size: 14px;
@@ -834,6 +799,7 @@
     cursor: pointer;
     box-sizing: border-box;
     margin-bottom: 10px;
+    margin-right: 20px;
   }
   .reward-item:hover{
     box-sizing: border-box;

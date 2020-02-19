@@ -4,7 +4,8 @@ const state = {
   singer: {},
   token:{token:null},
   fetchLoading: {fetchLoading:false},
-  title:{title:null}
+  title:{title:null},
+  pageScrollTopByTaskManage: 0,
 }
 
 export default state

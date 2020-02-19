@@ -566,7 +566,7 @@ export default {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     inputType: 'textarea',
-                    inputPattern: /^.{1,400}$/,
+                    inputPattern: /^[\s\S]{1,400}$/,
                     inputErrorMessage: '请输入（400字符内）'
                 }).then(({ value }) => {
                     

@@ -1,10 +1,9 @@
 <template>
-    <div class="wrapper">
+    <div class="wrapper" ref="taskManagerPage" v-loading.fullscreen.lock="loading">
         <div class="router-wrapper">
             <span class="child1">任务管理</span> /
             <span class="child2">任务列表</span>
         </div>
-        {{taskForm.taskTypeName}}
         <!-- 任务统计数据 -->
         <div v-if="userView != 'STAFF'" class="m-b">
             <div class="take-top-wrapper">
@@ -48,7 +47,7 @@
                                     <div>
                                         <div class="input-back">
                                             <input type="text" name="" value="" class="inputValue" />
-                                            <span @click="replyTask(props.row.id, $event)"
+                                            <span @click="replyTask(props.row, $event)"
                                                 class="replyValue">回复</span>
                                         </div>
                                         <div class="" v-for="(item,index) in props.row.taskReplyList" :key="index">
@@ -180,7 +179,7 @@
                                     <div>
                                         <div class="input-back">
                                             <input type="text" name="" value="" class="inputValue" />
-                                            <span @click="replyTask(props.row.id, $event)"
+                                            <span @click="replyTask(props.row, $event)"
                                                 class="replyValue">回复</span>
                                         </div>
                                         <div v-for="(item,index) in props.row.taskReplyList" :key="index">
@@ -311,7 +310,7 @@
                                 <div>
                                     <div class="input-back">
                                         <input type="text" name="" value="" class="inputValue" />
-                                        <span @click="replyTask(props.row.id, $event)"
+                                        <span @click="replyTask(props.row, $event)"
                                             class="replyValue">回复</span>
                                     </div>
                                     <div class="" v-for="(item,index) in props.row.taskReplyList" :key="index">
@@ -423,6 +422,8 @@
             @levelComeplete="levelComeplete"
             @editTask="editTask"
             @replyTask="replyTask"
+            @pageLoadAxiosCountReduce="pageLoadAxiosCountReduce"
+            @pageLoadUpdate="pageLoadUpdate"
             ></DeptView>
             
         <!-- 部门视图 -->
@@ -435,6 +436,8 @@
             @levelComeplete="levelComeplete"
             @editTask="editTask"
             @replyTask="replyTask"
+            @pageLoadAxiosCountReduce="pageLoadAxiosCountReduce"
+            @pageLoadUpdate="pageLoadUpdate"
             ></TaskTypeView>
         <!--发布任务模态窗-->
         <el-dialog
@@ -461,10 +464,10 @@
                         <el-option v-for="item in users" :key="item.userId" :label="item.userName" :value="item.userId"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="任务类型:" v-show="taskForm.taskTypeName">
+                <el-form-item label="任务类型:" v-if="taskForm.taskTypeName">
                     <el-input v-model="taskForm.taskTypeName" disabled style="width:363px;display:inline-block;"></el-input>
                 </el-form-item>
-                <el-form-item label="任务类型:" v-show="!taskForm.taskTypeName" required prop="taskTypeId" :class="{'is-change': handTaskType === 3 && (auditOldData.taskTypeId != taskForm.taskTypeId)}">
+                <el-form-item label="任务类型:" v-if="!taskForm.taskTypeName" required prop="taskTypeId" :class="{'is-change': handTaskType === 3 && (auditOldData.taskTypeId != taskForm.taskTypeId)}">
                     <el-select v-model="taskForm.taskTypeId" clearable placeholder="请选择类型" style="width:363px;display:inline-block;">
                         <el-option
                             v-for="item in optionType"
@@ -503,7 +506,6 @@
                         <i class="el-icon-warning"></i>
                         <div slot="content">
                             <p>任务工作量说明：</p>
-                            <p>- 本月基准任务为“完成2篇投后月报”，占本月计划考核权重的13%；</p>
                             <p>- 任务发布后会由上级进行审核，审核通过后本月计划中所有任务的权重都自动修改；</p>
                             <p>- 任务工作量基数为“1”时，不需要上级审核。</p>
                         </div>
@@ -737,8 +739,14 @@ import {  ERR_OK } from 'service/config'
 import Sortable from 'sortablejs'
 import DeptView from './components/DeptView'
 import TaskTypeView from './components/TaskTypeView'
+import { mapGetters } from 'vuex'
 
 export default {
+    computed: {
+        ...mapGetters([
+            'pageScrollTopByTaskManage'
+        ])
+    },
     components: {
         DeptView,
         TaskTypeView
@@ -752,6 +760,8 @@ export default {
             }
         };
         return {
+            loading: false,
+            scrollTop: 0,
             userView: 'STAFF', // MANAGER   DEPT   STAFF
             userId: '',
             canAddTaskGroup: false, // 是否有创建任务组权限
@@ -852,6 +862,7 @@ export default {
                 reportId: "", // 任务汇报对象
                 taskWorkload: "", // 任务工作量
                 taskTypeId: "", // 任务类型
+                taskTypeIdBack: "", // 任务类型id备份，用于判断考核任务
                 taskTypeName: '', // 任务类型名称，用于判断考核任务
                 executorId: "", // 执行人
                 modifyReason: '', //修改原因
@@ -922,6 +933,8 @@ export default {
             pageTotal: 0,
             pageTotalToApprove: 0,
             pageTotalWaitEvaluate: 0,
+            preScrollTop: 0,
+            pageLoadAxiosCount: -1, //页面数据加载接口数量
                 
             
         }
@@ -931,18 +944,85 @@ export default {
         this.deptLevel = localStorage.getItem("deptLevel");
         this.userView = localStorage.getItem("userView");
         this.canAddTaskGroup = localStorage.getItem("canAddTaskGroup") == 'true' ? true : false;
+        
+    },
+    mounted() {
+        let pageScrollTopByTaskManage = this.pageScrollTopByTaskManage;
+        if (pageScrollTopByTaskManage && pageScrollTopByTaskManage > 0){
+            this.preScrollTop = parseFloat(pageScrollTopByTaskManage);
+            
+            if (this.userView == 'MANAGER') {
+                this.pageLoadAxiosCount = 4; // 总经理 我的任务1 + 待审核2 + 视图1
+            } else if (this.userView == 'DEPT') {
+                this.pageLoadAxiosCount = 3; // 部门 我的任务1 + 待处理1 + 视图1
+            } else {
+                this.pageLoadAxiosCount = 1; // 员工
+            }
+        
+            this.pageInit();
+        } else {
+            this.pageInit();
+        }
+        
+        // this.$refs.taskManagerPage.scrollTop = 380;
+    },
+    updated() {
+        
+        this.pageLoadUpdate();
+        
+    },
+    beforeRouteLeave(to, from, next) {
+        console.log('路由')
+        if(to.name == 'taskManageDetail') {
+            //跳转为详情页，就保存当前滚动的距离
+            // localStorage.setItem("pageScrollTopByTaskManage", window.getScrollTop());
+            this.$store.dispatch('setPageScrollTopByTaskManage',window.getScrollTop());
 
-        
-        this.pageInit();
-        
-        
-
+        } else {
+            // localStorage.setItem("pageScrollTopByTaskManage", 0);
+            this.$store.dispatch('setPageScrollTopByTaskManage', 0);
+        }
+        next();
     },
     watch: {
 
     },
     methods: {
-
+        pageLoadUpdate() {
+            // 更新
+            if(this.preScrollTop && this.pageLoadAxiosCount === 0){
+                
+                this.pageLoadAxiosCount--; // 只滚动一次
+                window.setScrollTop(this.preScrollTop);
+                this.$nextTick(()=> {
+                    this.loading = false;
+                })
+            }
+        },
+        pageLoadAfterScroll() {
+            // 页面加载滚动，加载后需滚动到原位置
+            this.preScrollTop = window.getScrollTop();
+            if(this.preScrollTop > 0) {
+                this.loading = true;
+            }
+            setTimeout(()=>{
+                this.loading = false;
+                // 防止异常未关闭
+            },1500)
+            if (this.userView == 'MANAGER') {
+                this.pageLoadAxiosCount = 4; // 总经理 我的任务1 + 待审核2 + 视图1
+            } else if (this.userView == 'DEPT') {
+                this.pageLoadAxiosCount = 3; // 部门 我的任务1 + 待处理1 + 视图1
+            } else {
+                this.pageLoadAxiosCount = 1; // 员工
+            }
+            this.pageInit();
+        },
+        pageLoadAxiosCountReduce() {
+            this.$nextTick(() => {
+                this.pageLoadAxiosCount--;
+            })
+        },
         pageInit() {
             this.viewType = 0;
             if(this.userView != 'STAFF') {
@@ -956,9 +1036,6 @@ export default {
                 } else if (this.userView == 'DEPT') {
                     this.getUntreatTask(); //获取员工待处理
                 }
-                
-
-
                 this.$nextTick(() => {
                     if (localStorage.getItem('viewType') == 2) {
                         this.viewType = 2;
@@ -966,8 +1043,10 @@ export default {
                         this.viewType = 1;
                     }
                 });
+                
             }
             this.getData(); // 获取我的任务
+            
             this.departmentList1(); //获取部门列表
             this.getTaskExecutors(); //获取执行人列表
             this.getProjectLists(); //获取关联项目列表
@@ -978,7 +1057,6 @@ export default {
         getUntreatTask1() {
             getDeptStatistics().then((res) => {
                 if (res.code == ERR_OK) {
-                    console.log('统计数据',res.data)
                     this.taskCountInfo = res.data;
                 }
             })
@@ -1122,9 +1200,8 @@ export default {
                         this.result = res.data.result;
                         this.total = res.data.totalCount;
                         this.myPendingTotal = res.data.totalCount;
-                        this.$nextTick(() => {
-                            // this.setSort_myTask(this.result)
-                        })
+                        console.log('我的任务加载完成')
+                        this.pageLoadAxiosCountReduce();
                     }
                 })
             } else {
@@ -1136,9 +1213,8 @@ export default {
                     if (res.code == ERR_OK) {
                         this.result = res.data.result;
                         this.total = res.data.totalCount;
-                        this.$nextTick(() => {
-                            // this.setSort_myTask(this.result)
-                        })
+                        console.log('我的任务加载完成')
+                        this.pageLoadAxiosCountReduce();
                     }
                 })
             }
@@ -1248,9 +1324,9 @@ export default {
                 if (res.code == ERR_OK) {
                     this.result1 = res.data;
                     this.pendingTotal = res.data.length ? res.data.length : 0;
-                    this.$nextTick(() => {
-                        // this.setSort_Tab0(this.result1)
-                    })
+                    console.log('员工待处理任务列表加载完成')
+                    this.pageLoadAxiosCountReduce();
+                    
                 }
             })
         },
@@ -1280,9 +1356,14 @@ export default {
                     pageShow: this.pageSize
                 }).then((res) => {
                     if (res.code == ERR_OK) {
-                        this.pageData = res.data.result;
-                        this.pageTotal = res.data.totalCount;
+                        if(!type) {
+                            this.pageData = res.data.result;
+                            this.pageTotal = res.data.totalCount;
+                        }
                         this.pageTotalToApprove = res.data.totalCount;
+                        console.log('总经理待审核列表加载完成')
+                        this.pageLoadAxiosCountReduce();
+                        
                     }
                 })
             } else {
@@ -1292,9 +1373,13 @@ export default {
                     pageShow: this.pageSize
                 }).then((res) => {
                     if (res.code == ERR_OK) {
-                        this.pageData = res.data.result;
-                        this.pageTotal = res.data.totalCount;
+                        if(!type) {
+                            this.pageData = res.data.result;
+                            this.pageTotal = res.data.totalCount;
+                        }
                         this.pageTotalWaitEvaluate = res.data.totalCount;
+                        console.log('总经理待审核列表加载完成');
+                        this.pageLoadAxiosCountReduce();
                     }
                 })
             }
@@ -1320,6 +1405,7 @@ export default {
         // 弹窗关闭
         beforeCloseTaskForm() {
             this.taskForm.taskTypeName = '';
+            this.taskForm.taskTypeIdBack = ''; // 备份值
             this.$nextTick(()=> {
                 this.$refs.taskForm.resetFields();
             })
@@ -1349,6 +1435,10 @@ export default {
             };
             if(!this.taskForm.taskTypeName) {
                 params.taskCategory = this.taskForm.taskCategory; // 任务性质
+                params.taskTypeId = this.taskForm.taskTypeId;
+            } else {
+                params.taskCategory = 2;
+                params.taskTypeId = this.taskForm.taskTypeIdBack;
             }
 
             if (this.taskForm.taskCategory == 0) {
@@ -1382,11 +1472,8 @@ export default {
                 }
                 saveDraftTask(params).then(res => {
                     if (res.code == ERR_OK) {
-                        this.$nextTick(()=> {
-                            this.$refs.taskForm.resetFields();
-                        })
-                        this.dialogTaskForm = false;
-                        this.pageInit();
+                        this.beforeCloseTaskForm();
+                        this.pageLoadAfterScroll();
                         this.$notify({
                             title: "成功",
                             message: "保存成功",
@@ -1407,11 +1494,8 @@ export default {
                         }
                         publishTask(params).then(res => {
                             if (res.code == ERR_OK) {
-                                this.$nextTick(()=> {
-                                    this.$refs.taskForm.resetFields();
-                                })
-                                this.dialogTaskForm = false;
-                                this.pageInit();
+                                this.beforeCloseTaskForm();
+                                this.pageLoadAfterScroll();
                                 this.$notify({
                                     title: "成功",
                                     message: "发起任务成功",
@@ -1434,11 +1518,8 @@ export default {
                         params.modifyReason = this.taskForm.modifyReason;
                         sureEditorTask(params).then(res => {
                             if (res.code == ERR_OK) {
-                                this.$nextTick(()=> {
-                                    this.$refs.taskForm.resetFields();
-                                })
-                                this.dialogTaskForm = false;
-                                this.pageInit();
+                                this.beforeCloseTaskForm();
+                                this.pageLoadAfterScroll();
                                 this.$notify({
                                     title: "成功",
                                     message: "编辑任务成功",
@@ -1461,11 +1542,8 @@ export default {
                         params.modifyReason = this.taskForm.modifyReason;
                         approveTask(params).then(res => {
                             if (res.code == ERR_OK) {
-                                this.$nextTick(()=> {
-                                    this.$refs.taskForm.resetFields();
-                                })
-                                this.dialogTaskForm = false;
-                                this.pageInit();
+                                this.beforeCloseTaskForm();
+                                this.pageLoadAfterScroll();
                                 this.$notify({
                                     title: "成功",
                                     message: "审核任务成功",
@@ -1528,6 +1606,7 @@ export default {
                         if (this.taskForm.taskCategory == 2) {
                             this.taskForm.taskCategory = 0;
                             this.taskForm.taskTypeName = res.data.taskTypeName;
+                            this.taskForm.taskTypeIdBack = res.data.taskTypeId; // 备份值
                         }
 
                         this.taskForm.taskGroupId = res.data.taskGroupId ? res.data.taskGroupId : '';
@@ -1600,6 +1679,13 @@ export default {
                         this.taskForm.planEndDate = res.data.planEndDate;
                         this.taskForm.content = res.data.content;
                         this.taskForm.taskCategory = res.data.taskCategory;
+                        // 考核任务判断
+                        if (this.taskForm.taskCategory == 2) {
+                            this.taskForm.taskCategory = 0;
+                            this.auditOldData.taskCategory = 0;
+                            this.taskForm.taskTypeName = res.data.taskTypeName;
+                            this.taskForm.taskTypeIdBack = res.data.taskTypeId; // 备份值
+                        }
                         this.taskForm.taskGroupId = res.data.taskGroupId ? res.data.taskGroupId : '';
                         
                         this.taskForm.modifyReason = res.data.modifyReason;
@@ -1714,7 +1800,7 @@ export default {
                             this.cancleFormClose(); // 关闭弹窗
                             this.beforeCloseTaskForm();
                             
-                            this.pageInit();
+                            this.pageLoadAfterScroll();
                             this.$notify({
                                 title: "成功",
                                 message: "任务已删除",
@@ -1731,14 +1817,14 @@ export default {
             })
             
         },
-
         // 提醒完成
         tipCompleteModal(id){
+            
             remindTaskList({
                 id: id
             }).then((res) => {
                 if(res.code == ERR_OK) {
-                    this.pageInit();
+                    this.pageLoadAfterScroll();
                     this.$notify({
                         title: '成功',
                         message: '已提醒该员工该任务已完成',
@@ -1775,7 +1861,7 @@ export default {
                     }).then(res => {
                         if (res.code == ERR_OK) {
                             this.evaluateFormClose(); // 关闭弹窗
-                            this.pageInit();
+                            this.pageLoadAfterScroll();
                             this.$notify({
                                 title: "成功",
                                 message: "评价完成",
@@ -1815,7 +1901,7 @@ export default {
                     }).then(res => {
                         if (res.code == ERR_OK) {
                             this.completeFormClose(); // 关闭弹窗
-                            this.pageInit();
+                            this.pageLoadAfterScroll();
                             this.$notify({
                                 title: "成功",
                                 message: "完成任务已发送",
@@ -1847,9 +1933,8 @@ export default {
             return isCurHandLevel;
         },
         // 快捷回复
-        replyTask(id,event){
-            let val = event.target.parentNode.childNodes[0].value
-            console.log(event,val)
+        replyTask(row, event){
+            let val = event.target.parentNode.childNodes[0].value;
             
             if(val.trim().length > 200) {
                 this.$notify({
@@ -1858,11 +1943,13 @@ export default {
                 });
             }else{
                 userTaskReply({
-                    taskId: id,
+                    taskId: row.id,
                     replyDesc: val
                 }).then((res) => {
                     if (res.code == ERR_OK) {
-                        this.pageInit();
+                        event.target.parentNode.childNodes[0].value = '';
+                        this.$set(row, 'taskReplyList', res.data);
+                        
                         this.$notify({
                             title: '成功',
                             message: '恭喜你，回复成功',

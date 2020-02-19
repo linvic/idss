@@ -11,62 +11,67 @@
                 <div class="idss-list-top-title">提交时间设置</div>
             </div>
             <div class="idss-set-list">
-                <el-row :gutter="180">
-                    <el-col :span="12" :lg="10">
-                        <div class="idss-set-item">
-                            <div class="idss-set-item__bd">
-                                <p>个人计划： {{[ submitTimeParams1.submitTimeScope, 1 ] | filterSubmitTimeParams}}</p>
-                                <span>当前：{{[ submitTimeParams1.submitTimeScope, 1 ] | filterSubmitTimeParamsCur}}</span>
+                <el-row :gutter="20">
+                    <el-col :span="11">
+                        <div style="max-width: 500px;">
+                            <div class="idss-set-item">
+                                <div class="idss-set-item__bd">
+                                    <p>个人计划： {{[ submitTimeParams1.submitTimeScope, 1 ] | filterSubmitTimeParams}}</p>
+                                    <span>当前：{{[ submitTimeParams1.submitTimeScope, 1 ] | filterSubmitTimeParamsCur}}</span>
+                                </div>
+                                <div class="idss-set-item__ft">
+                                    <el-button size="small" @click="setSubmitTimeParams(1,1,submitTimeParams1.submitTimeScope,submitTimeParams1.submitRepeatMonth)">设置</el-button>
+                                </div>
                             </div>
-                            <div class="idss-set-item__ft">
-                                <el-button size="small" @click="setSubmitTimeParams(1,1,submitTimeParams1.submitTimeScope,submitTimeParams1.submitRepeatMonth)">设置</el-button>
+                            <div class="idss-set-item">
+                                <div class="idss-set-item__bd">
+                                    <p>二级部门计划： {{[ submitTimeParams2.submitTimeScope, 1 ] | filterSubmitTimeParams}}</p>
+                                    <span>当前：{{[ submitTimeParams2.submitTimeScope, 1 ] | filterSubmitTimeParamsCur}}</span>
+                                </div>
+                                <div class="idss-set-item__ft">
+                                    <el-button size="small" @click="setSubmitTimeParams(1,2,submitTimeParams2.submitTimeScope,submitTimeParams2.submitRepeatMonth)">设置</el-button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="idss-set-item">
-                            <div class="idss-set-item__bd">
-                                <p>二级部门计划： {{[ submitTimeParams2.submitTimeScope, 1 ] | filterSubmitTimeParams}}</p>
-                                <span>当前：{{[ submitTimeParams2.submitTimeScope, 1 ] | filterSubmitTimeParamsCur}}</span>
-                            </div>
-                            <div class="idss-set-item__ft">
-                                <el-button size="small" @click="setSubmitTimeParams(1,2,submitTimeParams2.submitTimeScope,submitTimeParams2.submitRepeatMonth)">设置</el-button>
-                            </div>
-                        </div>
-                        <div class="idss-set-item">
-                            <div class="idss-set-item__bd">
-                                <p>一级部门计划： {{[ submitTimeParams3.submitTimeScope, 1 ] | filterSubmitTimeParams}}</p>
-                                <span>当前：{{[ submitTimeParams3.submitTimeScope, 1 ] | filterSubmitTimeParamsCur}}</span>
-                            </div>
-                            <div class="idss-set-item__ft">
-                                <el-button size="small" @click="setSubmitTimeParams(1,3,submitTimeParams3.submitTimeScope,submitTimeParams3.submitRepeatMonth)">设置</el-button>
+                            <div class="idss-set-item">
+                                <div class="idss-set-item__bd">
+                                    <p>一级部门计划： {{[ submitTimeParams3.submitTimeScope, 1 ] | filterSubmitTimeParams}}</p>
+                                    <span>当前：{{[ submitTimeParams3.submitTimeScope, 1 ] | filterSubmitTimeParamsCur}}</span>
+                                </div>
+                                <div class="idss-set-item__ft">
+                                    <el-button size="small" @click="setSubmitTimeParams(1,3,submitTimeParams3.submitTimeScope,submitTimeParams3.submitRepeatMonth)">设置</el-button>
+                                </div>
                             </div>
                         </div>
                     </el-col>
-                    <el-col :span="12" :lg="10">
-                        <div class="idss-set-item">
-                            <div class="idss-set-item__bd">
-                                <p>个人总结： {{[ submitTimeParams4.submitTimeScope, 1 ] | filterSubmitTimeParams}}</p>
-                                <span>当前：{{[ submitTimeParams4.submitTimeScope, 1 ] | filterSubmitTimeParamsCur}}</span>
+                    <el-col :span="1">&nbsp;</el-col>
+                    <el-col :span="11">
+                        <div style="max-width: 500px;">
+                            <div class="idss-set-item">
+                                <div class="idss-set-item__bd">
+                                    <p>个人总结： {{[ submitTimeParams4.submitTimeScope, 1 ] | filterSubmitTimeParams}}</p>
+                                    <span>当前：{{[ submitTimeParams4.submitTimeScope, 1 ] | filterSubmitTimeParamsCur}}</span>
+                                </div>
+                                <div class="idss-set-item__ft">
+                                    <el-button size="small" @click="setSubmitTimeParams(2,1,submitTimeParams4.submitTimeScope,submitTimeParams4.submitRepeatMonth)">设置</el-button>
+                                </div>
                             </div>
-                            <div class="idss-set-item__ft">
-                                <el-button size="small" @click="setSubmitTimeParams(2,1,submitTimeParams4.submitTimeScope,submitTimeParams4.submitRepeatMonth)">设置</el-button>
+                            <div class="idss-set-item">
+                                <div class="idss-set-item__bd">
+                                    <p>二级部门总结： {{[ submitTimeParams5.submitTimeScope, 1 ] | filterSubmitTimeParams}}</p>
+                                    <span>当前：{{[ submitTimeParams5.submitTimeScope, 1 ] | filterSubmitTimeParamsCur}}</span>
+                                </div>
+                                <div class="idss-set-item__ft">
+                                    <el-button size="small" @click="setSubmitTimeParams(2,2,submitTimeParams5.submitTimeScope,submitTimeParams5.submitRepeatMonth)">设置</el-button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="idss-set-item">
-                            <div class="idss-set-item__bd">
-                                <p>二级部门总结： {{[ submitTimeParams5.submitTimeScope, 1 ] | filterSubmitTimeParams}}</p>
-                                <span>当前：{{[ submitTimeParams5.submitTimeScope, 1 ] | filterSubmitTimeParamsCur}}</span>
-                            </div>
-                            <div class="idss-set-item__ft">
-                                <el-button size="small" @click="setSubmitTimeParams(2,2,submitTimeParams5.submitTimeScope,submitTimeParams5.submitRepeatMonth)">设置</el-button>
-                            </div>
-                        </div>
-                        <div class="idss-set-item">
-                            <div class="idss-set-item__bd">
-                                <p>一级部门总结： {{[ submitTimeParams6.submitTimeScope, 1 ] | filterSubmitTimeParams}}</p>
-                                <span>当前：{{[ submitTimeParams6.submitTimeScope, 1 ] | filterSubmitTimeParamsCur}}</span>
-                            </div>
-                            <div class="idss-set-item__ft">
-                                <el-button size="small" @click="setSubmitTimeParams(2,3,submitTimeParams6.submitTimeScope,submitTimeParams6.submitRepeatMonth)">设置</el-button>
+                            <div class="idss-set-item">
+                                <div class="idss-set-item__bd">
+                                    <p>一级部门总结： {{[ submitTimeParams6.submitTimeScope, 1 ] | filterSubmitTimeParams}}</p>
+                                    <span>当前：{{[ submitTimeParams6.submitTimeScope, 1 ] | filterSubmitTimeParamsCur}}</span>
+                                </div>
+                                <div class="idss-set-item__ft">
+                                    <el-button size="small" @click="setSubmitTimeParams(2,3,submitTimeParams6.submitTimeScope,submitTimeParams6.submitRepeatMonth)">设置</el-button>
+                                </div>
                             </div>
                         </div>
                     </el-col>
@@ -78,9 +83,9 @@
                 <div class="idss-list-top-title">核对时间设置</div>
             </div>
             <div class="idss-set-list">
-                <el-row :gutter="180">
-                    <el-col :span="12" :lg="10">
-                        <div class="idss-set-item">
+                <el-row :gutter="20">
+                    <el-col :span="11">
+                        <div class="idss-set-item" style="max-width:500px;">
                             <div class="idss-set-item__bd">
                                 <p>个人总结核对打分时间： 
                                     <span v-if="checkDuration">0 - {{checkDuration}} 小时</span>
@@ -101,9 +106,9 @@
                 <div class="idss-list-top-title">总结打分区间设置</div>
             </div>
             <div class="idss-set-list">
-                <el-row :gutter="180">
-                    <el-col :span="12" :lg="10">
-                        <div class="idss-set-item">
+                <el-row :gutter="20">
+                    <el-col :span="11">
+                        <div class="idss-set-item" style="max-width:500px;">
                             <div class="idss-set-item__bd">
                                 <p>个人总结打分区间： {{summaryScoreScopeMin}} - {{summaryScoreScopeMax}} 分</p>
                                 <span>任务完成时的自评打分参照此区间分值</span>
@@ -122,8 +127,8 @@
                 <div class="idss-list-top-title">总结打分比例设置</div>
             </div>
             <div class="idss-set-list">
-                <el-row :gutter="180">
-                    <el-col :span="16">
+                <el-row :gutter="20">
+                    <el-col :span="24" style="max-width:660px;">
                         <div class="idss-set-item">
                             <div class="idss-set-item__bd">
                                 <p>一级部门员工比例：{{summaryScoreValue1 | filterSummaryScore}}</p>
@@ -165,63 +170,68 @@
                 <div class="idss-list-top-title">计划总结延迟提交时间设置</div>
             </div>
             <div class="idss-set-list">
-                <el-row :gutter="180">
-                    <el-col :span="12" :lg="10">
-                        <div class="idss-set-item">
-                            <div class="idss-set-item__bd">
-                                <p>个人计划：</p>
-                                <span>{{submitTimeLater1.submitTimeLater | filterTimeLater}}</span>
-                                
+                <el-row :gutter="20">
+                    <el-col :span="11">
+                        <div style="max-width:500px;">
+                            <div class="idss-set-item">
+                                <div class="idss-set-item__bd">
+                                    <p>个人计划：</p>
+                                    <span>{{submitTimeLater1.submitTimeLater | filterTimeLater}}</span>
+                                    
+                                </div>
+                                <div class="idss-set-item__ft">
+                                    <el-button size="small" @click="setLaterTime(1, 1, submitTimeLater1.submitTimeLater)">设置</el-button>
+                                </div>
                             </div>
-                            <div class="idss-set-item__ft">
-                                <el-button size="small" @click="setLaterTime(1, 1, submitTimeLater1.submitTimeLater)">设置</el-button>
+                            <div class="idss-set-item">
+                                <div class="idss-set-item__bd">
+                                    <p>二级部门计划：</p>
+                                    <span>{{submitTimeLater2.submitTimeLater | filterTimeLater}}</span>
+                                </div>
+                                <div class="idss-set-item__ft">
+                                    <el-button size="small" @click="setLaterTime(1, 2, submitTimeLater2.submitTimeLater)">设置</el-button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="idss-set-item">
-                            <div class="idss-set-item__bd">
-                                <p>二级部门计划：</p>
-                                <span>{{submitTimeLater2.submitTimeLater | filterTimeLater}}</span>
-                            </div>
-                            <div class="idss-set-item__ft">
-                                <el-button size="small" @click="setLaterTime(1, 2, submitTimeLater2.submitTimeLater)">设置</el-button>
-                            </div>
-                        </div>
-                        <div class="idss-set-item">
-                            <div class="idss-set-item__bd">
-                                <p>一级部门计划：</p>
-                                <span>{{submitTimeLater3.submitTimeLater | filterTimeLater}}</span>
-                            </div>
-                            <div class="idss-set-item__ft">
-                                <el-button size="small" @click="setLaterTime(1, 3, submitTimeLater3.submitTimeLater)">设置</el-button>
+                            <div class="idss-set-item">
+                                <div class="idss-set-item__bd">
+                                    <p>一级部门计划：</p>
+                                    <span>{{submitTimeLater3.submitTimeLater | filterTimeLater}}</span>
+                                </div>
+                                <div class="idss-set-item__ft">
+                                    <el-button size="small" @click="setLaterTime(1, 3, submitTimeLater3.submitTimeLater)">设置</el-button>
+                                </div>
                             </div>
                         </div>
                     </el-col>
-                    <el-col :span="12" :lg="10">
-                        <div class="idss-set-item">
-                            <div class="idss-set-item__bd">
-                                <p>个人总结：</p>
-                                <span>{{submitTimeLater4.submitTimeLater | filterTimeLater}}</span>
+                    <el-col :span="1">&nbsp;</el-col>
+                    <el-col :span="11">
+                        <div style="max-width:500px;">
+                            <div class="idss-set-item">
+                                <div class="idss-set-item__bd">
+                                    <p>个人总结：</p>
+                                    <span>{{submitTimeLater4.submitTimeLater | filterTimeLater}}</span>
+                                </div>
+                                <div class="idss-set-item__ft">
+                                    <el-button size="small" @click="setLaterTime(2, 1, submitTimeLater4.submitTimeLater)">设置</el-button>
+                                </div>
                             </div>
-                            <div class="idss-set-item__ft">
-                                <el-button size="small" @click="setLaterTime(2, 1, submitTimeLater4.submitTimeLater)">设置</el-button>
+                            <div class="idss-set-item">
+                                <div class="idss-set-item__bd">
+                                    <p>二级部门总结：</p>
+                                    <span>{{submitTimeLater5.submitTimeLater | filterTimeLater}}</span>
+                                </div>
+                                <div class="idss-set-item__ft">
+                                    <el-button size="small" @click="setLaterTime(2, 2, submitTimeLater5.submitTimeLater)">设置</el-button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="idss-set-item">
-                            <div class="idss-set-item__bd">
-                                <p>二级部门总结：</p>
-                                <span>{{submitTimeLater5.submitTimeLater | filterTimeLater}}</span>
-                            </div>
-                            <div class="idss-set-item__ft">
-                                <el-button size="small" @click="setLaterTime(2, 2, submitTimeLater5.submitTimeLater)">设置</el-button>
-                            </div>
-                        </div>
-                        <div class="idss-set-item">
-                            <div class="idss-set-item__bd">
-                                <p>一级部门总结：</p>
-                                <span>{{submitTimeLater6.submitTimeLater | filterTimeLater}}</span>
-                            </div>
-                            <div class="idss-set-item__ft">
-                                <el-button size="small" @click="setLaterTime(2, 3, submitTimeLater6.submitTimeLater)">设置</el-button>
+                            <div class="idss-set-item">
+                                <div class="idss-set-item__bd">
+                                    <p>一级部门总结：</p>
+                                    <span>{{submitTimeLater6.submitTimeLater | filterTimeLater}}</span>
+                                </div>
+                                <div class="idss-set-item__ft">
+                                    <el-button size="small" @click="setLaterTime(2, 3, submitTimeLater6.submitTimeLater)">设置</el-button>
+                                </div>
                             </div>
                         </div>
                     </el-col>
@@ -233,66 +243,72 @@
                 <div class="idss-list-top-title">计划总结延迟提交扣款金额设置</div>
             </div>
             <div class="idss-set-list">
-                <el-row :gutter="180">
-                    <el-col :span="8" :lg="7" v-for="item in 3" :key="item">
-                        <div class="idss-set-item">
-                            <div class="idss-set-item__bd">
-                                <p>个人计划-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 1, 1, item - 1] | filterCutValue}}</span></p>
+                <el-row :gutter="20">
+                    <el-col :span="8" v-for="item in 3" :key="item">
+                        <div style="max-width:330px;">
+                            <div class="idss-set-item">
+                                <div class="idss-set-item__bd">
+                                    <p>个人计划-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 1, 1, item - 1] | filterCutValue}}</span></p>
+                                </div>
+                                <div class="idss-set-item__ft">
+                                    <el-button size="small" :disabled="filterCutDisable(1,submitTimeLater1.submitTimeLater,item)" @click="setCutValue(1, 1, item - 1)">设置</el-button>
+                                </div>
                             </div>
-                            <div class="idss-set-item__ft">
-                                <el-button size="small" :disabled="filterCutDisable(1,submitTimeLater1.submitTimeLater,item)" @click="setCutValue(1, 1, item - 1)">设置</el-button>
-                            </div>
-                        </div>
-                        <div class="idss-set-item">
-                            <div class="idss-set-item__bd">
-                                <p>个人总结-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 1, 2, item - 1] | filterCutValue}}</span></p>
-                            </div>
-                            <div class="idss-set-item__ft">
-                                <el-button size="small" :disabled="filterCutDisable(2,submitTimeLater4.submitTimeLater,item)" @click="setCutValue(1, 2, item - 1)">设置</el-button>
-                            </div>
-                        </div>
-                    </el-col>
-                </el-row>
-            </div>
-            <div class="idss-set-list">
-                <el-row :gutter="180">
-                    <el-col :span="8" :lg="7" v-for="item in 3" :key="item">
-                        <div class="idss-set-item">
-                            <div class="idss-set-item__bd">
-                                <p>二级部门计划-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 2, 1, item - 1] | filterCutValue}}</span></p>
-                            </div>
-                            <div class="idss-set-item__ft">
-                                <el-button size="small" :disabled="filterCutDisable(3,submitTimeLater2.submitTimeLater,item)" @click="setCutValue(2, 1, item - 1)">设置</el-button>
-                            </div>
-                        </div>
-                        <div class="idss-set-item">
-                            <div class="idss-set-item__bd">
-                                <p>二级部门总结-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 2, 2, item - 1] | filterCutValue}}</span></p>
-                            </div>
-                            <div class="idss-set-item__ft">
-                                <el-button size="small" :disabled="filterCutDisable(4,submitTimeLater5.submitTimeLater,item)" @click="setCutValue(2, 2, item - 1)">设置</el-button>
+                            <div class="idss-set-item">
+                                <div class="idss-set-item__bd">
+                                    <p>个人总结-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 1, 2, item - 1] | filterCutValue}}</span></p>
+                                </div>
+                                <div class="idss-set-item__ft">
+                                    <el-button size="small" :disabled="filterCutDisable(2,submitTimeLater4.submitTimeLater,item)" @click="setCutValue(1, 2, item - 1)">设置</el-button>
+                                </div>
                             </div>
                         </div>
                     </el-col>
                 </el-row>
             </div>
             <div class="idss-set-list">
-                <el-row :gutter="180">
-                    <el-col :span="8" :lg="7" v-for="item in 3" :key="item">
-                        <div class="idss-set-item">
-                            <div class="idss-set-item__bd">
-                                <p>一级部门计划-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 3, 1, item - 1] | filterCutValue}}</span></p>
+                <el-row :gutter="20">
+                    <el-col :span="8" v-for="item in 3" :key="item">
+                        <div style="max-width:330px;">
+                            <div class="idss-set-item">
+                                <div class="idss-set-item__bd">
+                                    <p>二级部门计划-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 2, 1, item - 1] | filterCutValue}}</span></p>
+                                </div>
+                                <div class="idss-set-item__ft">
+                                    <el-button size="small" :disabled="filterCutDisable(3,submitTimeLater2.submitTimeLater,item)" @click="setCutValue(2, 1, item - 1)">设置</el-button>
+                                </div>
                             </div>
-                            <div class="idss-set-item__ft">
-                                <el-button size="small" :disabled="filterCutDisable(5,submitTimeLater3.submitTimeLater,item)" @click="setCutValue(3, 1, item - 1)">设置</el-button>
+                            <div class="idss-set-item">
+                                <div class="idss-set-item__bd">
+                                    <p>二级部门总结-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 2, 2, item - 1] | filterCutValue}}</span></p>
+                                </div>
+                                <div class="idss-set-item__ft">
+                                    <el-button size="small" :disabled="filterCutDisable(4,submitTimeLater5.submitTimeLater,item)" @click="setCutValue(2, 2, item - 1)">设置</el-button>
+                                </div>
                             </div>
                         </div>
-                        <div class="idss-set-item">
-                            <div class="idss-set-item__bd">
-                                <p>一级部门总结-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 3, 2, item - 1] | filterCutValue}}</span></p>
+                    </el-col>
+                </el-row>
+            </div>
+            <div class="idss-set-list">
+                <el-row :gutter="20">
+                    <el-col :span="8" v-for="item in 3" :key="item">
+                        <div style="max-width:330px;">
+                            <div class="idss-set-item">
+                                <div class="idss-set-item__bd">
+                                    <p>一级部门计划-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 3, 1, item - 1] | filterCutValue}}</span></p>
+                                </div>
+                                <div class="idss-set-item__ft">
+                                    <el-button size="small" :disabled="filterCutDisable(5,submitTimeLater3.submitTimeLater,item)" @click="setCutValue(3, 1, item - 1)">设置</el-button>
+                                </div>
                             </div>
-                            <div class="idss-set-item__ft">
-                                <el-button size="small" :disabled="filterCutDisable(6,submitTimeLater6.submitTimeLater,item)" @click="setCutValue(3, 2, item - 1)">设置</el-button>
+                            <div class="idss-set-item">
+                                <div class="idss-set-item__bd">
+                                    <p>一级部门总结-第{{item === 1 ? '一' : ( item === 2 ? '二' : '三')}}档：<span>{{[baseData, 3, 2, item - 1] | filterCutValue}}</span></p>
+                                </div>
+                                <div class="idss-set-item__ft">
+                                    <el-button size="small" :disabled="filterCutDisable(6,submitTimeLater6.submitTimeLater,item)" @click="setCutValue(3, 2, item - 1)">设置</el-button>
+                                </div>
                             </div>
                         </div>
                     </el-col>
@@ -304,22 +320,24 @@
                 <div class="idss-list-top-title">快捷设置文案设置</div>
             </div>
             <div class="idss-set-list">
-                <el-row :gutter="180">
-                    <el-col :span="16">
-                        <div class="idss-set-item">
-                            <div class="idss-set-item__bd">
-                                <p>本月目标：{{quickTipContent1}}</p>
+                <el-row :gutter="20">
+                    <el-col :span="24">
+                        <div style="max-width:660px;">
+                            <div class="idss-set-item">
+                                <div class="idss-set-item__bd">
+                                    <p>本月目标：{{quickTipContent1}}</p>
+                                </div>
+                                <div class="idss-set-item__ft">
+                                    <el-button size="small" @click="setQuickTip(1)">设置</el-button>
+                                </div>
                             </div>
-                            <div class="idss-set-item__ft">
-                                <el-button size="small" @click="setQuickTip(1)">设置</el-button>
-                            </div>
-                        </div>
-                        <div class="idss-set-item">
-                            <div class="idss-set-item__bd">
-                                <p>本人总结：{{quickTipContent2}}</p>
-                            </div>
-                            <div class="idss-set-item__ft">
-                                <el-button size="small" @click="setQuickTip(2)">设置</el-button>
+                            <div class="idss-set-item">
+                                <div class="idss-set-item__bd">
+                                    <p>本人总结：{{quickTipContent2}}</p>
+                                </div>
+                                <div class="idss-set-item__ft">
+                                    <el-button size="small" @click="setQuickTip(2)">设置</el-button>
+                                </div>
                             </div>
                         </div>
                     </el-col>
@@ -421,17 +439,17 @@
                     <div slot="label">
                         <el-checkbox v-model="changeLaterTimeForm.checked1" disabled>第一档：</el-checkbox>
                     </div>
-                    <el-input @keyup.native="onkeyupPlusInt($event)" disabled v-model="changeLaterTimeForm.min1" placeholder="" style="width:50px;" size="small"></el-input>小时
+                    <el-input @keyup.native="onkeyupPlusInt($event)" disabled v-model="changeLaterTimeForm.min1" placeholder="" style="width:80px;" size="small"></el-input> 小时
                     -
-                    <el-input @keyup.native="onkeyupPlusInt($event)" v-model="changeLaterTimeForm.max1" @change="changeLaterTimeForm.min2 = changeLaterTimeForm.max1" placeholder="" style="width:50px;" size="small"></el-input>小时
+                    <el-input @keyup.native="onkeyupPlusInt($event)" v-model="changeLaterTimeForm.max1" @change="changeLaterTimeForm.min2 = changeLaterTimeForm.max1" placeholder="" style="width:80px;" size="small"></el-input> 小时
                 </el-form-item>
                 <el-form-item prop="">
                     <div slot="label">
                         <el-checkbox v-model="changeLaterTimeForm.checked2" @change="changeLaterTimeForm.min2 = changeLaterTimeForm.max1">第二档：</el-checkbox>
                     </div>
-                    <el-input @keyup.native="onkeyupPlusInt($event)" v-model="changeLaterTimeForm.min2" disabled placeholder="" style="width:50px;" size="small"></el-input>小时
+                    <el-input @keyup.native="onkeyupPlusInt($event)" v-model="changeLaterTimeForm.min2" disabled placeholder="" style="width:80px;" size="small"></el-input> 小时
                     -
-                    <el-input @keyup.native="onkeyupPlusInt($event)" v-model="changeLaterTimeForm.max2" placeholder="" style="width:50px;" size="small"></el-input>小时
+                    <el-input @keyup.native="onkeyupPlusInt($event)" v-model="changeLaterTimeForm.max2" placeholder="" style="width:80px;" size="small"></el-input> 小时
                 </el-form-item>
                 <el-form-item prop="">
                     <div slot="label">
@@ -453,7 +471,7 @@
                 <el-form-item prop="value1">
                     <div slot="label">
                         <el-radio class="radio" v-model="changeCutValueForm.type" label="1" @change="changeCutType">
-                            <el-input  @keyup.native="onkeyupPrice($event)" v-model="changeCutValueForm.value" placeholder="" style="width:50px;" size="small"></el-input> 元
+                            <el-input  @keyup.native="onkeyupPrice($event)" v-model="changeCutValueForm.value" placeholder="" style="width:80px;" size="small"></el-input> 元
                         </el-radio>
                     </div>
                 </el-form-item>

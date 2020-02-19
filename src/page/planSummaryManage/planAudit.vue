@@ -16,8 +16,7 @@
             </div>
                 
             <el-table :data="listData">
-                <el-table-column type="index" label="序号" width="80"></el-table-column>
-                <el-table-column label="类别">
+                <el-table-column label="类别" width="180">
                     <template slot-scope="scope">
                         <el-select v-model="scope.row.taskTypeId" clearable placeholder="请选择" size="small" v-if="scope.row.taskCategory != 2">
                             <el-option
@@ -27,18 +26,30 @@
                                 :value="item.taskTypeId">
                             </el-option>
                         </el-select>
-                        <el-input v-model="scope.row.taskTypeName" disabled size="small" v-else></el-input>
+                        <el-tooltip :content="scope.row.taskTypeName" placement="top-start" v-else>
+                            <el-input v-model="scope.row.taskTypeName" disabled size="small"></el-input>
+                        </el-tooltip>
                     </template>
                 </el-table-column>
                 <el-table-column label="事项">
                     <template slot-scope="scope">
                         <el-input v-model="scope.row.title" placeholder="请输入事项" size="small" v-if="scope.row.taskCategory != 2"></el-input>
-                        <el-input v-model="scope.row.title" disabled size="small" v-else></el-input>
+                        
+                        <el-tooltip :content="scope.row.title" placement="top-start" v-else>
+                            <el-input v-model="scope.row.title" disabled size="small"></el-input>
+                        </el-tooltip>
                     </template>
                 </el-table-column>
                 <el-table-column label="本月目标">
                     <template slot-scope="scope">
-                        <el-input v-model="scope.row.taskGoal" placeholder="请输入本月目标" size="small">
+                        <el-tooltip :content="scope.row.taskGoal" placement="top-start" v-if="scope.row.taskGoal && (scope.row.taskCategory == 2)">
+                            <el-input v-model="scope.row.taskGoal" :disabled="scope.row.taskCategory == 2" placeholder="请输入本月目标" size="small">
+                                <el-button slot="append" @click="openDialogQuick(scope.row,scope.$index)">
+                                    <span class="el-color-primary">快捷设置</span>
+                                </el-button>
+                            </el-input>
+                        </el-tooltip>
+                        <el-input v-model="scope.row.taskGoal" :disabled="scope.row.taskCategory == 2" placeholder="请输入本月目标" size="small" v-else>
                             <el-button slot="append" @click="openDialogQuick(scope.row,scope.$index)">
                                 <span class="el-color-primary">快捷设置</span>
                             </el-button>
@@ -67,7 +78,7 @@
                         <el-input v-model="scope.row.weight" disabled placeholder="" size="small"></el-input>
                     </template>
                 </el-table-column>
-                <el-table-column label="工作量基数">
+                <el-table-column label="工作量基数" width="90">
                     <template slot-scope="scope">
                         <el-select
                             v-model="scope.row.taskWorkload"
@@ -113,8 +124,7 @@
                     </div>
                     
                     <el-table :data="j.taskInfoList" v-if="j.taskInfoList && j.taskInfoList.length > 0">
-                        <el-table-column type="index" label="序号" width="120"></el-table-column>
-                        <el-table-column label="类别">
+                        <el-table-column label="类别" width="180">
                             <template slot-scope="scope">
                                 <span>{{scope.row.taskTypeName || ''}}</span>
                             </template>
@@ -629,5 +639,10 @@ export default {
     padding: 20px;
     font-size: 16px;
     color: #D93538;
+}
+
+.el-input-group__append .el-button {
+    padding-left: 5px;
+    padding-right: 5px;
 }
 </style>

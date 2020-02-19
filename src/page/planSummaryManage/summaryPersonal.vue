@@ -18,8 +18,7 @@
             </div>
                 
             <el-table :data="listData">
-                <el-table-column type="index" label="序号" width="80"></el-table-column>
-                <el-table-column label="类别">
+                <el-table-column label="类别" width="180">
                     <template slot-scope="scope">
                         <el-select v-model="scope.row.taskTypeId" clearable placeholder="请选择" size="small" v-if="!scope.row.id">
                             <el-option
@@ -66,7 +65,7 @@
                     </template>
                 </el-table-column>
                 
-                <el-table-column label="工作量基数" width="100">
+                <el-table-column label="工作量基数" width="106">
                     <template slot-scope="scope">
                         <el-select
                             v-model="scope.row.taskWorkload"
@@ -607,5 +606,10 @@ export default {
         font-size: 14px;
         color: #909399;
     }
+}
+
+.el-input-group__append .el-button {
+    padding-left: 5px;
+    padding-right: 5px;
 }
 </style>

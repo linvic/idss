@@ -8,21 +8,21 @@
     <div class="role-title" >
       <div class="role-num">
         角色：
-        <el-select v-model="value1" placeholder="请选择角色" class="role-button" @change='changeRole'>
+        <el-select v-model="value1" placeholder="请选择角色" size="mini" style="width:150px" @change='changeRole'>
           <el-option v-for="item in options1" :key="item.roleId" :label="item.roleName" :value="item.roleId">
           </el-option>
         </el-select>
 
       </div>
-      <div class="role-num"  style="margin-right:10px !important;">
+      <div class="role-num" style="margin-right:10px !important;">
         部门：
-        <el-select v-model="value2" placeholder="一级部门" class="role-button" @change='changeDepart'>
+        <el-select v-model="value2" placeholder="一级部门" size="mini" style="width:150px" @change='changeDepart'>
           <el-option v-for="item in options2" :key="item.deptId" :label="item.deptName" :value="item.deptId">
           </el-option>
         </el-select>
       </div>
-      <div class="role-num" style="margin-right:35px;">
-        <el-select v-model="deptMent2" placeholder="二级部门" class="role-button" @change="teamSelect2">
+      <div class="role-num">
+        <el-select v-model="deptMent2" placeholder="二级部门" size="mini" style="width:150px" @change="teamSelect2">
          <el-option
            v-for="item in list2"
            :key="item.deptId"
@@ -33,21 +33,19 @@
       </div>
       <div class="role-num">
         团队：
-        <el-select v-model="value3" placeholder="请选择团队" class="role-button" @change='changeTeam'>
+        <el-select v-model="value3" placeholder="请选择团队" size="mini" style="width:150px" @change='changeTeam'>
           <el-option v-for="item in options3" :key="item.teamId" :label="item.teamName" :value="item.teamId">
           </el-option>
         </el-select>
       </div>
-      <div class="role-num" style="margin-left:43px;">
+      <div class="role-num">
         状态：
-        <el-select v-model="value4" placeholder="请选择状态" class="role-button" @change='changeStart'>
+        <el-select v-model="value4" placeholder="请选择状态" size="mini" style="width:150px" @change='changeStart'>
           <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
       </div>
-      <div class="role-button1" @click='addUserName'>
-        添加员工
-      </div>
+      <el-button class="role-num" type="primary" size="small" @click="addUserName">添加员工</el-button>
     </div>
     <div class="table-content">
       <el-table :data="result" style="width: 100%">
@@ -99,7 +97,7 @@
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[10, 15, 50]" :page-size=pageSize layout="total, sizes, prev, pager, next, jumper" :total=total>
       </el-pagination>
     </div>
-    <el-dialog title="删除员工" :visible.sync="dialogVisible1" width="560px" :before-close="handleClose1" top='25%' class="department deleteDepartment">
+    <el-dialog title="删除员工" :visible.sync="dialogVisible1" width="620px" :before-close="handleClose1" top='25%' class="department deleteDepartment">
       <span>确定删除该员工吗？</span>
       <span slot="footer" class="dialog-footer">
           <button @click="dialogVisible1 = false">取 消</button>
@@ -107,7 +105,7 @@
         </span>
     </el-dialog>
     <div class="">
-      <el-dialog title="选择角色" :visible.sync="dialogVisible2" width="560px" :before-close="handleClose2" top='10%' class="">
+      <el-dialog title="选择角色" :visible.sync="dialogVisible2" width="620px" :before-close="handleClose2" top='10%' class="">
         <div class="permissions-table">
           <div class="check-wrapper">
             <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
@@ -123,7 +121,7 @@
       </el-dialog>
     </div>
     <div class="">
-      <el-dialog title="选择角色" :visible.sync="dialogVisible4" width="560px" :before-close="handleClose4" top='10%' class="">
+      <el-dialog title="选择角色" :visible.sync="dialogVisible4" width="620px" :before-close="handleClose4" top='10%' class="">
         <div class="permissions-table">
           <div class="check-wrapper">
             <el-checkbox-group v-model="checkedCities4" @change="handleCheckedCitiesChange4">
@@ -139,7 +137,7 @@
     </div>
 
     <div class="">
-      <el-dialog title="选择团队" :visible.sync="dialogVisible5" width="560px" :before-close="handleClose5" top='10%' class="">
+      <el-dialog title="选择团队" :visible.sync="dialogVisible5" width="620px" :before-close="handleClose5" top='10%' class="">
         <div class="permissions-table">
           <div class="check-wrapper">
             <el-checkbox-group v-model="checkedCities5" @change="handleCheckedCitiesChange5">
@@ -155,7 +153,7 @@
     </div>
 
     <div class="">
-      <el-dialog title="选择团队" :visible.sync="dialogVisible6" width="560px" :before-close="handleClose6" top='10%' class="">
+      <el-dialog title="选择团队" :visible.sync="dialogVisible6" width="620px" :before-close="handleClose6" top='10%' class="">
         <div class="permissions-table">
           <div class="check-wrapper">
             <el-checkbox-group v-model="checkedCities6" @change="handleCheckedCitiesChange6">
@@ -171,7 +169,7 @@
     </div>
 
     <div class="">
-      <el-dialog title="添加员工" :visible.sync="dialogVisible3" width="560px" :before-close="handleClose3" top='10%' class="">
+      <el-dialog title="添加员工" :visible.sync="dialogVisible3" width="620px" :before-close="handleClose3" top='10%' class="">
         <el-form :label-position="labelPosition" :rules="rules" ref="formLabelAlign3" label-width="100px" :model="formLabelAlign3">
           <el-form-item label="用户名：" required prop="role3">
             <el-input v-model.trim="formLabelAlign3.role3"></el-input>
@@ -232,7 +230,7 @@
       </el-dialog>
     </div>
     <div class="">
-      <el-dialog title="编辑员工" :visible.sync="dialogVisible" width="560px" :before-close="handleClose" top='10%' class="">
+      <el-dialog title="编辑员工" :visible.sync="dialogVisible" width="620px" :before-close="handleClose" top='10%' class="">
         <el-form :label-position="labelPosition" :rules="rules" ref="formLabelAlign" label-width="100px" :model="formLabelAlign">
           <el-form-item label="用户名：" style="margin-bottom:2px;margin-right:30px;">
             <span>{{formLabelAlign.role}}</span>
@@ -289,7 +287,7 @@
   <!--修改密码-->
   <el-dialog title="修改密码"
              :visible.sync="dialogPsw"
-             width="560px"
+             width="620px"
              :before-close="handleClosePsw"
              top='25%' class="">
     <el-form :model="numberValidateForm" status-icon :rules="rulesNumber" ref="numberValidateForm" label-width="100px" class="demo-ruleForm">
@@ -1415,21 +1413,19 @@ export default {
 <style lang="scss"  scoped>
 .role-title {
     margin: 0 auto;
-    height: 46px;
+    min-height: 46px;
+    padding: 0 20px;
     line-height: 46px;
     opacity: 0.99;
     background: rgba(217,52,55,0.10);
+    /deep/ .el-input__inner {
+
+      font-size: 14px;
+    }
 }
 .role-num {
-    float: left;
-    font-size: 14px;
-    color: #333333;
-}
-.role-num:nth-child(1) {
-    margin-left: 20px;
-}
-.role-num:nth-child(2) {
-    margin: 0 35px;
+    display: inline-block;
+    margin-right: 20px;
 }
 .role-button {
     display: inline-block;

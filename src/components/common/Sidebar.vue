@@ -79,7 +79,7 @@
                 const showingChildren = children.filter(item => {
 					return !item.hidden
 				})
-                if (showingChildren.length === 1&& showingChildren[0].name=='index' || showingChildren[0].name=='setCenter') {
+                if (showingChildren.length === 1&& showingChildren[0].name=='index' || showingChildren[0].name=='setCenter' || showingChildren[0].name=='taskManageList') {
 					return true
 				}
 				return false

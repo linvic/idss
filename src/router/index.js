@@ -39,8 +39,8 @@ const routes = [
     },
     // 任务管理
     {
-        path: "/taskManage/index",
-        redirect: "/taskManage",
+        path: "",
+        redirect: "taskManage",
         component: Layout,
         meta: {
             title: "任务管理",
@@ -50,10 +50,11 @@ const routes = [
         hidden: false,
         children: [
             {
-                path: "/taskManage/taskManage",
+                path: "taskManage/taskManage",
                 name: "taskManageList",
                 meta: {
-                    title: "任务列表",
+                    title: "任务管理",
+                    icon: "el-icon-s-opportunity",
                     noCache: true
                 },
                 hidden: false,
@@ -627,7 +628,6 @@ const routes = [
 const router = new Router({
     routes: routes,
     scrollBehavior(to, from, savedPosition) {
-        //console.log(to,savedPosition)
         if (savedPosition) {
             return new Promise((resolve, reject) => {
                 if (to.path == "/taskManageManager") {
