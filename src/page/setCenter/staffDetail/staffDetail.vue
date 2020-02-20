@@ -205,10 +205,10 @@
             <el-input v-model.trim="formLabelAlign3.tel3"></el-input>
           </el-form-item>
           <el-form-item label="邮箱：" required prop="email3">
-            <el-input v-model.trim="formLabelAlign3.email3"></el-input>
+            <el-input v-model.trim="formLabelAlign3.email3" auto-complete="new-password"></el-input>
           </el-form-item>
           <el-form-item label="密码：" prop="pass">
-            <el-input type="password" v-model.trim="formLabelAlign3.pass" auto-complete="off"></el-input>
+            <el-input type="password" v-model.trim="formLabelAlign3.pass" auto-complete="new-password"></el-input>
           </el-form-item>
           <el-form-item label="底薪：" required prop="basicPay3">
             <el-input v-model.trim="formLabelAlign3.basicPay3"></el-input>
@@ -292,10 +292,10 @@
              top='25%' class="">
     <el-form :model="numberValidateForm" status-icon :rules="rulesNumber" ref="numberValidateForm" label-width="100px" class="demo-ruleForm">
       <el-form-item label="密码" required prop="pass">
-        <el-input type="password" v-model="numberValidateForm.pass" auto-complete="off"></el-input>
+        <el-input type="password" v-model="numberValidateForm.pass" auto-complete="new-password"></el-input>
       </el-form-item>
       <el-form-item label="确认密码"  required prop="checkPass">
-        <el-input type="password" v-model="numberValidateForm.checkPass" auto-complete="off"></el-input>
+        <el-input type="password" v-model="numberValidateForm.checkPass" auto-complete="new-password"></el-input>
       </el-form-item>
     </el-form>
      <span slot="footer" class="dialog-footer">
@@ -496,10 +496,6 @@ export default {
         basicPay3:[
           { validator: checkbasicPay }
         ],
-        money: [{
-          required: true,
-          message: '请输入',
-        }],
         money: [ { validator: checkAges }],
         region: [{
           required: true,
@@ -510,8 +506,7 @@ export default {
           message: '请输入取消原因',
         }, ],
         tel: [{
-            validator: checkAge,
-            trigger: 'blur'
+            validator: checkAge
           }
 
         ],
@@ -558,7 +553,7 @@ export default {
           }
         ],
         money3: [
-          { validator: checkAges }
+          { validator: checkAges}
           ],
         region3: [{
           required: true,
@@ -601,7 +596,7 @@ export default {
         tel: '',
         email: '',
         pass:'',
-        money: '',
+        money3: '',
         value11: '',
         value10: '',
         role3: "",
@@ -1396,7 +1391,7 @@ export default {
     },
     handleClose3(done) {
       this.dialogVisible3 = false
-      this.$refs['formLabelAlign3'].resetFields()
+      this.$refs['formLabelAlign3'].resetFields();
     },
     handleClose4(done) {
       this.dialogVisible4 = false

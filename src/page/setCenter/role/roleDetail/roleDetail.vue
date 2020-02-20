@@ -383,10 +383,6 @@ export default {
             trigger: 'blur,change'
           }
         ],
-        money3: [
-          { required: true, message: '请输入绩效工资'},
-          { type: 'number', message: '绩效工资必须为数字值'},
-          ],
         region3: [{
           required: true,
           message: '请选择活动区域',

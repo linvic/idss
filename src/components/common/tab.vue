@@ -157,21 +157,21 @@
                         <el-input
                             type="password"
                             v-model="ruleForm.oldPass"
-                            auto-complete="off"
+                            auto-complete="new-password"
                         ></el-input>
                     </el-form-item>
                     <el-form-item label="新密码" required prop="pass">
                         <el-input
                             type="password"
                             v-model="ruleForm.pass"
-                            auto-complete="off"
+                            auto-complete="new-password"
                         ></el-input>
                     </el-form-item>
                     <el-form-item label="确认密码" required prop="checkPass">
                         <el-input
                             type="password"
                             v-model="ruleForm.checkPass"
-                            auto-complete="off"
+                            auto-complete="new-password"
                         ></el-input>
                     </el-form-item>
                 </el-form>

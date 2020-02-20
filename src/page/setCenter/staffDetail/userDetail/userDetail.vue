@@ -1013,8 +1013,10 @@ export default {
                     pageShow: this.pageSize
                 }).then((res) => {
                     if (res.code == ERR_OK) {
-                        this.pageData = res.data.result;
-                        this.pageTotal = res.data.totalCount;
+                        if(!type) {
+                            this.pageData = res.data.result;
+                            this.pageTotal = res.data.totalCount;
+                        }
                         this.pageTotalToApprove = res.data.totalCount;
                     }
                 })
@@ -1026,8 +1028,10 @@ export default {
                     pageShow: this.pageSize
                 }).then((res) => {
                     if (res.code == ERR_OK) {
-                        this.pageData = res.data.result;
-                        this.pageTotal = res.data.totalCount;
+                        if(!type) {
+                            this.pageData = res.data.result;
+                            this.pageTotal = res.data.totalCount;
+                        }
                         this.pageTotalWaitEvaluate = res.data.totalCount;
                     }
                 })

@@ -15,13 +15,13 @@
           <div  class="form">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
               <el-form-item label="旧密码" prop="oldpass">
-                <el-input type="password" v-model="ruleForm.oldpass" auto-complete="off"></el-input>
+                <el-input type="password" v-model="ruleForm.oldpass" auto-complete="new-password"></el-input>
               </el-form-item>
               <el-form-item label="新密码" prop="pass" required>
-                <el-input type="password" v-model="ruleForm.pass" auto-complete="off"></el-input>
+                <el-input type="password" v-model="ruleForm.pass" auto-complete="new-password"></el-input>
               </el-form-item>
               <el-form-item label="确认密码" prop="checkPass" required>
-                <el-input type="password" v-model="ruleForm.checkPass" auto-complete="off"></el-input>
+                <el-input type="password" v-model="ruleForm.checkPass" auto-complete="new-password"></el-input>
               </el-form-item>
               <!-- <el-form-item label="年龄" prop="age">
                 <el-input v-model.number="ruleForm.age"></el-input>
