@@ -192,6 +192,7 @@
             width="560px"
             :before-close="beforeCloseTaskForm"
             top="10%"
+            :close-on-click-modal="false"
             class="noticeManageModel">
             <el-form
                 :model="taskForm"
@@ -332,17 +333,17 @@
                 </div>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <button @click="beforeCloseTaskForm">取 消</button>
+                <el-button plain @click="beforeCloseTaskForm">取 消</el-button>
 
-                <button v-if="handTaskType == 1" @click="submitTaskForm(0)" class="saveDrafts">保存草稿</button>
-                <button v-if="handTaskType == 1" @click="submitTaskForm(1)">发布任务</button>
+                <el-button plain v-if="handTaskType == 1" @click="submitTaskForm(0,$event)" class="saveDrafts">保存草稿</el-button>
+                <el-button plain v-if="handTaskType == 1" @click="submitTaskForm(1,$event)">发布任务</el-button>
 
-                <button v-if="handTaskType == 2 && taskForm.taskStatus == 'APPROVEPASS'" @click="cancle(handTaskId)">删 除</button>
-                <button v-if="handTaskType == 2 && taskForm.taskStatus == 'TOSUBMIT'" @click="submitTaskForm(0)">保存草稿</button>
-                <button v-if="handTaskType == 2 && taskForm.taskStatus == 'APPROVEPASS'" @click="submitTaskForm(2)">提 交</button>
-                <button v-if="handTaskType == 2 && taskForm.taskStatus == 'TOSUBMIT'" @click="submitTaskForm(1)">发布任务</button>
+                <el-button plain v-if="taskForm.canDelete" @click="cancle(handTaskId)">删 除</el-button>
+                <el-button plain v-if="handTaskType == 2 && taskForm.taskStatus == 'TOSUBMIT'" @click="submitTaskForm(0,$event)">保存草稿</el-button>
+                <el-button plain v-if="handTaskType == 2 && taskForm.taskStatus == 'APPROVEPASS'" @click="submitTaskForm(2,$event)">提 交</el-button>
+                <el-button plain v-if="handTaskType == 2 && taskForm.taskStatus == 'TOSUBMIT'" @click="submitTaskForm(1,$event)">发布任务</el-button>
 
-                <button v-if="handTaskType == 3" @click="submitTaskForm(3)">同意</button>
+                <el-button plain v-if="handTaskType == 3" @click="submitTaskForm(3,$event)">同意</el-button>
                 
             </span>
         </el-dialog>
@@ -380,38 +381,11 @@
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <button @click="beforeCloseAddUserForm">取 消</button>
-                <button @click="submitAddUserForm">确 定</button>
+                <el-button plain @click="beforeCloseAddUserForm">取 消</el-button>
+                <el-button plain @click="submitAddUserForm">确 定</el-button>
             </span>
         </el-dialog>
 
-        <!--删除任务模态窗-->
-        <el-dialog
-            title="申请删除任务"
-            :visible.sync="dialogCancle"
-            width="560px"
-            :before-close="cancleFormClose"
-            top="25%"
-            class="noticeManageModel">
-            <el-form
-                :model="cancleForm"
-                :rules="cancleFormRules"
-                ref="cancleForm"
-                label-width="112px"
-                class="demo-ruleForm">
-                <el-form-item
-                    label="删除原因："
-                    prop="cause"
-                    required
-                    style="margin-right: 40px !important;">
-                    <el-input  type="textarea" v-model="cancleForm.cause"></el-input>
-                </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-                <button @click="cancleFormClose">取 消</button>
-                <button @click="submitCancleForm">确 定</button>
-            </span>
-        </el-dialog>
 
         <!--评价任务模态窗-->
         <el-dialog title='评价任务' :visible.sync="dialogEvaluate" width="560px" :before-close="evaluateFormClose" top='23%'>
@@ -424,8 +398,8 @@
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <button  @click="evaluateFormClose">取 消</button>
-                <button  @click="submitEvaluateForm">确 认</button>
+                <el-button plain @click="evaluateFormClose">取 消</el-button>
+                <el-button plain @click="submitEvaluateForm">确 认</el-button>
             </span>
         </el-dialog>
         <!--完成任务模态窗-->
@@ -439,8 +413,8 @@
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <button  @click="completeFormClose">取 消</button>
-                <button  @click="submitCompleteForm">确 认</button>
+                <el-button plain @click="completeFormClose">取 消</el-button>
+                <el-button plain @click="submitCompleteForm">确 认</el-button>
             </span>
         </el-dialog>
 
@@ -495,7 +469,7 @@ import {
     publishTask,
     sureEditorTask,
     editorTaskMain,
-    cancelTaskCause,
+    deleteTask,
     remindTaskList,
     assessTask,
     completeTask,
@@ -506,7 +480,8 @@ import {
     saveTaskFocusSet,
     listDeptsAndUsers,
     canPublishPlanOnTap,
-    canPublishSummaryOnTap
+    canPublishSummaryOnTap,
+    callBackToDraft
 } from 'service/getData'
 import {  ERR_OK } from 'service/config'
 import Sortable from 'sortablejs'
@@ -646,16 +621,6 @@ export default {
                 ]
             },
 
-            // 删除任务
-            dialogCancle: false,
-            cancleForm: {
-                cause: ''
-            },
-            cancleFormRules: {
-                cause: [
-                    { required: true, message: "请输入"}
-                ]
-            },
 
             // 任务评价
             dialogEvaluate: false,
@@ -1007,7 +972,7 @@ export default {
             })
             this.dialogTaskForm = false;
         },
-        submitTaskForm(submitType) {
+        submitTaskForm(submitType,event) {
             // submitType 提交类型 1 提交  0 保存草稿 2 编辑
             
             var time;
@@ -1065,7 +1030,9 @@ export default {
                 if(this.handTaskId) {
                     params.id = this.handTaskId;
                 }
+                this.showButtonLoading(event);
                 saveDraftTask(params).then(res => {
+                    this.removeButtonLoading(event);
                     if (res.code == ERR_OK) {
                         this.beforeCloseTaskForm();
                         this.pageInit();
@@ -1087,7 +1054,9 @@ export default {
                         if(this.handTaskId) {
                             params.id = this.handTaskId;
                         }
+                        this.showButtonLoading(event);
                         publishTask(params).then(res => {
+                            this.removeButtonLoading(event);
                             if (res.code == ERR_OK) {
                                 this.beforeCloseTaskForm();
                                 this.pageInit();
@@ -1111,7 +1080,9 @@ export default {
                         // 编辑
                         params.id = this.handTaskId;
                         params.modifyReason = this.taskForm.modifyReason;
+                        this.showButtonLoading(event);
                         sureEditorTask(params).then(res => {
+                            this.removeButtonLoading(event);
                             if (res.code == ERR_OK) {
                                 this.beforeCloseTaskForm();
                                 this.pageInit();
@@ -1135,7 +1106,9 @@ export default {
                         // 审核
                         params.id = this.handTaskId;
                         params.modifyReason = this.taskForm.modifyReason;
+                        this.showButtonLoading(event);
                         approveTask(params).then(res => {
+                            this.removeButtonLoading(event);
                             if (res.code == ERR_OK) {
                                 this.beforeCloseTaskForm();
                                 this.pageInit();
@@ -1160,6 +1133,7 @@ export default {
         // 新增任务 发起任务 添加任务
         addTask() {
             this.handTaskId = ''; //非编辑模式
+            this.taskForm.canDelete = false; // 是否可删除状态
             this.taskForm.taskStatus = '';
             this.auditOldData = {};// 审核旧数据
             this.handTaskType = 1; // 1.新增  2.编辑 3.审核
@@ -1191,6 +1165,7 @@ export default {
             this.listAllUsersT(); // 获取所有用户
             this.dialogTaskForm = true;
             this.handTaskId = id; //记录当前编辑id
+            this.taskForm.canDelete = false; // 是否可删除状态
             this.auditOldData = {}; //审核旧数据
             editorTaskMain({
                 id: id
@@ -1220,6 +1195,7 @@ export default {
                         this.taskForm.modifyReason = res.data.modifyReason;
                         this.taskForm.projectId = res.data.projectId ? res.data.projectId : '';
                         this.taskForm.taskStatus = res.data.taskStatus; // 状态
+                        this.taskForm.canDelete = res.data.canDelete; // 可否删除
                         if (!res.data.visibleRange) {
                             this.taskForm.value71 = [];
                         } else {
@@ -1264,6 +1240,7 @@ export default {
             this.listAllUsersT(); // 获取所有用户
             this.dialogTaskForm = true;
             this.handTaskId = id; //记录当前编辑id
+            this.taskForm.canDelete = false; // 是否可删除状态
 
             editorTaskMain({
                 id: id
@@ -1388,43 +1365,37 @@ export default {
         },
         
         // 删除任务
-        cancle(id, event) {
+        cancle(id) {
             
-            this.handTaskId = id; //非编辑模式
-            this.taskForm.taskStatus = '';
-            this.dialogCancle = true;
-        },
-        cancleFormClose() {
-            this.$refs.cancleForm.resetFields();
-            this.dialogCancle = false;
-        },
-        submitCancleForm(){
-            this.$refs.cancleForm.validate((valid) => {
-                if (valid) {
-                    cancelTaskCause({
-                        id: this.handTaskId,
-                        reason: this.cancleForm.cause
-                    }).then(res => {
-                        if (res.code == ERR_OK) {
-                            this.cancleFormClose(); // 关闭弹窗
-                            this.beforeCloseTaskForm();
-                            
-                            this.pageInit();
-                            this.$notify({
-                                title: "成功",
-                                message: "任务已删除",
-                                type: "success"
-                            });
-                        } else {
-                            this.$notify.error({
-                                title: "错误",
-                                message: res.msg
-                            });
-                        }
-                    });
-                }
-            })
-            
+            this.$prompt('请输入删除原因：', '申请删除任务', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                inputType: 'textarea',
+                inputPattern: /^[\s\S]{1,400}$/,
+                inputErrorMessage: '请输入（400字符内）'
+            }).then(({ value }) => {
+                deleteTask({
+                    id: id,
+                    reason: value
+                }).then((res) => {
+                    if (res.code == ERR_OK) {
+                        this.beforeCloseTaskForm();
+                        this.pageInit();
+                        this.$notify({
+                            title: "成功",
+                            message: "任务已删除",
+                            type: "success"
+                        });
+                    } else {
+                        this.$notify({
+                            type: 'warning',
+                            title: "提示",
+                            message: res.msg
+                        });
+                    }
+                })
+            }).catch(() => {
+            });
         },
 
         // 提醒完成
@@ -1452,6 +1423,7 @@ export default {
         // 任务评价
         levelComeplete(id) {
             this.handTaskId = id;
+            this.taskForm.canDelete = false; // 是否可删除状态
             this.taskForm.taskStatus = '';
             this.dialogEvaluate = true;
         },
@@ -1492,6 +1464,7 @@ export default {
         // 完成任务
         completeModal(id) {
             this.handTaskId = id;
+            this.taskForm.canDelete = false; // 是否可删除状态
             this.taskForm.taskStatus = '';
             this.dialogComplete = true;
         },
@@ -1745,6 +1718,39 @@ export default {
                     });
                 }
             })
+        },
+
+        
+        // 撤回任务
+        callBackTask(id) {
+            this.$prompt('请输入撤回原因：', '撤回任务', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                inputType: 'textarea',
+                inputPattern: /^[\s\S]{1,400}$/,
+                inputErrorMessage: '请输入（400字符内）'
+            }).then(({ value }) => {
+                callBackToDraft({
+                    id: id,
+                    reason: value
+                }).then((res) => {
+                    if (res.code == ERR_OK) {
+                        this.pageInit();
+                        this.$notify({
+                            title: "成功",
+                            message: "任务已撤回",
+                            type: "success"
+                        });
+                    } else {
+                        this.$notify({
+                            type: 'warning',
+                            title: "提示",
+                            message: res.msg
+                        });
+                    }
+                })
+            }).catch(() => {
+            });
         }
                     
                     
@@ -1976,17 +1982,6 @@ export default {
     color: #333333;
     line-height: 35px;
     margin-left: 64px;
-}
-.dialog-footer button {
-    border: 1px solid #838383;
-    border-radius: 4px;
-    width: 90px;
-    height: 30px;
-    text-align: center;
-    background: #fff;
-    color: #838383;
-    cursor: pointer;
-    margin-right: 20px;
 }
 .dialog-footer button:last-child {
     color: #D93437;

@@ -922,9 +922,14 @@ export function getTaskDeptList(params){
 }
 // ============任务模块接口
 /**取消任务原因**/
-export function cancelTaskCause(params){
-  return fetchPost('/taskInfos/cancelTask',param(params))
+export function deleteTask(params){
+  return fetchPost('/taskInfos/deleteTask',param(params))
 }
+// 任务撤回
+export function callBackToDraft(params){
+  return fetchPost('/taskInfos/callBackToDraft',param(params))
+}
+
 // 审核任务
 export function approveTask(params){
   return fetchPost('/taskInfos/approveTask',param(params))

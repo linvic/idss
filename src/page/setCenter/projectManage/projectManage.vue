@@ -25,7 +25,7 @@
       <div class="setCenter-list-wrapper">
         <div class="setCenter-list">
         <ul>
-          <li v-for="(item,index) in projectList">
+          <li v-for="(item,index) in projectList" :key="index">
             <div class="role-name">
                 <div class="role-left ellipsis">
                   {{item.projectName}}
@@ -36,7 +36,9 @@
                 </div>
               </div>
               <div class="role-content">
-                <div class="populations-status">
+
+                <!-- 暂时隐藏 v-if="false" -->
+                <div class="populations-status" v-if="false">
                   <div class="populations-left">
                     项目任务总数： {{item.taskTotal}}
                   </div>

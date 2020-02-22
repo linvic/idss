@@ -20,7 +20,23 @@ new Vue({
   store,
   render: h => h(App)
 })
-
+Vue.directive('noMoreClick', { // 自定义指令 v-no-more-click 防止按钮重复提交
+    inserted(el, binding) {
+		let t = parseFloat(binding.value * 1000);
+        el.addEventListener('click', e => {
+			var _i = document.createElement('i');
+			_i.classList.add('el-icon-loading');
+			el.appendChild(_i);
+			el.classList.add('is-loading');
+            el.disabled = true;
+            setTimeout(() => {
+				el.disabled = false;
+				el.classList.remove('is-loading');
+				el.removeChild(_i);
+            }, t ? t : 1000)
+        })
+    }
+})
 Vue.mixin({
 	methods: {
 		// 输入框的一些验证方法
@@ -55,12 +71,41 @@ Vue.mixin({
 			}
 			if(val == 0) { val = '' };
 			e.target.value = val;
-    },
+    	},
 		// 汉字
 		onkeyupChinese(e){
 			var val = e.target.value
 			val = val.replace(/([^\u4e00-\u9fa5])/g,'');
 			e.target.value = val;
-    },
+		},
+		// 显示按钮loading效果
+		showButtonLoading(event) {
+			let el = event.target.parentNode;
+            if(event.target.type == 'button') {
+                el = event.target;
+			}
+			
+			el.classList.add('is-loading');
+			var _i = document.createElement('i');
+			_i.classList.add('el-icon-loading');
+			el.appendChild(_i);
+			el.disabled = true;
+		},
+		// 移除按钮loading效果
+		removeButtonLoading(event){
+			let el = event.target.parentNode;
+            if(event.target.type == 'button') {
+                el = event.target;
+			}
+			
+			el.classList.remove('is-loading');
+			el.disabled = false;
+			for(let item of el.childNodes) {
+				if (item.nodeName == 'I') {
+					el.removeChild(item)
+				}
+				console.log(item.nodeName);
+			}
+		}
 	}
 })

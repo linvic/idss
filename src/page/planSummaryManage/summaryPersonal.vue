@@ -11,9 +11,9 @@
             <div class="idss-list-top">
                 <div class="idss-list-top-title">{{listTitle}}</div>
                 <div class="idss-list-top-btn-groups">
-                    <el-button size="small" type="primary" plain @click="submit(0)" v-if="!id || summaryStatus == 'TOSUBMIT'">保存草稿</el-button>
-                    <el-button size="small" type="primary" @click="submit(1)" v-if="!id || summaryStatus == 'TOSUBMIT'">提交总结</el-button>
-                    <el-button size="small" type="primary" @click="submit(2)" v-else>提交总结</el-button>
+                    <el-button size="small" type="primary" plain @click="submit(0,$event)" v-if="!id || summaryStatus == 'TOSUBMIT'">保存草稿</el-button>
+                    <el-button size="small" type="primary" @click="submit(1,$event)" v-if="!id || summaryStatus == 'TOSUBMIT'">提交总结</el-button>
+                    <el-button size="small" type="primary" @click="submit(2,$event)" v-else>提交总结</el-button>
                 </div>
             </div>
                 
@@ -440,7 +440,7 @@ export default {
         deleteFilesItem(index) { // 删除项目
             this.fileList.splice(index, 1);
         },
-        submit(submitType) {
+        submit(submitType,event) {
             let _taskList = [];
             for(let item of this.listData) {
                 
@@ -504,7 +504,9 @@ export default {
                 params.id = this.id;
             }
             if (submitType === 0) {
+                this.showButtonLoading(event);
                 saveDraftSummary(params).then((res) => {
+                    this.removeButtonLoading(event);
                     if (res.code == ERR_OK) {
                         this.$router.push('/planSummaryManage/summaryManage');
                         this.$notify({
@@ -521,7 +523,9 @@ export default {
                     }
                 })
             } else if (submitType === 1){
+                this.showButtonLoading(event);
                 publishSummary(params).then((res) => {
+                    this.removeButtonLoading(event);
                     if (res.code == ERR_OK) {
                         this.$router.push('/planSummaryManage/summaryManage');
                         this.$notify({
@@ -538,7 +542,9 @@ export default {
                     }
                 })
             } else if (submitType === 2){
+                this.showButtonLoading(event);
                 updateSummary(params).then((res) => {
+                    this.removeButtonLoading(event);
                     if (res.code == ERR_OK) {
                         this.$router.push('/planSummaryManage/summaryManage');
                         this.$notify({

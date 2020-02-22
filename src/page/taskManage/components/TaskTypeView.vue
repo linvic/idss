@@ -149,6 +149,14 @@
                                         v-if="props.row.canEdit"
                                         @click.stop="editTask(props.row.id)">编辑任务</el-button>
 
+                                    
+                                    <el-button
+                                        size="small"
+                                        type="primary"
+                                        plain
+                                        v-if="props.row.canCallBack"
+                                        @click.stop='callBackTask(props.row.id)'>撤回任务</el-button>
+
                                             
                                     <router-link class="link-btn" :to="{path: '/taskManage/taskDetail',query: { id: props.row.id }}">
                                         <el-button size="small" 
@@ -293,6 +301,14 @@
                                                     plain
                                                     v-if="props.row.canEdit"
                                                     @click.stop="editTask(props.row.id)">编辑任务</el-button>
+
+
+                                                <el-button
+                                                    size="small"
+                                                    type="primary"
+                                                    plain
+                                                    v-if="props.row.canCallBack"
+                                                    @click.stop='callBackTask(props.row.id)'>撤回任务</el-button>
 
                                                         
                                                 <router-link class="link-btn" :to="{path: '/taskManage/taskDetail',query: { id: props.row.id }}">
@@ -548,7 +564,11 @@ export default {
         replyTask(row,event) {
             // 任务回复
             this.$emit('replyTask', row, event, 5)
-        }
+        },
+        callBackTask(id) {
+            // 撤回任务
+            this.$emit('callBackTask', id);
+        },
     }
 }
 </script>
