@@ -71,9 +71,14 @@
                             </template>
                         </el-table-column>
 
-                        <el-table-column v-for="(item,index) in j.showScoreLabels" :key="index" :label="j.showScoreLabels[index]" width="110">
-                            <template>
-                                <span>{{j.showScoreValues[index] || '-'}}</span>
+
+                        <el-table-column v-for="(item,index) in j.showScoreLabels" :key="index" width="110">
+                            <template slot="header" slot-scope="scope">
+                                {{j.showScoreLabels[index]}}
+                            </template>
+
+                            <template slot-scope="scope">
+                                <span>{{scope.row.showScoreValues[index] || '-'}}</span>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -227,7 +232,7 @@ export default {
                             
                         }
                         v.showScoreLabels = showScoreLabels;
-                        v.showScoreValues = showScoreValues;
+                        item.showScoreValues = showScoreValues;
 
                     }
 

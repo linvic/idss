@@ -587,7 +587,8 @@ export default {
                 display: none;
             }
             .el-collapse-item__header {
-                padding: 0 20px;
+                padding-left: 20px;
+                padding-right: 30px;
                 height: 46px;
                 line-height: 46px;
                 background: #FBEBEB;

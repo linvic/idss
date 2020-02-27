@@ -90,6 +90,11 @@ export function MessageSiteInfo(params){
 export function viewMessage(params){
   return fetchGet('/MessageSiteInfo/viewMessage',param(params))
 }
+// 标记全部已读
+export function viewAllMessage(params){
+  return fetchGet('/MessageSiteInfo/viewAllMessage',param(params))
+}
+
 //消息管理（已读消息和未读消息）
 export function totalNews(params){
   return fetchGet('/MessageSiteInfo/listPersonMessage',param(params))

@@ -271,7 +271,7 @@
                     <el-input type="textarea" v-model="taskForm.content" style="width:363px;display:inline-block;"></el-input>
                 </el-form-item>
                 
-                <el-form-item label="修改原因:" required v-if="(handTaskType == 2 && taskForm.taskStatus != 'TOSUBMIT') || (handTaskType == 3 && auditOldData.taskStatus != 'NEWAPPROVE')" :class="{'is-change': handTaskType === 3 && (auditOldData.modifyReason != taskForm.modifyReason)}" prop="modifyReason">
+                <el-form-item label="修改原因:" required v-if="(handTaskType == 2 && taskForm.taskStatus != 'TOSUBMIT') || (handTaskType == 3)" :class="{'is-change': handTaskType === 3 && (auditOldData.modifyReason != taskForm.modifyReason)}" prop="modifyReason">
                     <el-input type="textarea" v-model="taskForm.modifyReason" style="width:363px;display:inline-block;"></el-input>
                 </el-form-item>
                 <div v-show="stretch">

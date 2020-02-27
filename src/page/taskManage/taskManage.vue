@@ -26,7 +26,9 @@
         <!-- 员工任务待处理 -->
         <div v-if="userView == 'DEPT'">
             <div class="take-top-wrapper m-t-10">
-                <div class="take-top" style="font-size: 14px;font-weight:normal">员工任务待处理({{pendingTotal || '0'}})</div>
+                <div class="take-left">
+                    <div class="take-top" style="font-size: 14px;font-weight:normal">员工任务待处理({{pendingTotal || '0'}})</div>
+                </div>
             </div>
             <div class="untreatTask-table">
                 <el-table
@@ -159,10 +161,146 @@
                             <div class="idss-list-top-tabs-item" v-bind:class="{ active: pageTabsType === 1 }" @click="pageTabsTypeChange(1)">待评价({{pageTotalWaitEvaluate || '0'}})</div>
                         </div>
                     </div>
+
+                    <div class="take-right" @click.stop="changeManageDoingTaskListIsOpen">{{ManageDoingTaskListIsOpen  ? '收起' : '展开'}}</div>
+                    
                 </div>
+                <div :class="{'no-open': !ManageDoingTaskListIsOpen}">
+                    <el-table
+                        :data="pageData"
+                        row-key="id"
+                        :expand-row-keys="expands"
+                        @row-click="openDetails"
+                        @expand-change="startExpend"
+                        style="width: 100%"
+                        empty-text="暂无数据">
+                        <el-table-column type="expand">
+                            <template slot-scope="props">
+                                <el-form label-position="left" inline class="demo-table-expand">
+                                    <el-form-item label="内容:">
+                                        <span class="content-tab">{{props.row.content}}</span>
+                                    </el-form-item>
+                                    <el-form-item>
+                                        <div>
+                                            <div class="input-back">
+                                                <input type="text" name="" value="" class="inputValue" />
+                                                <span @click="replyTask(props.row, $event)"
+                                                    class="replyValue">回复</span>
+                                            </div>
+                                            <div v-for="(item,index) in props.row.taskReplyList" :key="index">
+                                                <div class="reback-time">{{ item.replyTimeDistanceDesc }}</div>
+                                                <div class="reback" style="max-width: 294px;min-width: 296px;overflow:hidden;">
+                                                    <div style="float:left;">{{item.replyUser.userName}}：</div>
+                                                    <div style="float:left;max-width: 247px;word-break: break-all; word-wrap:break-word;">{{ item.replyContent }}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </el-form-item>
+                                    <el-form-item label="">
+                                        <div class="">概要：</div>
+                                        <div class="reback reback1">发布人：{{props.row.createByName}}</div>
+                                        <div class="reback reback1">执行人：{{props.row.executorName}}</div>
+                                        <div>
+                                            <div class="reback reback1">开始日期：{{props.row.submitTime}}</div>
+                                            <div class="reback reback1">截止日期：{{props.row.planEndDate}}</div>
+                                        </div>
+                                    </el-form-item>
+                                </el-form>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="任务标题" prop="title ">
+                            <template slot-scope="props">
+                                <router-link :to="{path: '/taskManage/taskDetail', query: { id: props.row.id }}" @click.stop="" style="color:#505363;">
+                                    <div>{{ props.row.title }}-{{ props.row.executorName }}</div>
+                                </router-link>
+                                <div>
+                                    <div class="title-right">
+                                        {{ props.row.taskTypeName }}
+                                    </div>
+                                </div>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="最新动态">
+                                <template slot-scope="props">
+                                    <div class="" v-if="props.row.taskReplyList && props.row.taskReplyList.length > 0">
+                                        <div v-if='props.row.taskReplyList[0].replyStatus=="UNREAD"' style="color:rgb(217, 52, 55)">
+                                            <span>{{ props.row.taskReplyList[0].replyUser.userName}}：</span><span>{{ props.row.taskReplyList[0].replyContent}}</span>
+                                        </div>
+                                        <div v-if='props.row.taskReplyList[0].replyStatus=="READED"'>
+                                            <span>{{ props.row.taskReplyList[0].replyUser.userName}}：</span><span>{{ props.row.taskReplyList[0].replyContent}}</span>
+                                        </div>
+                                    </div>
+                                </template>
+                            </el-table-column>
+                        <el-table-column
+                            label="任务状态"
+                            min-width="50">
+                            <template slot-scope="props">
+                                <div>
+                                    <img class="icon_type" v-if="props.row.taskStatus === 'APPROVEPASS'" src="../../images/timeLate.png" alt=""  />
+                                    
+                                    <span v-if="props.row.taskStatus === 'CANCELED' || props.row.taskStatus === 'COMPLETION'">{{props.row.taskStatusName}}</span>
+                                    <span v-else style="color:#D93437;">{{props.row.taskStatusName}}</span>
+                                </div>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作">
+                            <template slot-scope="props">
+                                
+                                <el-button
+                                    size="small"
+                                    type="primary"
+                                    plain
+                                    v-if="props.row.canApprove"
+                                    @click.stop='auditTask(props.row.id)'>审核</el-button>
+                                <el-button
+                                    size="small"
+                                    type="primary"
+                                    plain
+                                    v-if="props.row.canEvaluate"
+                                    @click.stop='levelComeplete(props.row.id)'>任务评价</el-button>
+                                <router-link class="link-btn" :to="{path: '/taskManage/taskDetail',query: { id: props.row.id }}">
+                                    <el-button size="small" 
+                                        type="primary"
+                                        @click.stop=""
+                                        plain >查看</el-button>
+                                </router-link>
+
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <div class="pagination-depart" v-show="pageTotal > 0">
+                        <el-pagination
+                            background
+                            @size-change="pageSizeChange"
+                            @current-change="pageCurrentChange"
+                            :current-page="pageIndex"
+                            :page-sizes="[10, 15, 50]"
+                            :page-size="pageSize"
+                            layout="total, sizes, prev, pager, next, jumper"
+                            :total="pageTotal">
+                        </el-pagination>
+                    </div>
+                </div>
+            </div>
                 
+        </div>
+        <!-- 我的任务 -->
+        <div class="take-top-wrapper m-t-10">
+            <div class="take-left">
+                <div class="take-top" style="font-size: 14px;font-weight:normal">我的任务</div>
+            </div>
+            <div class="take-right" v-if="userView == 'MANAGER'" @click.stop="changeManageMyTaskListIsOpen">{{ManageMyTaskListIsOpen ? '收起' : '展开'}}</div>
+            <div class="take-right" @click="addTask" v-if="userView == 'STAFF'">发起任务</div>
+            <div :class="{'take-bottom':true, 'no-open': !ManageMyTaskListIsOpen}">
+                <div class="task-item" v-bind:class="{ active: tabsType === 0 }" @click="tabsTypeChange(0)">待处理({{myPendingTotal || '0'}})</div>
+                <div class="task-item" v-bind:class="{ active: tabsType === 1 }" @click="tabsTypeChange(1)">全部任务</div>
+            </div>
+        </div>
+        <div class="untreatTask-table mytask m-b">
+            <div :class="{'no-open': !ManageMyTaskListIsOpen}">
                 <el-table
-                    :data="pageData"
+                    :data="result"
                     row-key="id"
                     :expand-row-keys="expands"
                     @row-click="openDetails"
@@ -182,7 +320,7 @@
                                             <span @click="replyTask(props.row, $event)"
                                                 class="replyValue">回复</span>
                                         </div>
-                                        <div v-for="(item,index) in props.row.taskReplyList" :key="index">
+                                        <div class="" v-for="(item,index) in props.row.taskReplyList" :key="index">
                                             <div class="reback-time">{{ item.replyTimeDistanceDesc }}</div>
                                             <div class="reback" style="max-width: 294px;min-width: 296px;overflow:hidden;">
                                                 <div style="float:left;">{{item.replyUser.userName}}：</div>
@@ -246,14 +384,23 @@
                                 size="small"
                                 type="primary"
                                 plain
-                                v-if="props.row.canApprove"
-                                @click.stop='auditTask(props.row.id)'>审核</el-button>
+                                v-if="props.row.canFinish"
+                                @click.stop='completeModal(props.row.id)'>完成</el-button>
                             <el-button
                                 size="small"
                                 type="primary"
                                 plain
-                                v-if="props.row.canEvaluate"
-                                @click.stop='levelComeplete(props.row.id)'>任务评价</el-button>
+                                v-if="props.row.canEdit"
+                                @click.stop="editTask(props.row.id)">编辑任务</el-button>
+
+                            <el-button
+                                size="small"
+                                type="primary"
+                                plain
+                                v-if="props.row.canCallBack"
+                                @click.stop='callBackTask(props.row.id)'>撤回任务</el-button>
+
+                                    
                             <router-link class="link-btn" :to="{path: '/taskManage/taskDetail',query: { id: props.row.id }}">
                                 <el-button size="small" 
                                     type="primary"
@@ -264,157 +411,18 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                <div class="pagination-depart" v-show="pageTotal > 0">
+                <div class="pagination-depart" v-show="total > 0">
                     <el-pagination
                         background
-                        @size-change="pageSizeChange"
-                        @current-change="pageCurrentChange"
-                        :current-page="pageIndex"
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="nowPage"
                         :page-sizes="[10, 15, 50]"
-                        :page-size="pageSize"
+                        :page-size="pageShow"
                         layout="total, sizes, prev, pager, next, jumper"
-                        :total="pageTotal">
+                        :total="total">
                     </el-pagination>
                 </div>
-            </div>
-                
-        </div>
-        <!-- 我的任务 -->
-        <div class="take-top-wrapper m-t-10">
-            <div class="take-left">
-                <div class="take-top" style="font-size: 14px;font-weight:normal">我的任务</div>
-            </div>
-            <div class="take-right" @click="addTask" v-if="userView == 'STAFF'">发起任务</div>
-            <div class="take-bottom">
-                <div class="task-item" v-bind:class="{ active: tabsType === 0 }" @click="tabsTypeChange(0)">待处理({{myPendingTotal || '0'}})</div>
-                <div class="task-item" v-bind:class="{ active: tabsType === 1 }" @click="tabsTypeChange(1)">全部任务</div>
-            </div>
-        </div>
-        <div class="untreatTask-table mytask m-b">
-            
-            <el-table
-                :data="result"
-                row-key="id"
-                :expand-row-keys="expands"
-                @row-click="openDetails"
-                @expand-change="startExpend"
-                style="width: 100%"
-                empty-text="暂无数据">
-                <el-table-column type="expand">
-                    <template slot-scope="props">
-                        <el-form label-position="left" inline class="demo-table-expand">
-                            <el-form-item label="内容:">
-                                <span class="content-tab">{{props.row.content}}</span>
-                            </el-form-item>
-                            <el-form-item>
-                                <div>
-                                    <div class="input-back">
-                                        <input type="text" name="" value="" class="inputValue" />
-                                        <span @click="replyTask(props.row, $event)"
-                                            class="replyValue">回复</span>
-                                    </div>
-                                    <div class="" v-for="(item,index) in props.row.taskReplyList" :key="index">
-                                        <div class="reback-time">{{ item.replyTimeDistanceDesc }}</div>
-                                        <div class="reback" style="max-width: 294px;min-width: 296px;overflow:hidden;">
-                                            <div style="float:left;">{{item.replyUser.userName}}：</div>
-                                            <div style="float:left;max-width: 247px;word-break: break-all; word-wrap:break-word;">{{ item.replyContent }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </el-form-item>
-                            <el-form-item label="">
-                                <div class="">概要：</div>
-                                <div class="reback reback1">发布人：{{props.row.createByName}}</div>
-                                <div class="reback reback1">执行人：{{props.row.executorName}}</div>
-                                <div>
-                                    <div class="reback reback1">开始日期：{{props.row.submitTime}}</div>
-                                    <div class="reback reback1">截止日期：{{props.row.planEndDate}}</div>
-                                </div>
-                            </el-form-item>
-                        </el-form>
-                    </template>
-                </el-table-column>
-                <el-table-column label="任务标题" prop="title ">
-                    <template slot-scope="props">
-                        <router-link :to="{path: '/taskManage/taskDetail', query: { id: props.row.id }}" @click.stop="" style="color:#505363;">
-                            <div>{{ props.row.title }}-{{ props.row.executorName }}</div>
-                        </router-link>
-                        <div>
-                            <div class="title-right">
-                                {{ props.row.taskTypeName }}
-                            </div>
-                        </div>
-                    </template>
-                </el-table-column>
-                <el-table-column label="最新动态">
-                        <template slot-scope="props">
-                            <div class="" v-if="props.row.taskReplyList && props.row.taskReplyList.length > 0">
-                                <div v-if='props.row.taskReplyList[0].replyStatus=="UNREAD"' style="color:rgb(217, 52, 55)">
-                                    <span>{{ props.row.taskReplyList[0].replyUser.userName}}：</span><span>{{ props.row.taskReplyList[0].replyContent}}</span>
-                                </div>
-                                <div v-if='props.row.taskReplyList[0].replyStatus=="READED"'>
-                                    <span>{{ props.row.taskReplyList[0].replyUser.userName}}：</span><span>{{ props.row.taskReplyList[0].replyContent}}</span>
-                                </div>
-                            </div>
-                        </template>
-                    </el-table-column>
-                <el-table-column
-                    label="任务状态"
-                    min-width="50">
-                    <template slot-scope="props">
-                        <div>
-                            <img class="icon_type" v-if="props.row.taskStatus === 'APPROVEPASS'" src="../../images/timeLate.png" alt=""  />
-                            
-                            <span v-if="props.row.taskStatus === 'CANCELED' || props.row.taskStatus === 'COMPLETION'">{{props.row.taskStatusName}}</span>
-                            <span v-else style="color:#D93437;">{{props.row.taskStatusName}}</span>
-                        </div>
-                    </template>
-                </el-table-column>
-                <el-table-column label="操作">
-                    <template slot-scope="props">
-                        
-                        <el-button
-                            size="small"
-                            type="primary"
-                            plain
-                            v-if="props.row.canFinish"
-                            @click.stop='completeModal(props.row.id)'>完成</el-button>
-                        <el-button
-                            size="small"
-                            type="primary"
-                            plain
-                            v-if="props.row.canEdit"
-                            @click.stop="editTask(props.row.id)">编辑任务</el-button>
-
-                        <el-button
-                            size="small"
-                            type="primary"
-                            plain
-                            v-if="props.row.canCallBack"
-                            @click.stop='callBackTask(props.row.id)'>撤回任务</el-button>
-
-                                
-                        <router-link class="link-btn" :to="{path: '/taskManage/taskDetail',query: { id: props.row.id }}">
-                            <el-button size="small" 
-                                type="primary"
-                                @click.stop=""
-                                plain >查看</el-button>
-                        </router-link>
-
-                    </template>
-                </el-table-column>
-            </el-table>
-            <div class="pagination-depart" v-show="total > 0">
-                <el-pagination
-                    background
-                    @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
-                    :current-page="nowPage"
-                    :page-sizes="[10, 15, 50]"
-                    :page-size="pageShow"
-                    layout="total, sizes, prev, pager, next, jumper"
-                    :total="total">
-                </el-pagination>
             </div>
             
         </div>
@@ -534,7 +542,10 @@
                     <el-input type="textarea" v-model="taskForm.content" style="width:363px;display:inline-block;"></el-input>
                 </el-form-item>
                 
-                <el-form-item label="修改原因:" required prop="modifyReason" v-if="(handTaskType == 2 && taskForm.taskStatus != 'TOSUBMIT') || (handTaskType == 3 && auditOldData.taskStatus != 'NEWAPPROVE')" :class="{'is-change': handTaskType === 3 && (auditOldData.modifyReason != taskForm.modifyReason)}">
+                <el-form-item label="修改原因:" required prop="modifyReason"
+                    v-if="(handTaskType == 2 && taskForm.taskStatus != 'TOSUBMIT')
+                        || (handTaskType == 3)"
+                    :class="{'is-change': handTaskType === 3 && (auditOldData.modifyReason != taskForm.modifyReason)}">
                     <el-input type="textarea" v-model="taskForm.modifyReason" style="width:363px;display:inline-block;"></el-input>
                 </el-form-item>
                 <div v-show="stretch">
@@ -907,6 +918,10 @@ export default {
             pageTotalWaitEvaluate: 0,
             preScrollTop: 0,
             pageLoadAxiosCount: -1, //页面数据加载接口数量
+
+
+            ManageDoingTaskListIsOpen: true, // 总经理待处理任务展开收起
+            ManageMyTaskListIsOpen: true, // 总经理我的任务展开收起
                 
             
         }
@@ -917,6 +932,14 @@ export default {
         this.userView = localStorage.getItem("userView");
         this.canAddTaskGroup = localStorage.getItem("canAddTaskGroup") == 'true' ? true : false;
         
+        if (this.userView == 'MANAGER') {
+            if(localStorage.getItem("ManageDoingTaskListIsOpen") == 'false') {
+                this.ManageDoingTaskListIsOpen = false; // 总经理待处理任务展开收起
+            }
+            if(localStorage.getItem("ManageMyTaskListIsOpen") == 'false') {
+                this.ManageMyTaskListIsOpen = false; // 总经理我的任务展开收起
+            }
+        }
     },
     mounted() {
         let pageScrollTopByTaskManage = this.pageScrollTopByTaskManage;
@@ -960,6 +983,14 @@ export default {
 
     },
     methods: {
+        changeManageDoingTaskListIsOpen() {
+            this.ManageDoingTaskListIsOpen = !this.ManageDoingTaskListIsOpen;
+            localStorage.setItem("ManageDoingTaskListIsOpen", this.ManageDoingTaskListIsOpen);
+        },
+        changeManageMyTaskListIsOpen() {
+            this.ManageMyTaskListIsOpen = !this.ManageMyTaskListIsOpen;
+            localStorage.setItem("ManageMyTaskListIsOpen", this.ManageMyTaskListIsOpen);
+        },
         pageLoadUpdate() {
             // 更新
             if(this.preScrollTop && this.pageLoadAxiosCount === 0){
@@ -2582,5 +2613,9 @@ border-bottom:2px solid #D93538;
 .dialog-footer button:last-child {
     color: #D93437;
     border: 1px solid #D83436;
+}
+.no-open {
+    display: none;
+    height: 0;
 }
 </style>

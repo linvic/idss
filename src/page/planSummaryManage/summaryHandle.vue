@@ -41,8 +41,18 @@
                 </el-table-column>
                 
                 <el-table-column label="工作量基数" width="90">
-                    <template slot-scope="scope">
+                    <!-- <template slot-scope="scope">
                         <span>{{scope.row.taskWorkload}}</span>
+                    </template> -->
+                            <!-- :disabled="!!scope.row.id" -->
+
+                    <template slot-scope="scope">
+                        <el-select
+                            v-model="scope.row.taskWorkload"
+                            placeholder="请选择"
+                            size="small">
+                            <el-option v-for="item in 10" :key="item" :label="item" :value="item"></el-option>
+                        </el-select>
                     </template>
                 </el-table-column>
                 

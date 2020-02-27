@@ -134,13 +134,13 @@ export default {
             }
         };
         
-        var validateCheckUserIds = (rule, value, callback) => {
-            if (!this.checkUserIds  || this.checkUserIds.length === 0) {
-                callback(new Error('请选择'));
-            } else {
-                callback();
-            }
-        };
+        // var validateCheckUserIds = (rule, value, callback) => {
+        //     if (!this.checkUserIds  || this.checkUserIds.length === 0) {
+        //         callback(new Error('请选择'));
+        //     } else {
+        //         callback();
+        //     }
+        // };
 
         var checkChinese = (rule, value, callback) => {
             if (!value) {
@@ -177,9 +177,9 @@ export default {
                 months: [
                     { required: true, validator: validateMonths, trigger: 'blue' }
                 ],
-                checkUserIds: [
-                    { required: true, validator: validateCheckUserIds, trigger: 'blue' }
-                ],
+                // checkUserIds: [
+                //     { required: true, validator: validateCheckUserIds, trigger: 'blue' }
+                // ],
             },
             checkUserIds: [],
             users: []

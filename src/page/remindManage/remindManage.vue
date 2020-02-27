@@ -43,17 +43,27 @@
 
           </el-table>
         </div>
-        <div class="pagination-depart" v-show='pagination'>
-          <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[10, 15, 50]" :page-size=pageSize layout="total, sizes, prev, pager, next, jumper" :total=total>
-          </el-pagination>
-        </div>
+        <el-row v-show='pagination'>
+          <el-col :span="3" v-if="!isA">
+            <div class="page-bottom">
+              <el-button type="primary" size="mini" plain @click="readAllMessage">全标已读</el-button>
+            </div>
+          </el-col>
+          <el-col :span="isA ? 24 : 21">
+
+            <div class="pagination-depart">
+              <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[10, 15, 50]" :page-size=pageSize layout="total, sizes, prev, pager, next, jumper" :total=total>
+              </el-pagination>
+            </div>
+          </el-col>
+        </el-row>
       </div>
     </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
   // 注意标签和引入驼峰，可以有区别
-  import {totalNews,viewMessage} from 'service/getData'
+  import {totalNews,viewMessage,viewAllMessage} from 'service/getData'
 //  import Tab from 'components/common/tab'
   import { ERR_OK } from 'service/config'
   import { mapGetters} from 'vuex'
@@ -89,6 +99,28 @@
       this.getInitData(false,1,10)
     },
     methods: {
+      readAllMessage() {
+        
+        // 全标记已读
+        viewAllMessage().then((res) =>{
+          if(res.code==ERR_OK){
+            this.$notify({
+              type: 'success',
+              title: '成功',
+              message: '操作成功'
+            });
+            this.reload();
+             // 切换到已读
+            this.isA = true;
+            this.getInitData(true,this.nowPage,this.pageSize);
+          }else{
+            this.$notify.error({
+              title: '提示',
+              message:res.msg
+            });
+          }
+        })
+      },
       getInitData(viewed,nowPage,pageShow){
         const params={
           viewed:viewed,
@@ -268,5 +300,9 @@
   border: none;
   cursor: pointer;
   color: #D93437;
+}
+.page-bottom {
+  background: #fff;
+  padding: 30px 20px;
 }
 </style>
